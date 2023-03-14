@@ -9,6 +9,8 @@ import {GapRowView} from '../../components/basic/View';
 import Division from '../../components/basic/Division';
 import {Label, Input} from '../../components/basic/Input';
 import {KeyboardAvoidingView, Platform} from 'react-native';
+import {useSetRecoilState} from 'recoil';
+import {isLoggedIn} from '../../recoil/auth';
 
 const HeaderText = styled.Text`
   color: black;
@@ -17,6 +19,8 @@ const HeaderText = styled.Text`
 `;
 
 function Login() {
+  const setLoggedIn = useSetRecoilState(isLoggedIn);
+
   return (
     <Layout scrollable={false}>
       <KeyboardAvoidingView
@@ -88,7 +92,12 @@ function Login() {
                 secureTextEntry={true}
               />
             </GapRowView>
-            <Button bkg={colors.buttonColor} radius={10}>
+            <Button
+              bkg={colors.buttonColor}
+              radius={10}
+              onPress={() => {
+                setLoggedIn(true);
+              }}>
               <ButtonText color={colors.snsButtonTextColor}>로그인</ButtonText>
             </Button>
           </GapRowView>
