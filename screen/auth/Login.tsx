@@ -1,5 +1,5 @@
 import FastImage from 'react-native-fast-image';
-import React from 'react';
+import React, {useCallback} from 'react';
 import styled from 'styled-components/native';
 import Layout from '../../components/layout';
 import dimension from '../../styles/dimension';
@@ -11,6 +11,7 @@ import {Label, Input} from '../../components/basic/Input';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 import {useSetRecoilState} from 'recoil';
 import {isLoggedIn} from '../../recoil/auth';
+import {getProfile, login} from '@react-native-seoul/kakao-login';
 
 const HeaderText = styled.Text`
   color: black;
@@ -20,6 +21,16 @@ const HeaderText = styled.Text`
 
 function Login() {
   const setLoggedIn = useSetRecoilState(isLoggedIn);
+
+  const kakaoLogin = useCallback(async () => {
+    try {
+      await login();
+      const data = await getProfile();
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
 
   return (
     <Layout scrollable={false}>
@@ -39,7 +50,7 @@ function Login() {
             marginBottom={0}
             paddingHorizontal={0}
             paddingVertical={0}>
-            <Button bkg={colors.buttonColor} radius={25}>
+            <Button bkg={colors.buttonColor} radius={25} onPress={kakaoLogin}>
               <FastImage
                 source={require('../../assets/img/KakaoLogo512h.png')}
                 style={{width: 19, height: 17}}
