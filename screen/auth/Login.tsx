@@ -12,7 +12,9 @@ import {KeyboardAvoidingView, Platform} from 'react-native';
 import {useSetRecoilState} from 'recoil';
 import {isLoggedIn, tokens} from '../../recoil/auth';
 import {getProfile, login} from '@react-native-seoul/kakao-login';
-import {loginWithKakao} from '../../api/user';
+import {snsLogin} from '../../api/user';
+import {appleAuth} from '@invertase/react-native-apple-authentication';
+
 const HeaderText = styled.Text`
   color: black;
   font-size: 25px;
@@ -28,10 +30,11 @@ function Login() {
       const res = await getProfile();
       console.log(res);
 
-      const {data} = await loginWithKakao({
-        id: res.id,
-        img: res.profileImageUrl,
+      const {data} = await snsLogin({
+        uid: res.id,
+        img: res.thumbnailImageUrl,
         name: res.nickname,
+        oauth: 'kakao',
       });
       setToken({
         refreshToken: data.payload.token.refreshToken,
@@ -43,6 +46,40 @@ function Login() {
       console.log(e);
     }
   }, [setToken, setLoggedIn]);
+  const appleLogin = useCallback(async () => {
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: appleAuth.Operation.LOGIN,
+      requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+    });
+
+    const credentialState = await appleAuth.getCredentialStateForUser(
+      appleAuthRequestResponse.user,
+    );
+
+    if (credentialState === appleAuth.State.AUTHORIZED) {
+      // return
+
+      try {
+        const {data} = await snsLogin({
+          uid: appleAuthRequestResponse.user,
+          img: null,
+          name: appleAuthRequestResponse.fullName?.givenName
+            ? appleAuthRequestResponse.fullName.givenName
+            : '아무개 회원',
+          oauth: 'apple',
+        });
+        console.log(data);
+        setToken({
+          refreshToken: data.payload.token.refreshToken,
+          accessToken: data.payload.token.accessToken,
+        });
+        setLoggedIn(true);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    // 에러처리
+  }, []);
 
   return (
     <Layout scrollable={false}>
@@ -72,7 +109,7 @@ function Login() {
               </ButtonText>
             </Button>
             {Platform.OS === 'ios' ? (
-              <Button bkg={colors.buttonColor} radius={25}>
+              <Button bkg={colors.buttonColor} radius={25} onPress={appleLogin}>
                 <FastImage
                   source={require('../../assets/img/AppleLogo512h.png')}
                   style={{width: 16, height: 19}}

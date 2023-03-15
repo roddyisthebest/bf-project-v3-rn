@@ -1,15 +1,17 @@
 import {AxiosResponse} from 'axios';
 import {api, response} from './index';
 
-const loginWithKakao = ({
-  id,
+const snsLogin = ({
+  uid,
   name,
   img,
+  oauth,
 }: {
-  id: string;
+  uid: string;
   name: string;
-  img: string;
+  img: string | null;
+  oauth: 'naver' | 'kakao' | 'apple';
 }): Promise<AxiosResponse<response>> =>
-  api.post('/user/login/kakao', {id, name, img});
+  api.post('/user/login/sns', {uid, name, img, oauth});
 
-export {loginWithKakao};
+export {snsLogin};
