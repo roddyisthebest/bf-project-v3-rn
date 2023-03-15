@@ -14,4 +14,13 @@ const snsLogin = ({
 }): Promise<AxiosResponse<response>> =>
   api.post('/user/login/sns', {uid, name, img, oauth});
 
-export {snsLogin};
+const adminLogin = ({
+  uid,
+  password,
+}: {
+  uid: string;
+  password: string;
+}): Promise<AxiosResponse<response>> =>
+  api.post('/user/signin', {uid, password});
+
+export {snsLogin, adminLogin};

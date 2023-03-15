@@ -1,5 +1,5 @@
 import FastImage from 'react-native-fast-image';
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import Layout from '../../components/layout';
 import dimension from '../../styles/dimension';
@@ -12,12 +12,9 @@ import {KeyboardAvoidingView, Platform} from 'react-native';
 import {useSetRecoilState} from 'recoil';
 import {isLoggedIn, tokens} from '../../recoil/auth';
 import {getProfile, login} from '@react-native-seoul/kakao-login';
-import {snsLogin} from '../../api/user';
+import {adminLogin, snsLogin} from '../../api/user';
 import {appleAuth} from '@invertase/react-native-apple-authentication';
-import NaverLogin, {
-  NaverLoginResponse,
-  GetProfileResponse,
-} from '@react-native-seoul/naver-login';
+import NaverLogin from '@react-native-seoul/naver-login';
 
 const HeaderText = styled.Text`
   color: black;
@@ -28,6 +25,14 @@ const HeaderText = styled.Text`
 function Login() {
   const setLoggedIn = useSetRecoilState(isLoggedIn);
   const setToken = useSetRecoilState(tokens);
+
+  const [uid, setUid] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [disabled, setDisabled] = useState<boolean>(true);
+
+  useEffect(() => {
+    setDisabled(uid.length === 0 && password.length === 0);
+  }, [uid, password]);
 
   const setAtom = useCallback(
     ({
@@ -133,6 +138,18 @@ function Login() {
     }
   }, [setAtom]);
 
+  const localLogin = useCallback(async () => {
+    try {
+      const {data} = await adminLogin({uid, password});
+      setAtom({
+        refreshToken: data.payload.token.refreshToken,
+        accessToken: data.payload.token.accessToken,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }, [password, setAtom, uid]);
+
   return (
     <Layout scrollable={false}>
       <KeyboardAvoidingView
@@ -199,6 +216,8 @@ function Login() {
                 placeholder="아이디를 입력해주세요."
                 placeholderTextColor={colors.inputPlaceHolderColor}
                 borderColor={colors.inputLineColor}
+                value={uid}
+                onChangeText={text => setUid(text)}
               />
             </GapRowView>
             <GapRowView
@@ -213,14 +232,15 @@ function Login() {
                 placeholderTextColor={colors.inputPlaceHolderColor}
                 borderColor={colors.inputLineColor}
                 secureTextEntry={true}
+                value={password}
+                onChangeText={text => setPassword(text)}
               />
             </GapRowView>
             <Button
               bkg={colors.buttonColor}
+              disabled={disabled}
               radius={10}
-              onPress={() => {
-                setLoggedIn(true);
-              }}>
+              onPress={localLogin}>
               <ButtonText color={colors.snsButtonTextColor}>로그인</ButtonText>
             </Button>
           </GapRowView>
