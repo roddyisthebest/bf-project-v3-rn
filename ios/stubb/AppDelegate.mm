@@ -6,6 +6,7 @@
 
 #import <React/RCTAppSetupUtils.h>
 #import <RNKakaoLogins.h>
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 
 
 #if RCT_NEW_ARCH_ENABLED
@@ -62,12 +63,16 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   return YES;
 }
 
-- (BOOL)application:(UIApplication *)app
+- (BOOL)application:(UIApplication *)application
      openURL:(NSURL *)url
      options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
- if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
+  if ([url.scheme isEqualToString:@"naverLogin"]) {
+    return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
+  }
+  if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
     return [RNKakaoLogins handleOpenUrl: url];
- }
+  }
+
 
  return NO;
 }

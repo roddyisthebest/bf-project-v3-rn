@@ -22,6 +22,16 @@
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
+	<dict>
+	<key>CFBundleTypeRole</key>
+	<string>Editor</string>
+	<key>CFBundleURLName</key>
+	<string>naver</string>
+	<key>CFBundleURLSchemes</key>
+	<array>
+	<string>naverLogin</string>
+	</array>
+	</dict>
  	<dict>
   	<key>CFBundleTypeRole</key>
    	<string>Editor</string>
@@ -40,6 +50,8 @@
    	<string>kakaokompassauth</string>
 	<string>storykompassauth</string>
    	<string>kakaolink</string>
+	<string>naversearchapp</string>
+  	<string>naversearchthirdlogin</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

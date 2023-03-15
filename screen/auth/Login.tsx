@@ -14,6 +14,10 @@ import {isLoggedIn, tokens} from '../../recoil/auth';
 import {getProfile, login} from '@react-native-seoul/kakao-login';
 import {snsLogin} from '../../api/user';
 import {appleAuth} from '@invertase/react-native-apple-authentication';
+import NaverLogin, {
+  NaverLoginResponse,
+  GetProfileResponse,
+} from '@react-native-seoul/naver-login';
 
 const HeaderText = styled.Text`
   color: black;
@@ -24,6 +28,24 @@ const HeaderText = styled.Text`
 function Login() {
   const setLoggedIn = useSetRecoilState(isLoggedIn);
   const setToken = useSetRecoilState(tokens);
+
+  const setAtom = useCallback(
+    ({
+      refreshToken,
+      accessToken,
+    }: {
+      refreshToken: string;
+      accessToken: string;
+    }) => {
+      setToken({
+        refreshToken,
+        accessToken,
+      });
+      setLoggedIn(true);
+    },
+    [setLoggedIn, setToken],
+  );
+
   const kakaoLogin = useCallback(async () => {
     try {
       await login();
@@ -36,16 +58,17 @@ function Login() {
         name: res.nickname,
         oauth: 'kakao',
       });
-      setToken({
+      setAtom({
         refreshToken: data.payload.token.refreshToken,
         accessToken: data.payload.token.accessToken,
       });
-      setLoggedIn(true);
+
       console.log(data);
     } catch (e) {
       console.log(e);
     }
-  }, [setToken, setLoggedIn]);
+  }, [setAtom]);
+
   const appleLogin = useCallback(async () => {
     const appleAuthRequestResponse = await appleAuth.performRequest({
       requestedOperation: appleAuth.Operation.LOGIN,
@@ -68,18 +91,47 @@ function Login() {
             : '아무개 회원',
           oauth: 'apple',
         });
-        console.log(data);
-        setToken({
+        setAtom({
           refreshToken: data.payload.token.refreshToken,
           accessToken: data.payload.token.accessToken,
         });
-        setLoggedIn(true);
       } catch (e) {
         console.log(e);
       }
     }
     // 에러처리
-  }, [setToken, setLoggedIn]);
+  }, [setAtom]);
+
+  const naverLogin = useCallback(async () => {
+    const config = {
+      consumerKey: '2mDUg8wHDYBX0BbXTMMs',
+      consumerSecret: 'VqKNMX5v0Z',
+      appName: 'stubb',
+      serviceUrlScheme: Platform.OS === 'ios' ? 'naverLogin' : undefined,
+    };
+    const {successResponse} = await NaverLogin.login(config);
+    if (successResponse) {
+      const {response} = await NaverLogin.getProfile(
+        successResponse.accessToken,
+      );
+      console.log(response);
+      try {
+        const {data} = await snsLogin({
+          uid: response.id,
+          img: response.profile_image,
+          name: response.name,
+          oauth: 'naver',
+        });
+        console.log(data);
+        setAtom({
+          refreshToken: data.payload.token.refreshToken,
+          accessToken: data.payload.token.accessToken,
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [setAtom]);
 
   return (
     <Layout scrollable={false}>
@@ -108,7 +160,7 @@ function Login() {
                 Kakao 계정으로 로그인
               </ButtonText>
             </Button>
-            <Button bkg={colors.buttonColor} radius={25}>
+            <Button bkg={colors.buttonColor} radius={25} onPress={naverLogin}>
               <FastImage
                 source={require('../../assets/img/NaverLogo512h.png')}
                 style={{width: 19, height: 17}}

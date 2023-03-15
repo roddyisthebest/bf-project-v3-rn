@@ -1380,6 +1380,13 @@
   dependencies:
     dooboolab-welcome "^1.3.2"
 
+"@react-native-seoul/naver-login@^3.0.0-rc.1":
+  version "3.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@react-native-seoul/naver-login/-/naver-login-3.0.0-rc.1.tgz#26d8970e71f4d692ca9a25a2f1b0f569ba7eae4a"
+  integrity sha512-EAIkqjiaJfpqHc7V82n6DTMxmdYhkkKL6sM+YBh3Ua3gI1m81sM6dlhYQLzPfXnQ6Y/3nktuVPlruNuFKDeNFQ==
+  dependencies:
+    dooboolab-welcome "^1.3.2"
+
 "@react-native/assets@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@react-native/assets/-/assets-1.0.0.tgz#c6f9bf63d274bafc8e970628de24986b30a55c8e"

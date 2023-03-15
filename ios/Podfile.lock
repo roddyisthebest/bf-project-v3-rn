@@ -103,6 +103,7 @@ PODS:
   - libwebp/mux (1.2.4):
     - libwebp/demux
   - libwebp/webp (1.2.4)
+  - naveridlogin-sdk-ios (4.1.5)
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -451,6 +452,9 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
+  - RNNaverLogin (3.0.0-rc.1):
+    - naveridlogin-sdk-ios (~> 4.1.5)
+    - React
   - RNScreens (3.20.0):
     - React-Core
     - React-RCTImage
@@ -530,6 +534,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - "RNNaverLogin (from `../node_modules/@react-native-seoul/naver-login`)"
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -553,6 +558,7 @@ SPEC REPOS:
     - KakaoSDKUser
     - libevent
     - libwebp
+    - naveridlogin-sdk-ios
     - OpenSSL-Universal
     - SDWebImage
     - SDWebImageWebPCoder
@@ -634,6 +640,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@invertase/react-native-apple-authentication"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
+  RNNaverLogin:
+    :path: "../node_modules/@react-native-seoul/naver-login"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNVectorIcons:
@@ -666,6 +674,7 @@ SPEC CHECKSUMS:
   KakaoSDKUser: 08c0a4f40bebdebdf948a9e3d0e44ed5c2754f99
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: f62cb61d0a484ba548448a4bd52aabf150ff6eef
+  naveridlogin-sdk-ios: 4351fe7162cd6b8b6dbb37bd7cc205304fa1d889
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
   RCTRequired: c154ebcfbf41d6fef86c52674fc1aa08837ff538
@@ -697,6 +706,7 @@ SPEC CHECKSUMS:
   ReactCommon: f697c0ac52e999aa818e43e2b6f277787c735e2d
   RNAppleAuthentication: 0571c08da8c327ae2afc0261b48b4a515b0286a6
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
+  RNNaverLogin: 21bf8065f8e0fca9f5502d0fc81f7967a06d858c
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
