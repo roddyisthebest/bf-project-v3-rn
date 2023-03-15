@@ -10,9 +10,9 @@ import Division from '../../components/basic/Division';
 import {Label, Input} from '../../components/basic/Input';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 import {useSetRecoilState} from 'recoil';
-import {isLoggedIn} from '../../recoil/auth';
+import {isLoggedIn, tokens} from '../../recoil/auth';
 import {getProfile, login} from '@react-native-seoul/kakao-login';
-
+import {loginWithKakao} from '../../api/user';
 const HeaderText = styled.Text`
   color: black;
   font-size: 25px;
@@ -21,22 +21,34 @@ const HeaderText = styled.Text`
 
 function Login() {
   const setLoggedIn = useSetRecoilState(isLoggedIn);
-
+  const setToken = useSetRecoilState(tokens);
   const kakaoLogin = useCallback(async () => {
     try {
       await login();
-      const data = await getProfile();
+      const res = await getProfile();
+      console.log(res);
+
+      const {data} = await loginWithKakao({
+        id: res.id,
+        img: res.profileImageUrl,
+        name: res.nickname,
+      });
+      setToken({
+        refreshToken: data.payload.token.refreshToken,
+        accessToken: data.payload.token.accessToken,
+      });
+      setLoggedIn(true);
       console.log(data);
     } catch (e) {
       console.log(e);
     }
-  }, []);
+  }, [setToken, setLoggedIn]);
 
   return (
     <Layout scrollable={false}>
       <KeyboardAvoidingView
         keyboardVerticalOffset={125}
-        behavior={Platform.select({ios: 'position', android: undefined})}>
+        behavior={Platform.select({ios: 'position', android: 'position'})}>
         <GapRowView
           paddingHorizontal={dimension.paddingHorizontal}
           paddingVertical={dimension.paddingVertical}
@@ -59,15 +71,17 @@ function Login() {
                 Kakao 계정으로 로그인
               </ButtonText>
             </Button>
-            <Button bkg={colors.buttonColor} radius={25}>
-              <FastImage
-                source={require('../../assets/img/AppleLogo512h.png')}
-                style={{width: 16, height: 19}}
-              />
-              <ButtonText color={colors.snsButtonTextColor}>
-                Apple 계정으로 로그인
-              </ButtonText>
-            </Button>
+            {Platform.OS === 'ios' ? (
+              <Button bkg={colors.buttonColor} radius={25}>
+                <FastImage
+                  source={require('../../assets/img/AppleLogo512h.png')}
+                  style={{width: 16, height: 19}}
+                />
+                <ButtonText color={colors.snsButtonTextColor}>
+                  Apple 계정으로 로그인
+                </ButtonText>
+              </Button>
+            ) : null}
           </GapRowView>
           <Division text="또는" />
           <GapRowView
