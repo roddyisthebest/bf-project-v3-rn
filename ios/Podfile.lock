@@ -452,7 +452,7 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
-  - RNNaverLogin (3.0.0-rc.1):
+  - RNNaverLogin (2.3.1):
     - naveridlogin-sdk-ios (~> 4.1.5)
     - React
   - RNScreens (3.20.0):
@@ -706,7 +706,7 @@ SPEC CHECKSUMS:
   ReactCommon: f697c0ac52e999aa818e43e2b6f277787c735e2d
   RNAppleAuthentication: 0571c08da8c327ae2afc0261b48b4a515b0286a6
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
-  RNNaverLogin: 21bf8065f8e0fca9f5502d0fc81f7967a06d858c
+  RNNaverLogin: 55f822601e31a7c7feeaf167497029c0162115e6
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d

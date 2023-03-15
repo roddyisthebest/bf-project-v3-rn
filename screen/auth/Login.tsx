@@ -11,10 +11,16 @@ import {Label, Input} from '../../components/basic/Input';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 import {useSetRecoilState} from 'recoil';
 import {isLoggedIn, tokens} from '../../recoil/auth';
-import {getProfile, login} from '@react-native-seoul/kakao-login';
+import {
+  getProfile as getProfileWithKakao,
+  login,
+} from '@react-native-seoul/kakao-login';
 import {adminLogin, snsLogin} from '../../api/user';
 import {appleAuth} from '@invertase/react-native-apple-authentication';
-import NaverLogin from '@react-native-seoul/naver-login';
+import {
+  NaverLogin,
+  getProfile as getProfileWithNaver,
+} from '@react-native-seoul/naver-login';
 
 const HeaderText = styled.Text`
   color: black;
@@ -54,7 +60,7 @@ function Login() {
   const kakaoLogin = useCallback(async () => {
     try {
       await login();
-      const res = await getProfile();
+      const res = await getProfileWithKakao();
       console.log(res);
 
       const {data} = await snsLogin({
@@ -109,33 +115,35 @@ function Login() {
 
   const naverLogin = useCallback(async () => {
     const config = {
-      consumerKey: '2mDUg8wHDYBX0BbXTMMs',
-      consumerSecret: 'VqKNMX5v0Z',
-      appName: 'stubb',
-      serviceUrlScheme: Platform.OS === 'ios' ? 'naverLogin' : undefined,
+      kConsumerKey: '2mDUg8wHDYBX0BbXTMMs',
+      kConsumerSecret: 'VqKNMX5v0Z',
+      kServiceAppName: 'stubb',
+      kServiceAppUrlScheme: Platform.OS === 'ios' ? 'naverLogin' : undefined,
     };
-    const {successResponse} = await NaverLogin.login(config);
-    if (successResponse) {
-      const {response} = await NaverLogin.getProfile(
-        successResponse.accessToken,
-      );
-      console.log(response);
-      try {
-        const {data} = await snsLogin({
-          uid: response.id,
-          img: response.profile_image,
-          name: response.name,
-          oauth: 'naver',
+    NaverLogin.login(config, (err, token) => {
+      if (err) {
+        return console.log(err);
+      } else {
+        getProfileWithNaver(token?.accessToken as string).then(async result => {
+          console.log(result);
+          if (result.resultcode === '024') {
+            console.log('에러');
+            return null;
+          } else {
+            await snsLogin({
+              uid: result.response.id,
+              img: result.response.profile_image,
+              name: result.response.name,
+              oauth: 'naver',
+            });
+            setAtom({
+              accessToken: token?.accessToken as string,
+              refreshToken: token?.refreshToken as string,
+            });
+          }
         });
-        console.log(data);
-        setAtom({
-          refreshToken: data.payload.token.refreshToken,
-          accessToken: data.payload.token.accessToken,
-        });
-      } catch (e) {
-        console.log(e);
       }
-    }
+    });
   }, [setAtom]);
 
   const localLogin = useCallback(async () => {
