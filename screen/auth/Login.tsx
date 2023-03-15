@@ -79,7 +79,7 @@ function Login() {
       }
     }
     // 에러처리
-  }, []);
+  }, [setToken, setLoggedIn]);
 
   return (
     <Layout scrollable={false}>
@@ -106,6 +106,15 @@ function Login() {
               />
               <ButtonText color={colors.snsButtonTextColor}>
                 Kakao 계정으로 로그인
+              </ButtonText>
+            </Button>
+            <Button bkg={colors.buttonColor} radius={25}>
+              <FastImage
+                source={require('../../assets/img/NaverLogo512h.png')}
+                style={{width: 19, height: 17}}
+              />
+              <ButtonText color={colors.snsButtonTextColor}>
+                Naver 계정으로 로그인
               </ButtonText>
             </Button>
             {Platform.OS === 'ios' ? (
