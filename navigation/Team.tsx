@@ -14,7 +14,11 @@ const TeamNav = () => (
       component={Team}
       options={{title: 'My Team'}}
     />
-    <NativeStack.Screen name="Creating" component={TeamCreating} />
+    <NativeStack.Screen
+      name="Creating"
+      component={TeamCreating}
+      options={{title: '팀 만들기'}}
+    />
     <NativeStack.Screen name="Setting" component={Setting} />
     <NativeStack.Screen name="Detail" component={Detail} />
   </NativeStack.Navigator>

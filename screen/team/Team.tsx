@@ -7,15 +7,11 @@ import {ButtonText} from '../../components/basic/Button';
 import {LoggedInParamList} from '../../navigation/Root';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 
-function Team({
-  navigation: {setOptions},
-}: {
-  navigation: {setOptions: Function};
-}) {
+function Team() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   useEffect(() => {
-    setOptions({
+    navigation.setOptions({
       headerRight: () => (
         <Pressable
           onPress={() => navigation.navigate('Team', {screen: 'Creating'})}>
@@ -25,7 +21,7 @@ function Team({
         </Pressable>
       ),
     });
-  }, [setOptions, navigation]);
+  }, [navigation]);
 
   return (
     <Layout scrollable={false} isItWhite={false}>
