@@ -181,7 +181,7 @@ function Login() {
                 source={require('../../assets/img/KakaoLogo512h.png')}
                 style={{width: 19, height: 17}}
               />
-              <ButtonText color={colors.snsButtonTextColor}>
+              <ButtonText color={colors.snsButtonTextColor} fontSize={15}>
                 Kakao 계정으로 로그인
               </ButtonText>
             </Button>
@@ -190,7 +190,7 @@ function Login() {
                 source={require('../../assets/img/NaverLogo512h.png')}
                 style={{width: 19, height: 17}}
               />
-              <ButtonText color={colors.snsButtonTextColor}>
+              <ButtonText color={colors.snsButtonTextColor} fontSize={15}>
                 Naver 계정으로 로그인
               </ButtonText>
             </Button>
@@ -200,7 +200,7 @@ function Login() {
                   source={require('../../assets/img/AppleLogo512h.png')}
                   style={{width: 16, height: 19}}
                 />
-                <ButtonText color={colors.snsButtonTextColor}>
+                <ButtonText color={colors.snsButtonTextColor} fontSize={15}>
                   Apple 계정으로 로그인
                 </ButtonText>
               </Button>
@@ -249,7 +249,9 @@ function Login() {
               disabled={disabled}
               radius={10}
               onPress={localLogin}>
-              <ButtonText color={colors.snsButtonTextColor}>로그인</ButtonText>
+              <ButtonText color={colors.snsButtonTextColor} fontSize={15}>
+                로그인
+              </ButtonText>
             </Button>
           </GapRowView>
         </GapRowView>

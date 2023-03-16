@@ -11,13 +11,13 @@ const NativeStack = createNativeStackNavigator();
 
 const UserNav = () => (
   <NativeStack.Navigator>
-    <NativeStack.Screen name="User" component={User} />
-    <NativeStack.Screen name="UserPenalty" component={Penalty} />
-    <NativeStack.Screen name="UserPray" component={Pray} />
-    <NativeStack.Screen name="UserTweet" component={Tweet} />
-    <NativeStack.Screen name="UserSetting" component={Setting} />
-    <NativeStack.Screen name="UserSettingEdit" component={Edit} />
-    <NativeStack.Screen name="UserSettingUsage" component={Usage} />
+    <NativeStack.Screen name="Home" component={User} />
+    <NativeStack.Screen name="Penalty" component={Penalty} />
+    <NativeStack.Screen name="Pray" component={Pray} />
+    <NativeStack.Screen name="Tweet" component={Tweet} />
+    <NativeStack.Screen name="Setting" component={Setting} />
+    <NativeStack.Screen name="SettingEdit" component={Edit} />
+    <NativeStack.Screen name="SettingUsage" component={Usage} />
   </NativeStack.Navigator>
 );
 

@@ -10,4 +10,6 @@ export const colors = {
   inputLabelColor: '#828282',
   inputPlaceHolderColor: '#CBCBCB',
   itemBorderBottomColor: '#CDCACA',
+  buttonBorderColor: 'rgba(202, 209, 215, 0.8)',
+  moreButtonColor: '#BBBBBB',
 };

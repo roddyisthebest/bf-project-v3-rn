@@ -11,9 +11,9 @@ const Button = styled.TouchableOpacity<{bkg: string; radius: number}>`
   flex-direction: row;
 `;
 
-const ButtonText = styled.Text<{color: string}>`
+const ButtonText = styled.Text<{color: string; fontSize: number}>`
   color: ${props => props.color};
-  font-size: 15px;
+  font-size: ${props => props.fontSize}px;
   font-weight: 500;
 `;
 

@@ -18,7 +18,7 @@ function SettingView({
           style={{width: 30, height: 30}}
         />
       ),
-      headerTitleAlign: 'center',
+      // headerTitleAlign: 'center',
     });
   }, [setOptions]);
 
