@@ -159,7 +159,7 @@ function Login() {
   }, [password, setAtom, uid]);
 
   return (
-    <Layout scrollable={false}>
+    <Layout scrollable={false} isItWhite={true}>
       <KeyboardAvoidingView
         keyboardVerticalOffset={125}
         behavior={Platform.select({ios: 'position', android: 'position'})}>

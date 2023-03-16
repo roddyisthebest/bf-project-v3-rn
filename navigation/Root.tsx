@@ -22,10 +22,9 @@ const Root = () => {
       }}>
       {loggedIn ? (
         <>
-          <Nav.Screen name="Tabs" component={TabsNav} />
-
-          <Nav.Screen name="Stack" component={StackNav} />
           <Nav.Screen name="Team" component={TeamNav} />
+          <Nav.Screen name="Tabs" component={TabsNav} />
+          <Nav.Screen name="Stack" component={StackNav} />
           <Nav.Screen name="User" component={UserNav} />
         </>
       ) : (

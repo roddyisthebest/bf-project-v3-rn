@@ -8,7 +8,7 @@ const NativeStack = createNativeStackNavigator();
 
 const TeamNav = () => (
   <NativeStack.Navigator>
-    <NativeStack.Screen name="Team" component={Team} />
+    <NativeStack.Screen name="TeamHome" component={Team} />
     <NativeStack.Screen name="TeamCreating" component={TeamCreating} />
     <NativeStack.Screen name="TeamSetting" component={Setting} />
     <NativeStack.Screen name="TeamDetail" component={Detail} />

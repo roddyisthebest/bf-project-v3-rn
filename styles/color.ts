@@ -9,4 +9,5 @@ export const colors = {
   inputLineColor: '#CDCACA',
   inputLabelColor: '#828282',
   inputPlaceHolderColor: '#CBCBCB',
+  itemBorderBottomColor: '#CDCACA',
 };
