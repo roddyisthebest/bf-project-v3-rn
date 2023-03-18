@@ -77,7 +77,7 @@ function TeamCreating() {
       await addTeam({
         file: {
           name: file?.fileName as string,
-          type: file?.type as 'image/jpeg' | 'image/jpg',
+          type: 'multipart/form-data',
           uri: file?.uri as string,
         },
         name,
@@ -86,7 +86,7 @@ function TeamCreating() {
       setAddTeamFlag(true);
       navigation.goBack();
     } catch (e) {
-      console.log(e);
+      console.log({...e});
     }
   }, [file, name, introducing, navigation, setAddTeamFlag]);
 
