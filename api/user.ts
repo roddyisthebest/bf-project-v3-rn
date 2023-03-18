@@ -23,4 +23,7 @@ const adminLogin = ({
 }): Promise<AxiosResponse<response>> =>
   api.post('/user/signin', {uid, password});
 
-export {snsLogin, adminLogin};
+const getMyTeams = (): Promise<AxiosResponse<response>> =>
+  api.get('/user/myTeams');
+
+export {snsLogin, adminLogin, getMyTeams};

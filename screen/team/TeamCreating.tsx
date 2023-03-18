@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../navigation/Root';
 import Layout from '../../components/layout';
@@ -9,16 +9,23 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FastImage from 'react-native-fast-image';
 import {Input, Label} from '../../components/basic/Input';
 import dimension from '../../styles/dimension';
-import {KeyboardAvoidingView, Platform, Pressable} from 'react-native';
+import {KeyboardAvoidingView, Platform, Pressable, View} from 'react-native';
 import {ButtonText} from '../../components/basic/Button';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {addTeamFlag} from '../../recoil/flag';
+import FileType from '../../types/FileType';
+import {useSetRecoilState} from 'recoil';
+import {addTeam} from '../../api/team';
 
-const UploadButton = styled.TouchableOpacity`
+const UploadButton = styled.TouchableOpacity<{borderColor: string}>`
   width: 120px;
   height: 120px;
   border-radius: 15px;
   align-items: center;
   justify-content: center;
   position: relative;
+  border-color: ${props => props.borderColor};
+  border-width: 1px;
 `;
 
 const UploadImage = styled(FastImage)<{bkg: string}>`
@@ -43,17 +50,62 @@ const UploadButtonIconWrapper = styled.View`
 function TeamCreating() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
+  const setAddTeamFlag = useSetRecoilState(addTeamFlag);
+
+  const [file, setFile] = useState<FileType | null>(null);
+  const [name, setName] = useState<string>('');
+  const [introducing, setIntroducing] = useState<string>('');
+  const [disabled, setDisabled] = useState<boolean>(true);
+
+  const uploadUsingAlbum = useCallback(async () => {
+    try {
+      const data: any = await launchImageLibrary({
+        quality: 1,
+        mediaType: 'photo',
+      });
+
+      if (data) {
+        setFile(data.assets[0]);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  const onUpload = useCallback(async () => {
+    try {
+      await addTeam({
+        file: {
+          name: file?.fileName as string,
+          type: file?.type as 'image/jpeg' | 'image/jpg',
+          uri: file?.uri as string,
+        },
+        name,
+        introducing,
+      });
+      setAddTeamFlag(true);
+      navigation.goBack();
+    } catch (e) {
+      console.log(e);
+    }
+  }, [file, name, introducing, navigation, setAddTeamFlag]);
+
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <Pressable>
-          <ButtonText color="#3478F6" fontSize={15}>
-            생성
-          </ButtonText>
-        </Pressable>
-      ),
+      headerRight: () =>
+        disabled ? null : (
+          <Pressable onPress={onUpload}>
+            <ButtonText color="#3478F6" fontSize={15}>
+              생성
+            </ButtonText>
+          </Pressable>
+        ),
     });
-  }, [navigation]);
+  }, [navigation, onUpload, disabled]);
+
+  useEffect(() => {
+    setDisabled(introducing.length < 5 || name.length < 3 || file === null);
+  }, [introducing, name, file]);
 
   return (
     <Layout scrollable={false} isItWhite={true}>
@@ -64,47 +116,58 @@ function TeamCreating() {
           gap={30}
           marginTop={0}
           marginBottom={0}
-          paddingHorizontal={dimension.paddingHorizontal}
+          paddingHorizontal={0}
           paddingVertical={35}
           style={{alignItems: 'center'}}>
-          <UploadButton>
-            <UploadButtonIconWrapper>
-              <Icon name="camera" color="white" size={20} />
-            </UploadButtonIconWrapper>
-            <UploadImage
-              bkg={colors.background}
-              source={{
-                uri: 'https://koreaboo-cdn.storage.googleapis.com/2017/08/Satomi-Ishihara.jpeg',
-              }}
-            />
-          </UploadButton>
+          <View
+            style={{
+              backgroundColor: 'white',
+              width: '100%',
+              alignItems: 'center',
+            }}>
+            <UploadButton
+              onPress={uploadUsingAlbum}
+              borderColor={colors.background}>
+              <UploadButtonIconWrapper>
+                <Icon name="camera" color="white" size={20} />
+              </UploadButtonIconWrapper>
+              <UploadImage
+                bkg={colors.background}
+                source={{
+                  uri: file ? file.uri : '',
+                }}
+              />
+            </UploadButton>
+          </View>
 
           <GapRowView
             gap={10}
             marginTop={0}
             marginBottom={0}
-            paddingHorizontal={0}
+            paddingHorizontal={dimension.paddingHorizontal}
             paddingVertical={0}
             style={{width: '100%'}}>
             <Label color={colors.inputLabelColor}>팀 이름</Label>
             <Input
-              placeholder="팀 이름을 입력해주세요."
+              placeholder="팀 이름을 입력해주세요. (3글자 이상)"
               placeholderTextColor={colors.inputPlaceHolderColor}
               borderColor={colors.inputLineColor}
+              onChangeText={text => setName(text)}
             />
           </GapRowView>
           <GapRowView
             gap={10}
             marginTop={0}
             marginBottom={0}
-            paddingHorizontal={0}
+            paddingHorizontal={dimension.paddingHorizontal}
             paddingVertical={0}
             style={{width: '100%'}}>
             <Label color={colors.inputLabelColor}>팀 소갯말</Label>
             <Input
-              placeholder="팀 소갯말을 입력해주세요."
+              placeholder="팀 소갯말을 입력해주세요. (5글자 이상)"
               placeholderTextColor={colors.inputPlaceHolderColor}
               borderColor={colors.inputLineColor}
+              onChangeText={text => setIntroducing(text)}
             />
           </GapRowView>
         </GapRowView>

@@ -10,7 +10,7 @@ import Division from '../../components/basic/Division';
 import {Label, Input} from '../../components/basic/Input';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 import {useSetRecoilState} from 'recoil';
-import {isLoggedIn, tokens} from '../../recoil/auth';
+import {isLoggedIn} from '../../recoil/auth';
 import {
   getProfile as getProfileWithKakao,
   login,
@@ -21,6 +21,8 @@ import {
   NaverLogin,
   getProfile as getProfileWithNaver,
 } from '@react-native-seoul/naver-login';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {setTokenToAxios} from '../../api';
 
 const HeaderText = styled.Text`
   color: black;
@@ -30,7 +32,6 @@ const HeaderText = styled.Text`
 
 function Login() {
   const setLoggedIn = useSetRecoilState(isLoggedIn);
-  const setToken = useSetRecoilState(tokens);
 
   const [uid, setUid] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -41,20 +42,21 @@ function Login() {
   }, [uid, password]);
 
   const setAtom = useCallback(
-    ({
+    async ({
       refreshToken,
       accessToken,
     }: {
       refreshToken: string;
       accessToken: string;
     }) => {
-      setToken({
-        refreshToken,
-        accessToken,
-      });
+      console.log(accessToken, 'new');
+      console.log(refreshToken, 'new');
+      await EncryptedStorage.setItem('accessToken', accessToken);
+      await EncryptedStorage.setItem('refreshToken', refreshToken);
+      await setTokenToAxios();
       setLoggedIn(true);
     },
-    [setLoggedIn, setToken],
+    [setLoggedIn],
   );
 
   const kakaoLogin = useCallback(async () => {
@@ -69,6 +71,8 @@ function Login() {
         name: res.nickname,
         oauth: 'kakao',
       });
+
+      console.log(data);
       setAtom({
         refreshToken: data.payload.token.refreshToken,
         accessToken: data.payload.token.accessToken,
@@ -130,15 +134,17 @@ function Login() {
             console.log('에러');
             return null;
           } else {
-            await snsLogin({
+            const {data} = await snsLogin({
               uid: result.response.id,
               img: result.response.profile_image,
               name: result.response.name,
               oauth: 'naver',
             });
+            console.log(data);
+
             setAtom({
-              accessToken: token?.accessToken as string,
-              refreshToken: token?.refreshToken as string,
+              accessToken: data.payload.token.accessToken as string,
+              refreshToken: data.payload.token.refreshToken as string,
             });
           }
         });

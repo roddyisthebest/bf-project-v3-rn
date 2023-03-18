@@ -1,8 +1,8 @@
 import React from 'react';
 import FastImage from 'react-native-fast-image';
-import {TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
 import {colors} from '../../styles/color';
+import TeamType from '../../types/TeamType';
 
 const Container = styled.View<{bottomColor: string}>`
   padding: 22.5px 20px;
@@ -46,28 +46,25 @@ const ContentsImage = styled(FastImage)`
   border-radius: 10px;
 `;
 
-function Team({title}: {title: string}) {
+function Team({props}: {props: {data: TeamType[]; title: string}}) {
   return (
     <Container bottomColor={colors.itemBorderBottomColor}>
       <TitleSection>
-        <TitleText>{title}</TitleText>
+        <TitleText>{props.title}</TitleText>
         <MoreButtonText color={colors.moreButtonColor}>더보기</MoreButtonText>
       </TitleSection>
       <ContentsSection>
-        <ContentsButton buttonBorderColor={colors.buttonBorderColor}>
-          <ContentsImage
-            source={{
-              uri: 'https://koreaboo-cdn.storage.googleapis.com/2017/08/Satomi-Ishihara.jpeg',
-            }}
-          />
-        </ContentsButton>
-        <ContentsButton buttonBorderColor={colors.buttonBorderColor}>
-          <ContentsImage
-            source={{
-              uri: 'https://koreaboo-cdn.storage.googleapis.com/2017/08/Satomi-Ishihara.jpeg',
-            }}
-          />
-        </ContentsButton>
+        {props.data.map(team => (
+          <ContentsButton
+            buttonBorderColor={colors.buttonBorderColor}
+            key={team.id}>
+            <ContentsImage
+              source={{
+                uri: `http://192.168.123.107:3000/${team.img}`,
+              }}
+            />
+          </ContentsButton>
+        ))}
       </ContentsSection>
     </Container>
   );
