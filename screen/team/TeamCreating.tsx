@@ -86,7 +86,7 @@ function TeamCreating() {
       setAddTeamFlag(true);
       navigation.goBack();
     } catch (e) {
-      console.log({...e});
+      console.log(e);
     }
   }, [file, name, introducing, navigation, setAddTeamFlag]);
 

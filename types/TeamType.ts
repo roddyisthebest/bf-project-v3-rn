@@ -1,4 +1,4 @@
-type TeamType = {
+interface TeamType {
   bossId: string;
   createdAt: Date;
   deletedAt: Date;
@@ -8,6 +8,6 @@ type TeamType = {
   name: string;
   updatedAt: Date;
   userteam: [Object];
-};
+}
 
 export default TeamType;

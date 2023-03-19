@@ -49,8 +49,6 @@ function Login() {
       refreshToken: string;
       accessToken: string;
     }) => {
-      console.log(accessToken, 'new');
-      console.log(refreshToken, 'new');
       await EncryptedStorage.setItem('accessToken', accessToken);
       await EncryptedStorage.setItem('refreshToken', refreshToken);
       await setTokenToAxios();

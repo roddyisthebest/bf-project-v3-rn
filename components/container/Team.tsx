@@ -1,9 +1,8 @@
 import React from 'react';
-import FastImage from 'react-native-fast-image';
 import styled from 'styled-components/native';
 import {colors} from '../../styles/color';
 import TeamType from '../../types/TeamType';
-
+import TeamSet from '../card/TeamSet';
 const Container = styled.View<{bottomColor: string}>`
   padding: 22.5px 20px;
   border-bottom-color: ${props => props.bottomColor};
@@ -34,18 +33,6 @@ const ContentsSection = styled.View`
   column-gap: 10px;
 `;
 
-const ContentsButton = styled.TouchableOpacity<{buttonBorderColor: string}>`
-  border-radius: 10px;
-  border-color: ${props => props.buttonBorderColor};
-  border-width: 1px;
-`;
-
-const ContentsImage = styled(FastImage)`
-  width: 110px;
-  height: 110px;
-  border-radius: 10px;
-`;
-
 function Team({props}: {props: {data: TeamType[]; title: string}}) {
   return (
     <Container bottomColor={colors.itemBorderBottomColor}>
@@ -55,15 +42,7 @@ function Team({props}: {props: {data: TeamType[]; title: string}}) {
       </TitleSection>
       <ContentsSection>
         {props.data.map(team => (
-          <ContentsButton
-            buttonBorderColor={colors.buttonBorderColor}
-            key={team.id}>
-            <ContentsImage
-              source={{
-                uri: `http://192.168.123.107:3000/${team.img}`,
-              }}
-            />
-          </ContentsButton>
+          <TeamSet data={team} key={team.id} />
         ))}
       </ContentsSection>
     </Container>
