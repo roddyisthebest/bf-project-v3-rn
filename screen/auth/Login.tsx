@@ -23,6 +23,8 @@ import {
 } from '@react-native-seoul/naver-login';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {setTokenToAxios} from '../../api';
+import {myInfo} from '../../recoil/user';
+import UserType from '../../types/UserType';
 
 const HeaderText = styled.Text`
   color: black;
@@ -32,6 +34,7 @@ const HeaderText = styled.Text`
 
 function Login() {
   const setLoggedIn = useSetRecoilState(isLoggedIn);
+  const setMyInfo = useSetRecoilState(myInfo);
 
   const [uid, setUid] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -45,16 +48,23 @@ function Login() {
     async ({
       refreshToken,
       accessToken,
+      userInfo,
     }: {
       refreshToken: string;
       accessToken: string;
+      userInfo: UserType;
     }) => {
       await EncryptedStorage.setItem('accessToken', accessToken);
       await EncryptedStorage.setItem('refreshToken', refreshToken);
+
       await setTokenToAxios();
+      setMyInfo(info => ({
+        user: userInfo,
+        team: info.team,
+      }));
       setLoggedIn(true);
     },
-    [setLoggedIn],
+    [setLoggedIn, setMyInfo],
   );
 
   const kakaoLogin = useCallback(async () => {
@@ -74,9 +84,8 @@ function Login() {
       setAtom({
         refreshToken: data.payload.token.refreshToken,
         accessToken: data.payload.token.accessToken,
+        userInfo: data.payload.userInfo,
       });
-
-      console.log(data);
     } catch (e) {
       console.log(e);
     }
@@ -104,9 +113,11 @@ function Login() {
             : '아무개 회원',
           oauth: 'apple',
         });
+
         setAtom({
           refreshToken: data.payload.token.refreshToken,
           accessToken: data.payload.token.accessToken,
+          userInfo: data.payload.userInfo,
         });
       } catch (e) {
         console.log(e);
@@ -143,6 +154,7 @@ function Login() {
             setAtom({
               accessToken: data.payload.token.accessToken as string,
               refreshToken: data.payload.token.refreshToken as string,
+              userInfo: data.payload.userInfo,
             });
           }
         });
@@ -156,6 +168,7 @@ function Login() {
       setAtom({
         refreshToken: data.payload.token.refreshToken,
         accessToken: data.payload.token.accessToken,
+        userInfo: data.payload.userInfo,
       });
     } catch (e) {
       console.log(e);
