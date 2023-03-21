@@ -14,4 +14,12 @@ const Input = styled.TextInput<{borderColor: string}>`
   font-weight: 500;
 `;
 
-export {Label, Input};
+const TextArea = styled.TextInput<{borderColor: string}>`
+  border-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: ${props => props.borderColor};
+  height: 100px;
+  color: black;
+  padding: 5px 0 10px 0;
+`;
+export {Label, Input, TextArea};

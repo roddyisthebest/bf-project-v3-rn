@@ -11,10 +11,23 @@ const Button = styled.TouchableOpacity<{bkg: string; radius: number}>`
   flex-direction: row;
 `;
 
-const ButtonText = styled.Text<{color: string; fontSize: number}>`
-  color: ${props => props.color};
-  font-size: ${props => props.fontSize}px;
-  font-weight: 500;
+const SmButton = styled(Button)`
+  /* height: 20px; */
+  padding: 5px 12.5px;
 `;
 
-export {Button, ButtonText};
+const ButtonText = styled.Text<{
+  color: string;
+  fontSize: number;
+  fontWeight: number;
+}>`
+  color: ${props => props.color};
+  font-size: ${props => props.fontSize}px;
+  font-weight: ${props => props.fontWeight};
+`;
+
+ButtonText.defaultProps = {
+  fontWeight: 500,
+};
+
+export {Button, SmButton, ButtonText};

@@ -57,12 +57,18 @@ function MyInfo() {
           paddingBottom: 25,
         }}>
         <Item borerColor={colors.bottomSheetItemBorderColor}>
-          <ButtonText color={colors.positiveColor} fontSize={15}>
+          <ButtonText
+            color={colors.positiveColor}
+            fontSize={15}
+            fontWeight={500}>
             내 정보
           </ButtonText>
         </Item>
         <Item borerColor={colors.bottomSheetItemBorderColor}>
-          <ButtonText color={colors.negativeColor} fontSize={15}>
+          <ButtonText
+            color={colors.negativeColor}
+            fontSize={15}
+            fontWeight={500}>
             로그아웃
           </ButtonText>
         </Item>

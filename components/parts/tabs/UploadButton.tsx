@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import {Platform} from 'react-native';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from '../../../navigation/Root';
+import {GestureResponderEvent, Platform} from 'react-native';
 
 const Container = styled.TouchableOpacity`
   width: 80px;
@@ -17,14 +15,14 @@ const Container = styled.TouchableOpacity`
   background-color: black;
 `;
 
-function UploadButton() {
-  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
-
+function UploadButton({
+  onPress,
+}: {
+  onPress: (event: GestureResponderEvent) => void;
+}) {
   return (
     <Container
-      onPress={() => {
-        navigation.navigate('Stack', {screen: 'Uploading'});
-      }}
+      onPress={onPress}
       style={{
         elevation: 8,
         shadowColor: Platform.OS === 'android' ? '#000000' : '#00000060',

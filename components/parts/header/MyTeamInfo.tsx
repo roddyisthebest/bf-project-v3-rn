@@ -59,17 +59,26 @@ function MyTeamInfo() {
           paddingBottom: 25,
         }}>
         <Item borerColor={colors.bottomSheetItemBorderColor}>
-          <ButtonText color={colors.positiveColor} fontSize={15}>
+          <ButtonText
+            color={colors.positiveColor}
+            fontSize={15}
+            fontWeight={500}>
             팀 정보
           </ButtonText>
         </Item>
         <Item borerColor={colors.bottomSheetItemBorderColor}>
-          <ButtonText color={colors.positiveColor} fontSize={15}>
+          <ButtonText
+            color={colors.positiveColor}
+            fontSize={15}
+            fontWeight={500}>
             팀원 초대
           </ButtonText>
         </Item>
         <Item borerColor={colors.bottomSheetItemBorderColor}>
-          <ButtonText color={colors.negativeColor} fontSize={15}>
+          <ButtonText
+            color={colors.negativeColor}
+            fontSize={15}
+            fontWeight={500}>
             팀 이동하기
           </ButtonText>
         </Item>

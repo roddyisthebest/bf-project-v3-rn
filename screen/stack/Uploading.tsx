@@ -1,12 +1,9 @@
 import {Text, View} from 'react-native';
 import React from 'react';
+import Layout from '../../components/layout';
 
 function Uploading() {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Uploading</Text>
-    </View>
-  );
+  return <Layout scrollable={false} isItWhite={true} />;
 }
 
 export default Uploading;
