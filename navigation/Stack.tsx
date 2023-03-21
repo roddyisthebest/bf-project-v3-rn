@@ -5,7 +5,10 @@ import Uploading from '../screen/stack/Uploading';
 const NativeStack = createNativeStackNavigator();
 
 const StackNav = () => (
-  <NativeStack.Navigator>
+  <NativeStack.Navigator
+    screenOptions={{
+      presentation: 'fullScreenModal',
+    }}>
     <NativeStack.Screen name="FirstSetting" component={Setting} />
     <NativeStack.Screen name="Uploading" component={Uploading} />
   </NativeStack.Navigator>
