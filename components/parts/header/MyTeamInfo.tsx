@@ -1,35 +1,37 @@
 import React, {useRef} from 'react';
-import styled from 'styled-components/native';
 import FastImage from 'react-native-fast-image';
-import {colors} from '../../../styles/color';
-import {useRecoilValue} from 'recoil';
-import {rstMyInfo} from '../../../recoil/user';
+import styled from 'styled-components/native';
 import {ActionSheetIOS, Platform} from 'react-native';
 import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import {Item} from '../../basic/List';
 import {ButtonText} from '../../basic/Button';
+import {colors} from '../../../styles/color';
+import {useRecoilValue} from 'recoil';
+import {rstMyInfo} from '../../../recoil/user';
+
 const Container = styled.Pressable<{borderColor: string}>`
   width: 25px;
   height: 25px;
-  border-radius: 25px;
+  border-radius: 5px;
   border-color: ${props => props.borderColor};
   border-width: 1px;
 `;
 const Image = styled(FastImage)`
   width: 100%;
   height: 100%;
-  border-radius: 30px;
+  border-radius: 5px;
 `;
 
-function MyInfo() {
+function MyTeamInfo() {
   const myInfo = useRecoilValue(rstMyInfo);
+
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const onPress = () => {
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          options: ['취소', '내 정보', '로그아웃'],
-          destructiveButtonIndex: 2,
+          options: ['취소', '팀 정보', '팀원 초대', '팀 이동하기'],
+          destructiveButtonIndex: 3,
           cancelButtonIndex: 0,
           userInterfaceStyle: 'light',
         },
@@ -46,7 +48,7 @@ function MyInfo() {
       <Container borderColor={colors.buttonBorderColor} onPress={onPress}>
         <Image
           source={{
-            uri: myInfo.user?.img,
+            uri: `http://192.168.123.105:3000/${myInfo.team?.img}`,
           }}
         />
       </Container>
@@ -58,12 +60,17 @@ function MyInfo() {
         }}>
         <Item borerColor={colors.bottomSheetItemBorderColor}>
           <ButtonText color={colors.positiveColor} fontSize={15}>
-            내 정보
+            팀 정보
+          </ButtonText>
+        </Item>
+        <Item borerColor={colors.bottomSheetItemBorderColor}>
+          <ButtonText color={colors.positiveColor} fontSize={15}>
+            팀원 초대
           </ButtonText>
         </Item>
         <Item borerColor={colors.bottomSheetItemBorderColor}>
           <ButtonText color={colors.negativeColor} fontSize={15}>
-            로그아웃
+            팀 이동하기
           </ButtonText>
         </Item>
       </ActionSheet>
@@ -71,4 +78,4 @@ function MyInfo() {
   );
 }
 
-export default MyInfo;
+export default MyTeamInfo;

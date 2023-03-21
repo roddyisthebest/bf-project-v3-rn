@@ -6,6 +6,7 @@ import Penalty from '../screen/tabs/Penalty';
 import {colors} from '../styles/color';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MyInfo from '../components/parts/header/MyInfo';
+import MyTeamInfo from '../components/parts/header/MyTeamInfo';
 const Tab = createBottomTabNavigator();
 
 const TabsNav = () => (
@@ -41,6 +42,7 @@ const TabsNav = () => (
         paddingRight: 30,
       },
       headerLeft: () => <MyInfo />,
+      headerRight: () => <MyTeamInfo />,
     }}>
     <Tab.Screen
       name="Home"

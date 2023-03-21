@@ -44,7 +44,7 @@ function TeamSet({data}: {data: TeamType}) {
     <Container buttonBorderColor={colors.buttonBorderColor} onPress={onPress}>
       <Image
         source={{
-          uri: `http://192.168.123.107:3000/${data.img}`,
+          uri: `http://192.168.123.105:3000/${data.img}`,
         }}
       />
     </Container>
