@@ -23,7 +23,7 @@ import {
 } from '@react-native-seoul/naver-login';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {setTokenToAxios} from '../../api';
-import {myInfo} from '../../recoil/user';
+import {rstMyInfo} from '../../recoil/user';
 import UserType from '../../types/UserType';
 
 const HeaderText = styled.Text`
@@ -34,7 +34,7 @@ const HeaderText = styled.Text`
 
 function Login() {
   const setLoggedIn = useSetRecoilState(isLoggedIn);
-  const setMyInfo = useSetRecoilState(myInfo);
+  const setMyInfo = useSetRecoilState(rstMyInfo);
 
   const [uid, setUid] = useState<string>('');
   const [password, setPassword] = useState<string>('');

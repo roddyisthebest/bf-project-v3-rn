@@ -10,7 +10,7 @@ import {
 } from '@react-navigation/native';
 import {LoggedInParamList} from '../../navigation/Root';
 import {useRecoilState} from 'recoil';
-import {myInfo} from '../../recoil/user';
+import {rstMyInfo} from '../../recoil/user';
 import EncryptedStorage from 'react-native-encrypted-storage/';
 const Container = styled.TouchableOpacity<{buttonBorderColor: string}>`
   border-radius: 10px;
@@ -25,7 +25,7 @@ const Image = styled(FastImage)`
 `;
 function TeamSet({data}: {data: TeamType}) {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
-  const [rstUserInfo, setRstUserInfo] = useRecoilState(myInfo);
+  const [rstUserInfo, setRstUserInfo] = useRecoilState(rstMyInfo);
 
   const onPress = useCallback(async () => {
     setRstUserInfo(userInfo => ({...userInfo, team: data}));

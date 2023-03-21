@@ -12,4 +12,7 @@ export const colors = {
   itemBorderBottomColor: '#CDCACA',
   buttonBorderColor: 'rgba(202, 209, 215, 0.8)',
   moreButtonColor: '#BBBBBB',
+  bottomSheetItemBorderColor: '#EAEAEA',
+  positiveColor: '#007AFF',
+  negativeColor: '#FF3B30',
 };

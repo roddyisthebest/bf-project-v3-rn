@@ -6,7 +6,7 @@ export interface myInfoType {
   team: TeamType | null;
 }
 
-export const myInfo = atom<myInfoType>({
+export const rstMyInfo = atom<myInfoType>({
   key: 'myInfo',
   default: {
     user: null,
