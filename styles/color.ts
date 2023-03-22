@@ -15,4 +15,6 @@ export const colors = {
   bottomSheetItemBorderColor: '#EAEAEA',
   positiveColor: '#007AFF',
   negativeColor: '#FF3B30',
+  cardBorderBottomColor: '#CDCACA',
+  subTitleColor: '#C2C2C2',
 };

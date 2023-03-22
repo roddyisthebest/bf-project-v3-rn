@@ -20,6 +20,6 @@ const TextArea = styled.TextInput<{borderColor: string}>`
   border-bottom-color: ${props => props.borderColor};
   height: 100px;
   color: black;
-  padding: 5px 0 10px 0;
+  padding: 0px 0 10px 0;
 `;
 export {Label, Input, TextArea};

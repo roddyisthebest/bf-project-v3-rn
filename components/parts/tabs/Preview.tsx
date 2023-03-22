@@ -33,16 +33,27 @@ const DeleteButton = styled.Pressable`
   align-items: center;
   justify-content: center;
 `;
-function Preview({uri, reset}: {uri: string; reset: () => void}) {
+function Preview({
+  uri,
+  reset,
+  editable,
+}: {
+  uri: string;
+  reset: () => void;
+  editable: boolean;
+}) {
   return (
     <Container
       borderColor={colors.bottomSheetItemBorderColor}
       height={
         Platform.OS === 'ios' ? dimension.height * 0.3 : dimension.height * 0.4
       }>
-      <DeleteButton onPress={reset}>
-        <Icon name="close-outline" color="black" size={18} />
-      </DeleteButton>
+      {editable && (
+        <DeleteButton onPress={reset}>
+          <Icon name="close-outline" color="black" size={18} />
+        </DeleteButton>
+      )}
+
       <Image source={{uri}} />
     </Container>
   );

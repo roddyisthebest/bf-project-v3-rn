@@ -10,7 +10,6 @@ import MyTeamInfo from '../components/parts/header/MyTeamInfo';
 import UploadButton from '../components/parts/tabs/UploadButton';
 import UploadModal from '../components/modal/UploadModal';
 import {ActionSheetRef} from 'react-native-actions-sheet';
-import {View} from 'react-native';
 const Tab = createBottomTabNavigator();
 
 const TabsNav = () => {

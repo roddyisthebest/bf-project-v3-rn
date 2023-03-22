@@ -162,6 +162,7 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
                 reset={() => {
                   setFile(null);
                 }}
+                editable={true}
                 uri={file.uri}
               />
             ) : null}

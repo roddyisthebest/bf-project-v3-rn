@@ -95,7 +95,7 @@ function TeamCreating() {
       headerRight: () =>
         disabled ? null : (
           <Pressable onPress={onUpload}>
-            <ButtonText color="#3478F6" fontSize={15}>
+            <ButtonText color="#3478F6" fontSize={15} fontWeight={500}>
               생성
             </ButtonText>
           </Pressable>

@@ -14,6 +14,7 @@ const Button = styled.TouchableOpacity<{bkg: string; radius: number}>`
 const SmButton = styled(Button)`
   /* height: 20px; */
   padding: 5px 12.5px;
+  column-gap: 5px;
 `;
 
 const ButtonText = styled.Text<{
