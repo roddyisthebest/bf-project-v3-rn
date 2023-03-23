@@ -17,6 +17,15 @@ const SmButton = styled(Button)`
   column-gap: 5px;
 `;
 
+const PrayButton = styled.TouchableOpacity<{bkg: string}>`
+  width: 20px;
+  height: 20px;
+  border-radius: 30px;
+  background-color: ${props => props.bkg};
+  align-items: center;
+  justify-content: center;
+`;
+
 const ButtonText = styled.Text<{
   color: string;
   fontSize: number;
@@ -31,4 +40,4 @@ ButtonText.defaultProps = {
   fontWeight: 500,
 };
 
-export {Button, SmButton, ButtonText};
+export {Button, SmButton, PrayButton, ButtonText};

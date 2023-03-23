@@ -13,7 +13,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const Container = styled(GapColumnView)<{borderColor: string}>`
   flex: 1;
-  /* padding: 40px 20px 0 20px; */
   border-bottom-color: ${props => props.borderColor};
   border-bottom-width: 1px;
   background-color: white;

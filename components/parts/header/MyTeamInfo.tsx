@@ -58,7 +58,7 @@ function MyTeamInfo() {
         containerStyle={{
           paddingBottom: 25,
         }}>
-        <Item borerColor={colors.bottomSheetItemBorderColor}>
+        <Item borderColor={colors.bottomSheetItemBorderColor}>
           <ButtonText
             color={colors.positiveColor}
             fontSize={15}
@@ -66,7 +66,7 @@ function MyTeamInfo() {
             팀 정보
           </ButtonText>
         </Item>
-        <Item borerColor={colors.bottomSheetItemBorderColor}>
+        <Item borderColor={colors.bottomSheetItemBorderColor}>
           <ButtonText
             color={colors.positiveColor}
             fontSize={15}
@@ -74,7 +74,7 @@ function MyTeamInfo() {
             팀원 초대
           </ButtonText>
         </Item>
-        <Item borerColor={colors.bottomSheetItemBorderColor}>
+        <Item borderColor={colors.bottomSheetItemBorderColor}>
           <ButtonText
             color={colors.negativeColor}
             fontSize={15}

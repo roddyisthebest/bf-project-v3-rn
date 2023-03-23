@@ -14,6 +14,7 @@ function Home() {
     password: null,
     phoneToken: 'bvbdfgsdfg',
     uid: '123123sdfsdffd',
+    Prays: null,
     updatedAt: date,
     createdAt: date,
     deletedAt: date,

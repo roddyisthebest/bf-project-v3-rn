@@ -19,6 +19,7 @@ const TabsNav = () => {
     <>
       <Tab.Navigator
         screenOptions={{
+          tabBarHideOnKeyboard: true,
           tabBarLabelStyle: {
             fontSize: 10,
             fontWeight: '600',

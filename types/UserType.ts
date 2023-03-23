@@ -1,3 +1,5 @@
+import PrayType from './PrayType';
+
 interface UserType {
   id: number;
   img: string;
@@ -6,6 +8,7 @@ interface UserType {
   password: null;
   phoneToken: string | null;
   uid: string;
+  Prays: PrayType[] | null;
   updatedAt: Date;
   createdAt: Date;
   deletedAt: Date | null;

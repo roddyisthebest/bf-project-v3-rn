@@ -56,7 +56,7 @@ function MyInfo() {
         containerStyle={{
           paddingBottom: 25,
         }}>
-        <Item borerColor={colors.bottomSheetItemBorderColor}>
+        <Item borderColor={colors.bottomSheetItemBorderColor}>
           <ButtonText
             color={colors.positiveColor}
             fontSize={15}
@@ -64,7 +64,7 @@ function MyInfo() {
             내 정보
           </ButtonText>
         </Item>
-        <Item borerColor={colors.bottomSheetItemBorderColor}>
+        <Item borderColor={colors.bottomSheetItemBorderColor}>
           <ButtonText
             color={colors.negativeColor}
             fontSize={15}
