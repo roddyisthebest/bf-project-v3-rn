@@ -57,11 +57,18 @@ function Login() {
       await EncryptedStorage.setItem('accessToken', accessToken);
       await EncryptedStorage.setItem('refreshToken', refreshToken);
 
-      await setTokenToAxios();
-      setMyInfo(info => ({
+      const obj = {
         user: userInfo,
+        team: null,
+      };
+      await EncryptedStorage.setItem('userInfo', JSON.stringify(obj));
+      await setTokenToAxios();
+
+      setMyInfo(info => ({
+        user: obj.user,
         team: info.team,
       }));
+
       setLoggedIn(true);
     },
     [setLoggedIn, setMyInfo],
@@ -198,7 +205,10 @@ function Login() {
                 source={require('../../assets/img/KakaoLogo512h.png')}
                 style={{width: 19, height: 17}}
               />
-              <ButtonText color={colors.snsButtonTextColor} fontSize={15}>
+              <ButtonText
+                color={colors.snsButtonTextColor}
+                fontSize={15}
+                fontWeight={500}>
                 Kakao 계정으로 로그인
               </ButtonText>
             </Button>
@@ -207,7 +217,10 @@ function Login() {
                 source={require('../../assets/img/NaverLogo512h.png')}
                 style={{width: 19, height: 17}}
               />
-              <ButtonText color={colors.snsButtonTextColor} fontSize={15}>
+              <ButtonText
+                color={colors.snsButtonTextColor}
+                fontSize={15}
+                fontWeight={500}>
                 Naver 계정으로 로그인
               </ButtonText>
             </Button>
@@ -217,7 +230,10 @@ function Login() {
                   source={require('../../assets/img/AppleLogo512h.png')}
                   style={{width: 16, height: 19}}
                 />
-                <ButtonText color={colors.snsButtonTextColor} fontSize={15}>
+                <ButtonText
+                  color={colors.snsButtonTextColor}
+                  fontSize={15}
+                  fontWeight={500}>
                   Apple 계정으로 로그인
                 </ButtonText>
               </Button>
@@ -266,7 +282,10 @@ function Login() {
               disabled={disabled}
               radius={10}
               onPress={localLogin}>
-              <ButtonText color={colors.snsButtonTextColor} fontSize={15}>
+              <ButtonText
+                color={colors.snsButtonTextColor}
+                fontSize={15}
+                fontWeight={500}>
                 로그인
               </ButtonText>
             </Button>

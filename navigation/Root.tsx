@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import TabsNav from './Tabs';
 import AuthNav from './Auth';
 import StackNav from './Stack';
 import TeamNav from './Team';
 import UserNav from './User';
-import {useRecoilValue} from 'recoil';
+import {useRecoilValue, useRecoilState, useSetRecoilState} from 'recoil';
 import {isLoggedIn} from '../recoil/auth';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {myInfoType, rstMyInfo} from '../recoil/user';
+import {
+  CommonActions,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
 
 export type LoggedInParamList = {
   Stack: {
@@ -33,7 +40,30 @@ export type LoggedInParamList = {
 const Nav = createNativeStackNavigator();
 
 const Root = () => {
-  const loggedIn = useRecoilValue(isLoggedIn);
+  const [loggedIn, setLoggedIn] = useRecoilState(isLoggedIn);
+  const setRstMyInfo = useSetRecoilState(rstMyInfo);
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+
+  const getUserInfo = useCallback(async () => {
+    const userInfoString = await EncryptedStorage.getItem('userInfo');
+    if (userInfoString) {
+      const userInfo: myInfoType = JSON.parse(userInfoString);
+      setRstMyInfo(userInfo);
+      setLoggedIn(true);
+      if (userInfo.team) {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Tabs'}],
+          }),
+        );
+      }
+    }
+  }, [setLoggedIn, setRstMyInfo, navigation]);
+
+  useEffect(() => {
+    getUserInfo();
+  }, [getUserInfo]);
 
   return (
     <Nav.Navigator

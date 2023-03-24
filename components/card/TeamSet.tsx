@@ -12,6 +12,7 @@ import {LoggedInParamList} from '../../navigation/Root';
 import {useRecoilState} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
 import EncryptedStorage from 'react-native-encrypted-storage/';
+import {myInfoType} from '../../recoil/user';
 const Container = styled.TouchableOpacity<{buttonBorderColor: string}>`
   border-radius: 10px;
   border-color: ${props => props.buttonBorderColor};
@@ -28,9 +29,13 @@ function TeamSet({data}: {data: TeamType}) {
   const [rstUserInfo, setRstUserInfo] = useRecoilState(rstMyInfo);
 
   const onPress = useCallback(async () => {
-    setRstUserInfo(userInfo => ({...userInfo, team: data}));
-    const val = JSON.stringify(rstUserInfo);
-    await EncryptedStorage.setItem('myInfo', val);
+    const obj = {
+      ...rstUserInfo,
+      team: data,
+    };
+    setRstUserInfo(obj);
+    const objToString = JSON.stringify(obj);
+    await EncryptedStorage.setItem('userInfo', objToString);
 
     navigation.dispatch(
       CommonActions.reset({

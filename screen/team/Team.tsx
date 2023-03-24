@@ -33,7 +33,7 @@ function Team() {
       headerRight: () => (
         <Pressable
           onPress={() => navigation.navigate('Team', {screen: 'Creating'})}>
-          <ButtonText color="#3478F6" fontSize={12.5}>
+          <ButtonText color="#3478F6" fontSize={12.5} fontWeight={500}>
             팀 만들기
           </ButtonText>
         </Pressable>
