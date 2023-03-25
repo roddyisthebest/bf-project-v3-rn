@@ -1,9 +1,9 @@
-import React, {forwardRef, useCallback, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import dimension from '../../styles/dimension';
 import {colors} from '../../styles/color';
-import {Platform, Pressable, TouchableOpacity} from 'react-native';
+import {Alert, Platform, Pressable, TouchableOpacity} from 'react-native';
 import {SmButton, ButtonText} from '../basic/Button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {GapColumnView, GapRowView} from '../basic/View';
@@ -15,6 +15,7 @@ import FileType from '../../types/FileType';
 import Preview from '../parts/tabs/Preview';
 
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import {addTweet} from '../../api/tweet';
 
 const Container = styled.View<{minHeight: number}>`
   min-height: ${props => `${props.minHeight}px`};
@@ -64,6 +65,12 @@ const BtnsWrapper = styled(ColumnSection)`
 const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
   const myInfo = useRecoilValue(rstMyInfo);
   const [file, setFile] = useState<FileType | null>(null);
+  const [content, setContent] = useState<string>('');
+  const [disabled, setDisabled] = useState<boolean>(true);
+
+  useEffect(() => {
+    setDisabled(file === null && content.length === 0);
+  }, [file, content]);
 
   const uploadUsingCamera = useCallback(async () => {
     try {
@@ -90,6 +97,33 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
       console.log(e);
     }
   }, []);
+
+  const onPress = useCallback(async () => {
+    try {
+      const res: any = await addTweet({
+        file: file ? file : null,
+        content: content.length === 0 ? null : content,
+      });
+
+      if ((res.status as number) === 500) {
+        Alert.alert('서버 오류 입니다.');
+        return;
+      } else if ((res.status as number) === 403) {
+        Alert.alert('게시글을 업로드하는 서비스를 이용하지 않으셨습니다.⚠️');
+        return;
+      } else if ((res.status as number) === 406) {
+        Alert.alert('오늘 업로드 된 게시물이 존재합니다. ⚠️');
+        return;
+      } else if ((res.status as number) === 401) {
+        //토큰 갱신
+      } else if ((res.status as number) === 200) {
+        //ok
+        console.log('ok');
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [content, file]);
   return (
     <ActionSheet ref={ref} gestureEnabled={true} keyboardHandlerEnabled={false}>
       <Container
@@ -130,6 +164,8 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
               multiline
               numberOfLines={10}
               style={{textAlignVertical: 'top'}}
+              value={content}
+              onChangeText={text => setContent(text)}
             />
             <ColumnSection
               gap={0}
@@ -150,7 +186,11 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
                   <Icon name="camera" size={33} color={colors.buttonColor} />
                 </TouchableOpacity>
               </BtnsWrapper>
-              <SmButton bkg={colors.buttonColor} radius={20}>
+              <SmButton
+                bkg={disabled ? colors.buttonDisabledColor : colors.buttonColor}
+                radius={20}
+                disabled={disabled}
+                onPress={onPress}>
                 <ButtonText color="white" fontSize={12} fontWeight={500}>
                   올리기
                 </ButtonText>

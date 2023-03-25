@@ -8,6 +8,7 @@ import {ActionSheetIOS, Platform} from 'react-native';
 import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import {Item} from '../../basic/List';
 import {ButtonText} from '../../basic/Button';
+import EncryptedStorage from 'react-native-encrypted-storage';
 const Container = styled.Pressable<{borderColor: string}>`
   width: 25px;
   height: 25px;
@@ -33,8 +34,10 @@ function MyInfo() {
           cancelButtonIndex: 0,
           userInterfaceStyle: 'light',
         },
-        buttonIndex => {
-          console.log(buttonIndex);
+        async buttonIndex => {
+          if (buttonIndex === 2) {
+            await EncryptedStorage.clear();
+          }
         },
       );
     } else {
@@ -64,7 +67,11 @@ function MyInfo() {
             내 정보
           </ButtonText>
         </Item>
-        <Item borderColor={colors.bottomSheetItemBorderColor}>
+        <Item
+          borderColor={colors.bottomSheetItemBorderColor}
+          onPress={async () => {
+            await EncryptedStorage.clear();
+          }}>
           <ButtonText
             color={colors.negativeColor}
             fontSize={15}
