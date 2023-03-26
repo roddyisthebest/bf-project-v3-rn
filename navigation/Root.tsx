@@ -5,7 +5,7 @@ import AuthNav from './Auth';
 import StackNav from './Stack';
 import TeamNav from './Team';
 import UserNav from './User';
-import {useRecoilValue, useRecoilState, useSetRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 import {isLoggedIn} from '../recoil/auth';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {myInfoType, rstMyInfo} from '../recoil/user';
@@ -14,6 +14,7 @@ import {
   NavigationProp,
   useNavigation,
 } from '@react-navigation/native';
+import {setTokenToAxios} from '../api';
 
 export type LoggedInParamList = {
   Stack: {
@@ -50,6 +51,8 @@ const Root = () => {
       const userInfo: myInfoType = JSON.parse(userInfoString);
       setRstMyInfo(userInfo);
       setLoggedIn(true);
+      await setTokenToAxios();
+
       if (userInfo.team) {
         navigation.dispatch(
           CommonActions.reset({

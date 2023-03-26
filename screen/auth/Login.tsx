@@ -212,6 +212,7 @@ function Login() {
                 Kakao 계정으로 로그인
               </ButtonText>
             </Button>
+
             <Button bkg={colors.buttonColor} radius={25} onPress={naverLogin}>
               <FastImage
                 source={require('../../assets/img/NaverLogo512h.png')}

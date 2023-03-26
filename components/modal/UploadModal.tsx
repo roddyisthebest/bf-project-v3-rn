@@ -13,9 +13,10 @@ import {rstMyInfo} from '../../recoil/user';
 import {TextArea} from '../basic/Input';
 import FileType from '../../types/FileType';
 import Preview from '../parts/tabs/Preview';
-
+import {useSetRecoilState} from 'recoil';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import {addTweet} from '../../api/tweet';
+import {addTweetFlag} from '../../recoil/flag';
 
 const Container = styled.View<{minHeight: number}>`
   min-height: ${props => `${props.minHeight}px`};
@@ -41,6 +42,9 @@ const HeaderTitleText = styled(ButtonText)``;
 const Contents = styled(GapColumnView)`
   flex: 1;
 `;
+const LeftSection = styled.View`
+  width: 50px;
+`;
 
 const UserImg = styled(FastImage)<{borderColor: string}>`
   width: 50px;
@@ -49,8 +53,8 @@ const UserImg = styled(FastImage)<{borderColor: string}>`
   border-color: ${props => props.borderColor};
   border-width: 1px;
 `;
-const RightSection = styled(GapRowView)`
-  flex: 1;
+const RightSection = styled(GapRowView)<{width: number}>`
+  width: ${props => props.width}px;
 `;
 
 const ColumnSection = styled(GapColumnView)`
@@ -64,6 +68,8 @@ const BtnsWrapper = styled(ColumnSection)`
 
 const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
   const myInfo = useRecoilValue(rstMyInfo);
+  const setFlag = useSetRecoilState(addTweetFlag);
+
   const [file, setFile] = useState<FileType | null>(null);
   const [content, setContent] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
@@ -119,11 +125,15 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
       } else if ((res.status as number) === 200) {
         //ok
         console.log('ok');
+        setFlag(true);
+
+        (ref as React.RefObject<ActionSheetRef>).current?.hide();
       }
     } catch (e) {
       console.log(e);
     }
-  }, [content, file]);
+  }, [content, file, ref, setFlag]);
+
   return (
     <ActionSheet ref={ref} gestureEnabled={true} keyboardHandlerEnabled={false}>
       <Container
@@ -143,16 +153,20 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
         </Header>
         <Split bkg={colors.bottomSheetItemBorderColor} />
         <Contents
-          gap={15}
+          gap={20}
           marginTop={0}
           marginBottom={0}
           paddingHorizontal={dimension.paddingHorizontal}
           paddingVertical={dimension.paddingVertical}>
-          <UserImg
-            source={{uri: myInfo?.user?.img}}
-            borderColor={colors.buttonBorderColor}
-          />
+          <LeftSection>
+            <UserImg
+              source={{uri: myInfo?.user?.img}}
+              borderColor={colors.buttonBorderColor}
+            />
+          </LeftSection>
+
           <RightSection
+            width={dimension.tweetRightSectionWidth}
             gap={10}
             marginTop={0}
             marginBottom={0}

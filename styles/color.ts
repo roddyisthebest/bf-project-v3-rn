@@ -25,4 +25,6 @@ export const colors = {
   prayButtonEditTextColor: '#198CED',
   prayButtonSaveTextColor: '#43A54D',
   prayButtonDeleteTextColor: 'red',
+
+  loadingIconColor: 'gray',
 };

@@ -34,20 +34,13 @@ const addTweet = async ({
   }
 };
 
-// const addTweet = async ({
-//   file,
-//   content,
-// }: {
-//   file: FileType | null;
-//   content: string | null;
-// }): Promise<AxiosResponse<response>> => {
-//   const formData = new FormData();
+const getTweets = (
+  lastId = -1,
+  teamId: number,
+): Promise<AxiosResponse<response>> =>
+  api.get(`/tweet/${lastId}/team/${teamId}`);
 
-//   const val = {name: file?.fileName, type: file?.type, uri: file?.uri};
+const deleteTweet = (id: number): Promise<AxiosResponse<response>> =>
+  api.delete(`/tweet/${id}`);
 
-//   file && formData.append('img', val);
-//   content && formData.append('content', content);
-//   return api.post('/tweet', formData);
-// };
-
-export {addTweet};
+export {addTweet, getTweets, deleteTweet};

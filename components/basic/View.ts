@@ -28,4 +28,11 @@ const GapColumnView = styled.View<{
     `${props.paddingVertical}px ${props.paddingHorizontal}px`};
   flex-direction: row;
 `;
-export {GapRowView, GapColumnView};
+
+const LoadingContainer = styled.View`
+  flex: 1;
+  background-color: white;
+  align-items: center;
+  justify-content: center;
+`;
+export {GapRowView, GapColumnView, LoadingContainer};

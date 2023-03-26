@@ -7,7 +7,6 @@ import {ButtonText} from '../../components/basic/Button';
 import {LoggedInParamList} from '../../navigation/Root';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {getMyTeams} from '../../api/user';
-import {setTokenToAxios} from '../../api';
 import TeamType from '../../types/TeamType';
 import {useRecoilState} from 'recoil';
 import {addTeamFlag} from '../../recoil/flag';
@@ -20,7 +19,6 @@ function Team() {
 
   const getData = useCallback(async () => {
     try {
-      await setTokenToAxios();
       const {data} = await getMyTeams();
       setmyTeams(data.payload.Teams as TeamType[]);
     } catch (e) {

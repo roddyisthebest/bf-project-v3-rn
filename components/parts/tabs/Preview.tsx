@@ -4,11 +4,9 @@ import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../../styles/color';
 import dimension from '../../../styles/dimension';
-import {Platform} from 'react-native';
 
 const Container = styled.View<{borderColor: string; height: number}>`
   width: 100%;
-  height: ${props => props.height}px;
   border-width: 1px;
   border-color: ${props => props.borderColor};
   border-radius: 30px;
@@ -45,16 +43,16 @@ function Preview({
   return (
     <Container
       borderColor={colors.bottomSheetItemBorderColor}
-      height={
-        Platform.OS === 'ios' ? dimension.height * 0.3 : dimension.height * 0.4
-      }>
+      height={dimension.tweetRightSectionWidth}>
       {editable && (
         <DeleteButton onPress={reset}>
           <Icon name="close-outline" color="black" size={18} />
         </DeleteButton>
       )}
 
-      <Image source={{uri}} />
+      <Image
+        source={{uri: editable ? uri : `http://192.168.123.105:3000/${uri}`}}
+      />
     </Container>
   );
 }

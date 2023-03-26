@@ -10,12 +10,18 @@ import {TextArea} from '../basic/Input';
 import {GapColumnView, GapRowView} from '../basic/View';
 import Preview from '../parts/tabs/Preview';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-const Container = styled(GapColumnView)<{borderColor: string}>`
-  flex: 1;
+import {useRecoilValue} from 'recoil';
+import {rstMyInfo} from '../../recoil/user';
+const Container = styled(GapColumnView)<{
+  borderColor: string;
+}>`
   border-bottom-color: ${props => props.borderColor};
   border-bottom-width: 1px;
   background-color: white;
+`;
+
+const LeftSection = styled.View`
+  width: 50px;
 `;
 
 const UserImg = styled(FastImage)<{borderColor: string}>`
@@ -26,8 +32,8 @@ const UserImg = styled(FastImage)<{borderColor: string}>`
   border-width: 1px;
 `;
 
-const RightSection = styled(GapRowView)`
-  flex: 1;
+const RightSection = styled(GapRowView)<{width: number}>`
+  width: ${props => props.width}px;
 `;
 
 const NameSection = styled(GapColumnView)`
@@ -43,7 +49,9 @@ const ButtonSection = styled(GapColumnView)`
   justify-content: flex-end;
 `;
 
-function Tweet({data}: {data: TweetType}) {
+function Tweet({data, deleteFuc}: {data: TweetType; deleteFuc: Function}) {
+  const rstUserInfo = useRecoilValue(rstMyInfo);
+
   return (
     <Container
       paddingHorizontal={dimension.paddingHorizontal}
@@ -51,12 +59,16 @@ function Tweet({data}: {data: TweetType}) {
       marginTop={0}
       marginBottom={0}
       borderColor={colors.cardBorderBottomColor}
-      gap={15}>
-      <UserImg
-        source={{uri: data.User.img}}
-        borderColor={colors.buttonBorderColor}
-      />
+      gap={20}>
+      <LeftSection>
+        <UserImg
+          source={{uri: data.User.img}}
+          borderColor={colors.buttonBorderColor}
+        />
+      </LeftSection>
+
       <RightSection
+        width={dimension.tweetRightSectionWidth}
         gap={15}
         marginTop={0}
         marginBottom={0}
@@ -89,21 +101,28 @@ function Tweet({data}: {data: TweetType}) {
             value={data.content}
           />
         )}
-        <Preview reset={() => {}} uri={data.img} editable={false} />
-        <ButtonSection
-          paddingHorizontal={0}
-          paddingVertical={Platform.OS === 'ios' ? 5 : 0}
-          marginTop={0}
-          marginBottom={0}
-          gap={5}>
-          <SmButton bkg={colors.negativeColor} radius={13}>
-            <Icon name="trash-outline" color="white" size={13} />
+        {data.img.length !== 0 && (
+          <Preview reset={() => {}} uri={data.img} editable={false} />
+        )}
+        {rstUserInfo?.user?.id === data.User.id && (
+          <ButtonSection
+            paddingHorizontal={0}
+            paddingVertical={Platform.OS === 'ios' ? 5 : 0}
+            marginTop={0}
+            marginBottom={0}
+            gap={5}>
+            <SmButton
+              bkg={colors.negativeColor}
+              radius={13}
+              onPress={() => deleteFuc(data.id)}>
+              <Icon name="trash-outline" color="white" size={13} />
 
-            <ButtonText color="white" fontSize={12} fontWeight={500}>
-              삭제하기
-            </ButtonText>
-          </SmButton>
-        </ButtonSection>
+              <ButtonText color="white" fontSize={12} fontWeight={500}>
+                삭제하기
+              </ButtonText>
+            </SmButton>
+          </ButtonSection>
+        )}
       </RightSection>
     </Container>
   );
