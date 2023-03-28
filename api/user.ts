@@ -26,4 +26,30 @@ const adminLogin = ({
 const getMyTeams = (): Promise<AxiosResponse<response>> =>
   api.get('/user/myTeams');
 
-export {snsLogin, adminLogin, getMyTeams};
+const addService = ({
+  tweet,
+  pray,
+  penalty,
+  teamId,
+}: {
+  tweet: boolean;
+  pray: boolean;
+  penalty: boolean;
+  teamId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.post('/user/service', {tweet, pray, penalty, teamId});
+
+const updateService = ({
+  tweet,
+  pray,
+  penalty,
+  teamId,
+}: {
+  tweet: boolean;
+  pray: boolean;
+  penalty: boolean;
+  teamId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.put('/user/service', {tweet, pray, penalty, teamId});
+
+export {snsLogin, adminLogin, getMyTeams, addService, updateService};

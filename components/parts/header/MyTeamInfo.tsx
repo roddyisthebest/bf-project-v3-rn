@@ -52,12 +52,7 @@ function MyTeamInfo() {
           }}
         />
       </Container>
-      <ActionSheet
-        ref={actionSheetRef}
-        gestureEnabled={true}
-        containerStyle={{
-          paddingBottom: 25,
-        }}>
+      <ActionSheet ref={actionSheetRef} gestureEnabled={true}>
         <Item borderColor={colors.bottomSheetItemBorderColor}>
           <ButtonText
             color={colors.positiveColor}

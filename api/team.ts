@@ -1,5 +1,6 @@
 import {AxiosResponse} from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {EncryptedStorageKeyList} from '../navigation/Root';
 import {api, response} from './index';
 
 const addTeam = async ({
@@ -12,7 +13,9 @@ const addTeam = async ({
   introducing: string;
 }) => {
   const formData = new FormData();
-  const accessToken = await EncryptedStorage.getItem('accessToken');
+  const accessToken = await EncryptedStorage.getItem(
+    EncryptedStorageKeyList.ACCESSTOKEN,
+  );
 
   formData.append('img', file);
   formData.append('name', name);

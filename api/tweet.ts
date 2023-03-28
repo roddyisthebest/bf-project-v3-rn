@@ -1,5 +1,6 @@
 import {AxiosResponse} from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {EncryptedStorageKeyList} from '../navigation/Root';
 import {myInfoType} from '../recoil/user';
 import FileType from '../types/FileType';
 import {api, response} from './index';
@@ -17,8 +18,12 @@ const addTweet = async ({
 
   file && formData.append('img', val);
   content && formData.append('content', content);
-  const accessToken = await EncryptedStorage.getItem('accessToken');
-  const userInfoString = await EncryptedStorage.getItem('userInfo');
+  const accessToken = await EncryptedStorage.getItem(
+    EncryptedStorageKeyList.ACCESSTOKEN,
+  );
+  const userInfoString = await EncryptedStorage.getItem(
+    EncryptedStorageKeyList.USERINFO,
+  );
   if (userInfoString) {
     const userInfo: myInfoType = JSON.parse(userInfoString);
     formData.append('teamId', userInfo?.team?.id);

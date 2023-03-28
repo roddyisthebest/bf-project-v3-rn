@@ -25,6 +25,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import {setTokenToAxios} from '../../api';
 import {rstMyInfo} from '../../recoil/user';
 import UserType from '../../types/UserType';
+import {EncryptedStorageKeyList} from '../../navigation/Root';
 
 const HeaderText = styled.Text`
   color: black;
@@ -54,14 +55,23 @@ function Login() {
       accessToken: string;
       userInfo: UserType;
     }) => {
-      await EncryptedStorage.setItem('accessToken', accessToken);
-      await EncryptedStorage.setItem('refreshToken', refreshToken);
+      await EncryptedStorage.setItem(
+        EncryptedStorageKeyList.ACCESSTOKEN,
+        accessToken,
+      );
+      await EncryptedStorage.setItem(
+        EncryptedStorageKeyList.REFRESHTOKEN,
+        refreshToken,
+      );
 
       const obj = {
         user: userInfo,
         team: null,
       };
-      await EncryptedStorage.setItem('userInfo', JSON.stringify(obj));
+      await EncryptedStorage.setItem(
+        EncryptedStorageKeyList.USERINFO,
+        JSON.stringify(obj),
+      );
       await setTokenToAxios();
 
       setMyInfo(info => ({

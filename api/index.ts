@@ -1,11 +1,14 @@
 import axios from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {EncryptedStorageKeyList} from '../navigation/Root';
 export const api = axios.create({
   baseURL: 'http://192.168.123.105:3000' as string,
 });
 
 export async function setTokenToAxios() {
-  const accessToken = await EncryptedStorage.getItem('accessToken');
+  const accessToken = await EncryptedStorage.getItem(
+    EncryptedStorageKeyList.ACCESSTOKEN,
+  );
   console.log(accessToken, 'axiosToken');
   api.defaults.headers.common.Authorization = accessToken;
 

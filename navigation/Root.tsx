@@ -38,6 +38,13 @@ export type LoggedInParamList = {
   };
 };
 
+export enum EncryptedStorageKeyList {
+  USERINFO = 'USERINFO',
+  TEAMSETTINGARR = 'TEAMSETTINGARR',
+  ACCESSTOKEN = 'ACCESSTOKEN',
+  REFRESHTOKEN = 'REFRESHTOKEN',
+}
+
 const Nav = createNativeStackNavigator();
 
 const Root = () => {
@@ -46,20 +53,50 @@ const Root = () => {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const getUserInfo = useCallback(async () => {
-    const userInfoString = await EncryptedStorage.getItem('userInfo');
+    const userInfoString = await EncryptedStorage.getItem(
+      EncryptedStorageKeyList.USERINFO,
+    );
     if (userInfoString) {
       const userInfo: myInfoType = JSON.parse(userInfoString);
       setRstMyInfo(userInfo);
-      setLoggedIn(true);
       await setTokenToAxios();
-
+      setLoggedIn(true);
       if (userInfo.team) {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Tabs'}],
-          }),
+        const teamSettingString = await EncryptedStorage.getItem(
+          EncryptedStorageKeyList.TEAMSETTINGARR,
         );
+
+        if (teamSettingString) {
+          const teamSettingArr = JSON.parse(teamSettingString);
+          const teamSetting: {id: number; setting: boolean} =
+            teamSettingArr.find(
+              (teamObj: {id: number; setting: boolean}) =>
+                teamObj.id === userInfo.team?.id,
+            );
+          console.log(teamSetting);
+          if (teamSetting.setting) {
+            return navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: 'Tabs'}],
+              }),
+            );
+          } else {
+            return navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: 'Stack'}],
+              }),
+            );
+          }
+        } else {
+          return navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Stack'}],
+            }),
+          );
+        }
       }
     }
   }, [setLoggedIn, setRstMyInfo, navigation]);

@@ -9,6 +9,7 @@ import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import {Item} from '../../basic/List';
 import {ButtonText} from '../../basic/Button';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {EncryptedStorageKeyList} from '../../../navigation/Root';
 const Container = styled.Pressable<{borderColor: string}>`
   width: 25px;
   height: 25px;
@@ -36,7 +37,13 @@ function MyInfo() {
         },
         async buttonIndex => {
           if (buttonIndex === 2) {
-            await EncryptedStorage.clear();
+            await EncryptedStorage.removeItem(
+              EncryptedStorageKeyList.ACCESSTOKEN,
+            );
+            await EncryptedStorage.removeItem(
+              EncryptedStorageKeyList.REFRESHTOKEN,
+            );
+            await EncryptedStorage.removeItem(EncryptedStorageKeyList.USERINFO);
           }
         },
       );
@@ -53,12 +60,7 @@ function MyInfo() {
           }}
         />
       </Container>
-      <ActionSheet
-        ref={actionSheetRef}
-        gestureEnabled={true}
-        containerStyle={{
-          paddingBottom: 25,
-        }}>
+      <ActionSheet ref={actionSheetRef} gestureEnabled={true}>
         <Item borderColor={colors.bottomSheetItemBorderColor}>
           <ButtonText
             color={colors.positiveColor}
@@ -70,7 +72,13 @@ function MyInfo() {
         <Item
           borderColor={colors.bottomSheetItemBorderColor}
           onPress={async () => {
-            await EncryptedStorage.clear();
+            await EncryptedStorage.removeItem(
+              EncryptedStorageKeyList.ACCESSTOKEN,
+            );
+            await EncryptedStorage.removeItem(
+              EncryptedStorageKeyList.REFRESHTOKEN,
+            );
+            await EncryptedStorage.removeItem(EncryptedStorageKeyList.USERINFO);
           }}>
           <ButtonText
             color={colors.negativeColor}

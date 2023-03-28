@@ -8,11 +8,13 @@ import {
   NavigationProp,
   useNavigation,
 } from '@react-navigation/native';
-import {LoggedInParamList} from '../../navigation/Root';
+import {
+  EncryptedStorageKeyList,
+  LoggedInParamList,
+} from '../../navigation/Root';
 import {useRecoilState} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
 import EncryptedStorage from 'react-native-encrypted-storage/';
-import {myInfoType} from '../../recoil/user';
 const Container = styled.TouchableOpacity<{buttonBorderColor: string}>`
   border-radius: 10px;
   border-color: ${props => props.buttonBorderColor};
@@ -35,14 +37,61 @@ function TeamSet({data}: {data: TeamType}) {
     };
     setRstUserInfo(obj);
     const objToString = JSON.stringify(obj);
-    await EncryptedStorage.setItem('userInfo', objToString);
-
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: 'Tabs'}],
-      }),
+    await EncryptedStorage.setItem(
+      EncryptedStorageKeyList.USERINFO,
+      objToString,
     );
+
+    const teamSettingArrString = await EncryptedStorage.getItem(
+      EncryptedStorageKeyList.TEAMSETTINGARR,
+    );
+
+    if (teamSettingArrString) {
+      const teamSettingArr: {id: number; setting: boolean}[] =
+        JSON.parse(teamSettingArrString);
+
+      const teamSetting = teamSettingArr.find(
+        teamObj => teamObj.id === data.id,
+      );
+      if (teamSetting) {
+        if (teamSetting.setting) {
+          return navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Tabs'}],
+            }),
+          );
+        }
+        return navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Stack'}],
+          }),
+        );
+      } else {
+        return navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Stack'}],
+          }),
+        );
+      }
+    } else {
+      const arr = [{setting: false, id: data.id}];
+      const val = JSON.stringify(arr);
+
+      await EncryptedStorage.setItem(
+        EncryptedStorageKeyList.TEAMSETTINGARR,
+        val,
+      );
+
+      return navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Stack'}],
+        }),
+      );
+    }
   }, [data, navigation, rstUserInfo, setRstUserInfo]);
 
   return (

@@ -1,26 +1,108 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Layout from '../../components/layout';
 import Setting from '../../components/container/Setting';
-import {GapRowView} from '../../components/basic/View';
-import {Switch} from 'react-native';
+import {GapColumnView, GapRowView} from '../../components/basic/View';
+import {Pressable, Switch} from 'react-native';
 import Header from '../../components/container/Header';
-import FastImage from 'react-native-fast-image';
-function SettingView({
-  navigation: {setOptions},
-}: {
-  navigation: {setOptions: Function};
-}) {
+import {Image} from '../../components/basic/Image';
+import {colors} from '../../styles/color';
+import {useRecoilValue} from 'recoil';
+import {rstMyInfo} from '../../recoil/user';
+import {ButtonText} from '../../components/basic/Button';
+import styled from 'styled-components/native';
+import {addService} from '../../api/user';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {
+  CommonActions,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
+import {
+  EncryptedStorageKeyList,
+  LoggedInParamList,
+} from '../../navigation/Root';
+
+const ModifiedView = styled(GapColumnView)`
+  align-items: center;
+`;
+function SettingView() {
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+
+  const {team} = useRecoilValue(rstMyInfo);
+  const [pray, setPray] = useState<boolean>(false);
+  const [penalty, setPenalty] = useState<boolean>(false);
+  const [tweet, setTweet] = useState<boolean>(false);
+
+  const onPress = useCallback(async () => {
+    try {
+      console.log('집중할때야.');
+      await addService({tweet, penalty, pray, teamId: team?.id as number});
+      const teamSettingArrString = await EncryptedStorage.getItem(
+        EncryptedStorageKeyList.TEAMSETTINGARR,
+      );
+      console.log(teamSettingArrString);
+      if (teamSettingArrString) {
+        const teamSettingArr: {id: number; setting: boolean}[] =
+          JSON.parse(teamSettingArrString);
+
+        const index = teamSettingArr.findIndex(
+          teamSetting => teamSetting.id === (team?.id as number),
+        );
+        console.log(index);
+        teamSettingArr[index] = {
+          ...teamSettingArr[index],
+          setting: true,
+        };
+        console.log(teamSettingArr);
+
+        const val = JSON.stringify(teamSettingArr);
+
+        await EncryptedStorage.setItem(
+          EncryptedStorageKeyList.TEAMSETTINGARR,
+          val,
+        );
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Tabs'}],
+          }),
+        );
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [team, navigation]);
+
   useEffect(() => {
-    setOptions({
+    navigation.setOptions({
       headerTitle: () => (
-        <FastImage
-          source={require('../../assets/img/AppLogo512h.png')}
-          style={{width: 30, height: 30}}
-        />
+        <ModifiedView
+          gap={10}
+          marginBottom={0}
+          marginTop={0}
+          paddingHorizontal={0}
+          paddingVertical={0}>
+          <Image
+            width={25}
+            height={25}
+            borderColor={colors.buttonBorderColor}
+            borderRad={25}
+            source={{uri: `http://192.168.123.105:3000/${team?.img}`}}
+          />
+          <ButtonText color="black" fontWeight={500} fontSize={20}>
+            {team?.name}
+          </ButtonText>
+        </ModifiedView>
       ),
-      // headerTitleAlign: 'center',
+      headerRight: () => (
+        <Pressable onPress={onPress}>
+          <ButtonText color="#3478F6" fontSize={15} fontWeight={500}>
+            확인
+          </ButtonText>
+        </Pressable>
+      ),
     });
-  }, [setOptions]);
+  }, [navigation, team, onPress]);
 
   return (
     <Layout scrollable={false} isItWhite={false}>
@@ -38,17 +120,17 @@ Please enter a 6-digit code to prove yourself."
         <Setting
           title="매일성경"
           contents="매일성경(큐티) 업로드를 사용할 수 있습니다. ">
-          <Switch />
+          <Switch value={tweet} onValueChange={value => setTweet(value)} />
         </Setting>
         <Setting
           title="기도제목"
           contents="기도제목을 업로드하고 수정 및 삭제 할 수 있습니다.">
-          <Switch />
+          <Switch value={pray} onValueChange={value => setPray(value)} />
         </Setting>
         <Setting
           title="벌금"
           contents="매일 성경(큐티) 벌금 로직에 참여할 수 있습니다.">
-          <Switch />
+          <Switch value={penalty} onValueChange={value => setPenalty(value)} />
         </Setting>
       </GapRowView>
     </Layout>
