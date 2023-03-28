@@ -1,4 +1,4 @@
-import {View, FlatList, Text, ActivityIndicator, Alert} from 'react-native';
+import {View, FlatList, ActivityIndicator, Alert} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {TweetType} from '../../types/TweetType';
 import Tweet from '../../components/card/Tweet';
@@ -112,9 +112,9 @@ function Home() {
   );
 
   useEffect(() => {
-    // if (!disabled) {
-    //   getData(lastId);
-    // }
+    if (!disabled) {
+      getData(lastId);
+    }
   }, [getData, lastId, disabled]);
 
   useEffect(() => {

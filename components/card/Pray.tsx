@@ -1,9 +1,9 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ActivityIndicator, Keyboard, Platform, TextInput} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import styled from 'styled-components/native';
 import {colors} from '../../styles/color';
 import dimension from '../../styles/dimension';
-import {ButtonText, PrayButton, Button} from '../basic/Button';
+import {ButtonText, PrayButton} from '../basic/Button';
 import {TextArea} from '../basic/Input';
 import {GapRowView} from '../basic/View';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
@@ -282,20 +282,22 @@ function Pray({data}: {data: UserType}) {
             )}
           </TextAreaWrapper>
         ))}
-        <AddButtonColumn>
-          <SmButton bkg="black" radius={15} onPress={addPrayToState}>
-            {loading ? (
-              <ActivityIndicator color="white" size={12} />
-            ) : (
-              <>
-                <Icon name="add-circle-outline" color="white" size={17} />
-                <ButtonText color="white" fontSize={15} fontWeight={500}>
-                  추가하기
-                </ButtonText>
-              </>
-            )}
-          </SmButton>
-        </AddButtonColumn>
+        {editable && (
+          <AddButtonColumn>
+            <SmButton bkg="black" radius={15} onPress={addPrayToState}>
+              {loading ? (
+                <ActivityIndicator color="white" size={12} />
+              ) : (
+                <>
+                  <Icon name="add-circle-outline" color="white" size={17} />
+                  <ButtonText color="white" fontSize={15} fontWeight={500}>
+                    추가하기
+                  </ButtonText>
+                </>
+              )}
+            </SmButton>
+          </AddButtonColumn>
+        )}
       </Contents>
     </Container>
   );
