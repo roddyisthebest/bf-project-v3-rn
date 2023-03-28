@@ -16,7 +16,7 @@ function Home() {
   const [flag, setFlag] = useRecoilState(addTweetFlag);
 
   const [data, setData] = useState<TweetType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [lastId, setLastId] = useState<number>(-1);
   const [disabled, setDisabled] = useState<boolean>(false);
@@ -112,9 +112,9 @@ function Home() {
   );
 
   useEffect(() => {
-    if (!disabled) {
-      getData(lastId);
-    }
+    // if (!disabled) {
+    //   getData(lastId);
+    // }
   }, [getData, lastId, disabled]);
 
   useEffect(() => {
@@ -145,7 +145,9 @@ function Home() {
       initialNumToRender={5}
       maxToRenderPerBatch={5}
       removeClippedSubviews={true}
-      ListEmptyComponent={<ListEmptyComponent text="게시글이 없습니다." />}
+      ListEmptyComponent={
+        <ListEmptyComponent text="게시글이 없습니다." paddingTop={15} />
+      }
     />
   );
 }

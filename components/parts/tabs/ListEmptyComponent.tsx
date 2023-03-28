@@ -2,24 +2,37 @@ import React from 'react';
 import styled from 'styled-components/native';
 import {ButtonText} from '../../basic/Button';
 
+const Wrapper = styled.View<{paddingTop: number}>`
+  flex: 1;
+  align-items: center;
+  padding-top: ${props => props.paddingTop}px;
+`;
+
 const Container = styled.View`
-  margin: 25px 100px;
   background-color: black;
-  height: 40px;
   border-radius: 15px;
   align-items: center;
   justify-content: center;
+  padding: 10px 15px;
 `;
 
 const Text = styled(ButtonText)``;
 
-function ListEmptyComponent({text}: {text: string}) {
+function ListEmptyComponent({
+  text,
+  paddingTop,
+}: {
+  text: string;
+  paddingTop: number;
+}) {
   return (
-    <Container>
-      <Text color="white" fontWeight={700} fontSize={15}>
-        {text}
-      </Text>
-    </Container>
+    <Wrapper paddingTop={paddingTop}>
+      <Container>
+        <Text color="white" fontWeight={700} fontSize={15}>
+          {text}
+        </Text>
+      </Container>
+    </Wrapper>
   );
 }
 
