@@ -40,9 +40,14 @@ export type LoggedInParamList = {
   };
 };
 
+export type UnLoggedInParamList = {
+  Auth: {
+    screen: 'Login';
+  };
+};
+
 export enum EncryptedStorageKeyList {
   USERINFO = 'USERINFO',
-  TEAMSETTINGARR = 'TEAMSETTINGARR',
   ACCESSTOKEN = 'ACCESSTOKEN',
   REFRESHTOKEN = 'REFRESHTOKEN',
 }
