@@ -15,6 +15,8 @@ import {
 import {useRecoilState} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
 import EncryptedStorage from 'react-native-encrypted-storage/';
+import {getService} from '../../api/user';
+import {AxiosError} from 'axios';
 const Container = styled.TouchableOpacity<{buttonBorderColor: string}>`
   border-radius: 10px;
   border-color: ${props => props.buttonBorderColor};
@@ -42,12 +44,25 @@ function TeamSet({data}: {data: TeamType}) {
       objToString,
     );
 
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: 'Tabs'}],
-      }),
-    );
+    try {
+      await getService({teamId: data.id});
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Tabs'}],
+        }),
+      );
+    } catch (error) {
+      const {response} = error as unknown as AxiosError;
+      if (response?.status === 404) {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Stack'}],
+          }),
+        );
+      }
+    }
   }, [data, navigation, rstUserInfo, setRstUserInfo]);
 
   return (
