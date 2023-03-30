@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {colors} from '../../styles/color';
 import dimension from '../../styles/dimension';
@@ -6,7 +6,9 @@ import {ButtonText} from '../basic/Button';
 import {Image} from '../basic/Image';
 import {GapRowView} from '../basic/View';
 import Icon from 'react-native-vector-icons/Ionicons';
-import PenaltyType from '../../types/PenaltyType';
+import UserType from '../../types/UserType';
+import {updatePayed} from '../../api/user';
+import {ActivityIndicator} from 'react-native';
 
 const Container = styled(GapRowView)<{borderColor: string}>`
   border-bottom-color: ${props => props.borderColor};
@@ -45,11 +47,24 @@ const Button = styled.TouchableOpacity<{bkg: string}>`
   justify-content: center;
 `;
 
-function Penalty({data}: {data: PenaltyType}) {
-  const [check, setCheck] = useState<boolean>(false);
+function Penalty({data}: {data: UserType}) {
+  const [payed, setpayed] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const onPress = useCallback(async (id: number, stPayed: boolean) => {
+    try {
+      setLoading(true);
+      await updatePayed(id, !stPayed);
+      setpayed(prev => !prev);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    setCheck(data.payed);
+    setpayed(data.Penalties[0].payed);
   }, [data]);
   return (
     <Container
@@ -66,11 +81,11 @@ function Penalty({data}: {data: PenaltyType}) {
           borderColor={colors.buttonBorderColor}
           borderRad={40}
           source={{
-            uri: 'https://cdn.mhns.co.kr/news/photo/202208/532975_645654_1918.jpg',
+            uri: data.img,
           }}
         />
         <UserNameText color="black" fontSize={25} fontWeight={600}>
-          카리나
+          {data.name}
         </UserNameText>
       </TitleSection>
       <ContentSection
@@ -87,7 +102,7 @@ function Penalty({data}: {data: PenaltyType}) {
             color={colors.subTitleColor}
             fontWeight={600}
             fontSize={20}>
-            0
+            {data.Penalties[0].paper}
           </ContentSubTitleText>
         </ContentColumn>
         <ContentColumn>
@@ -95,23 +110,33 @@ function Penalty({data}: {data: PenaltyType}) {
             payed
           </ContentTitleText>
           <Button
-            onPress={() => {
-              setCheck(prev => !prev);
-            }}
+            onPress={() => onPress(data.Penalties[0].id, payed)}
+            disabled={loading}
             bkg={
-              check
-                ? colors.prayButtonEditBkgColor
+              payed
+                ? colors.prayButtonSaveBkgColor
                 : colors.prayButtonDeleteBkgColor
             }>
-            <Icon
-              name={check ? 'checkmark-outline' : 'close-outline'}
-              color={
-                check
-                  ? colors.prayButtonEditTextColor
-                  : colors.prayButtonDeleteTextColor
-              }
-              size={18}
-            />
+            {loading ? (
+              <ActivityIndicator
+                color={
+                  payed
+                    ? colors.prayButtonSaveBkgColor
+                    : colors.prayButtonDeleteBkgColor
+                }
+                size={15}
+              />
+            ) : (
+              <Icon
+                name={payed ? 'checkmark-outline' : 'close-outline'}
+                color={
+                  payed
+                    ? colors.prayButtonSaveTextColor
+                    : colors.prayButtonDeleteTextColor
+                }
+                size={18}
+              />
+            )}
           </Button>
         </ContentColumn>
       </ContentSection>

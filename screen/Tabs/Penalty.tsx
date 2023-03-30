@@ -1,42 +1,101 @@
-import {FlatList, Text, View} from 'react-native';
-import React, {useCallback, useState} from 'react';
-import PenaltyType from '../../types/PenaltyType';
+import {FlatList, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import Penalty from '../../components/card/Penalty';
 import UserType from '../../types/UserType';
+import ListEmptyComponent from '../../components/parts/tabs/ListEmptyComponent';
+import {getPenaltys} from '../../api/penalty';
+import {useRecoilValue} from 'recoil';
+import {rstMyInfo} from '../../recoil/user';
 
 function PenaltyView() {
-  const date = new Date();
-  const user: UserType = {
-    id: 1,
-    img: 'https://cdn.mhns.co.kr/news/photo/202208/532975_645654_1918.jpg',
-    name: '안농',
-    oauth: 'apple',
-    password: null,
-    phoneToken: 'bvbdfgsdfg',
-    uid: '123123sdfsdffd',
-    Prays: null,
-    updatedAt: date,
-    createdAt: date,
-    deletedAt: date,
-  };
-  const [data, setData] = useState<PenaltyType[]>([
-    {id: 0, weekend: '2022-02-02', paper: 5000, payed: false, User: user},
-    {id: 1, weekend: '2022-02-02', paper: 5000, payed: false, User: user},
-    {id: 2, weekend: '2022-02-02', paper: 5000, payed: false, User: user},
-  ]);
+  const {team} = useRecoilValue(rstMyInfo);
 
+  const [data, setData] = useState<UserType[]>([]);
+  const [lastId, setLastId] = useState<number>(-1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [disabled, setDisabled] = useState<boolean>(false);
 
-  const handleRefresh = useCallback(async () => {}, []);
-  const renderItem = ({item}: {item: PenaltyType}) => <Penalty data={item} />;
+  const handleRefresh = useCallback(
+    async (id: number) => {
+      try {
+        setDisabled(false);
+        setRefreshing(true);
+        if (id === -1) {
+          const {
+            data: {payload, code},
+          }: {data: {payload: UserType[]; code: string}} = await getPenaltys(
+            id,
+            team?.id as number,
+          );
+          setData(payload);
+          if (code === 'last data') {
+            setDisabled(true);
+          }
+        } else {
+          setLastId(-1);
+        }
+      } catch (e) {
+      } finally {
+        setRefreshing(false);
+      }
+    },
+    [team],
+  );
+  const renderItem = ({item}: {item: UserType}) => <Penalty data={item} />;
 
+  const getData = useCallback(
+    async (id: number) => {
+      try {
+        const {
+          data: {payload, code},
+        }: {data: {payload: UserType[]; code: string}} = await getPenaltys(
+          id,
+          team?.id as number,
+        );
+
+        if (code === 'last data') {
+          setDisabled(true);
+        }
+
+        if (id === -1) {
+          setData(payload);
+        } else {
+          setData(prev => [...prev, ...payload]);
+        }
+      } catch (e) {
+      } finally {
+        if (loading) {
+          setLoading(false);
+        }
+      }
+    },
+    [team],
+  );
+
+  useEffect(() => {
+    if (!disabled) {
+      getData(lastId);
+    }
+  }, [disabled, getData, lastId]);
   return (
     <FlatList
       data={data}
       renderItem={renderItem}
       refreshing={refreshing}
       keyExtractor={(item, _) => item.id.toString()}
+      onRefresh={() => {
+        handleRefresh(lastId);
+      }}
+      onEndReached={() => {
+        if (data.length !== 0) {
+          setLastId(data[data.length - 1].id);
+        }
+      }}
       ItemSeparatorComponent={() => <View style={{height: 15}} />}
+      ListEmptyComponent={
+        <ListEmptyComponent text="기도제목이 없습니다." paddingTop={15} />
+      }
       ListFooterComponent={() => <View style={{height: 160}} />}
     />
   );

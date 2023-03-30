@@ -58,6 +58,11 @@ const updateService = ({
 }): Promise<AxiosResponse<response>> =>
   api.put('/user/service', {tweet, pray, penalty, teamId});
 
+const updatePayed = (
+  id: number,
+  payed: boolean,
+): Promise<AxiosResponse<response>> => api.patch('/user/paycheck', {id, payed});
+
 export {
   snsLogin,
   adminLogin,
@@ -65,4 +70,5 @@ export {
   getService,
   addService,
   updateService,
+  updatePayed,
 };

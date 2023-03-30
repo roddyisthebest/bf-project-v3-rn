@@ -1,3 +1,4 @@
+import PenaltyType from './PenaltyType';
 import PrayType from './PrayType';
 
 interface UserType {
@@ -12,6 +13,7 @@ interface UserType {
   updatedAt: Date;
   createdAt: Date;
   deletedAt: Date | null;
+  Penalties: PenaltyType[];
 }
 
 export default UserType;
