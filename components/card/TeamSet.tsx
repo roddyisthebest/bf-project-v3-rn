@@ -42,63 +42,19 @@ function TeamSet({data}: {data: TeamType}) {
       objToString,
     );
 
-    const teamSettingArrString = await EncryptedStorage.getItem(
-      EncryptedStorageKeyList.TEAMSETTINGARR,
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Tabs'}],
+      }),
     );
-
-    if (teamSettingArrString) {
-      const teamSettingArr: {id: number; setting: boolean}[] =
-        JSON.parse(teamSettingArrString);
-
-      const teamSetting = teamSettingArr.find(
-        teamObj => teamObj.id === data.id,
-      );
-      if (teamSetting) {
-        if (teamSetting.setting) {
-          return navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{name: 'Tabs'}],
-            }),
-          );
-        }
-        return navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Stack'}],
-          }),
-        );
-      } else {
-        return navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Stack'}],
-          }),
-        );
-      }
-    } else {
-      const arr = [{setting: false, id: data.id}];
-      const val = JSON.stringify(arr);
-
-      await EncryptedStorage.setItem(
-        EncryptedStorageKeyList.TEAMSETTINGARR,
-        val,
-      );
-
-      return navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{name: 'Stack'}],
-        }),
-      );
-    }
   }, [data, navigation, rstUserInfo, setRstUserInfo]);
 
   return (
     <Container buttonBorderColor={colors.buttonBorderColor} onPress={onPress}>
       <Image
         source={{
-          uri: `http://192.168.123.105:3000/${data.img}`,
+          uri: `http://192.168.123.104:3000/${data.img}`,
         }}
       />
     </Container>

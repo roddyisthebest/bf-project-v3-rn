@@ -51,7 +51,7 @@ function Preview({
       )}
 
       <Image
-        source={{uri: editable ? uri : `http://192.168.123.105:3000/${uri}`}}
+        source={{uri: editable ? uri : `http://192.168.123.104:3000/${uri}`}}
       />
     </Container>
   );

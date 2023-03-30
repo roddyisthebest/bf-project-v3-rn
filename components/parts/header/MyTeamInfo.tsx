@@ -48,7 +48,7 @@ function MyTeamInfo() {
       <Container borderColor={colors.buttonBorderColor} onPress={onPress}>
         <Image
           source={{
-            uri: `http://192.168.123.105:3000/${myInfo.team?.img}`,
+            uri: `http://192.168.123.104:3000/${myInfo.team?.img}`,
           }}
         />
       </Container>

@@ -11,16 +11,12 @@ import {rstMyInfo} from '../../recoil/user';
 import {ButtonText} from '../../components/basic/Button';
 import styled from 'styled-components/native';
 import {addService} from '../../api/user';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {
   CommonActions,
   NavigationProp,
   useNavigation,
 } from '@react-navigation/native';
-import {
-  EncryptedStorageKeyList,
-  LoggedInParamList,
-} from '../../navigation/Root';
+import {LoggedInParamList} from '../../navigation/Root';
 
 const ModifiedView = styled(GapColumnView)`
   align-items: center;
@@ -35,41 +31,20 @@ function SettingView() {
 
   const onPress = useCallback(async () => {
     try {
-      console.log('집중할때야.');
-      await addService({tweet, penalty, pray, teamId: team?.id as number});
-      const teamSettingArrString = await EncryptedStorage.getItem(
-        EncryptedStorageKeyList.TEAMSETTINGARR,
+      await addService({
+        tweet,
+        penalty,
+        pray,
+        teamId: team?.id as number,
+      });
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Tabs'}],
+        }),
       );
-      console.log(teamSettingArrString);
-      if (teamSettingArrString) {
-        const teamSettingArr: {id: number; setting: boolean}[] =
-          JSON.parse(teamSettingArrString);
-
-        const index = teamSettingArr.findIndex(
-          teamSetting => teamSetting.id === (team?.id as number),
-        );
-        console.log(index);
-        teamSettingArr[index] = {
-          ...teamSettingArr[index],
-          setting: true,
-        };
-        console.log(teamSettingArr);
-
-        const val = JSON.stringify(teamSettingArr);
-
-        await EncryptedStorage.setItem(
-          EncryptedStorageKeyList.TEAMSETTINGARR,
-          val,
-        );
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Tabs'}],
-          }),
-        );
-      }
     } catch (e) {
-      console.log(e);
+      // const {response} = e as unknown as AxiosError;
     }
   }, [team, navigation]);
 
@@ -87,7 +62,7 @@ function SettingView() {
             height={25}
             borderColor={colors.buttonBorderColor}
             borderRad={25}
-            source={{uri: `http://192.168.123.105:3000/${team?.img}`}}
+            source={{uri: `http://192.168.123.104:3000/${team?.img}`}}
           />
           <ButtonText color="black" fontWeight={500} fontSize={20}>
             {team?.name}

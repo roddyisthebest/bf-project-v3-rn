@@ -27,7 +27,7 @@ const addTweet = async ({
   if (userInfoString) {
     const userInfo: myInfoType = JSON.parse(userInfoString);
     formData.append('teamId', userInfo?.team?.id);
-    return fetch('http://192.168.123.105:3000/tweet', {
+    return fetch('http://192.168.123.104:3000/tweet', {
       method: 'POST',
       headers: {
         Authorization: accessToken as string,

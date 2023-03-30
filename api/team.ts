@@ -21,7 +21,7 @@ const addTeam = async ({
   formData.append('name', name);
   formData.append('introducing', introducing);
 
-  return await fetch('http://192.168.123.105:3000/team', {
+  return await fetch('http://192.168.123.104:3000/team', {
     method: 'POST',
     headers: {
       Authorization: accessToken as string,

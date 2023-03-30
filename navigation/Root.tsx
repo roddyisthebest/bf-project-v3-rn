@@ -15,6 +15,8 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {setTokenToAxios} from '../api';
+import {getService} from '../api/user';
+import {AxiosError} from 'axios';
 
 export type LoggedInParamList = {
   Stack: {
@@ -62,40 +64,24 @@ const Root = () => {
       await setTokenToAxios();
       setLoggedIn(true);
       if (userInfo.team) {
-        const teamSettingString = await EncryptedStorage.getItem(
-          EncryptedStorageKeyList.TEAMSETTINGARR,
-        );
-
-        if (teamSettingString) {
-          const teamSettingArr = JSON.parse(teamSettingString);
-          const teamSetting: {id: number; setting: boolean} =
-            teamSettingArr.find(
-              (teamObj: {id: number; setting: boolean}) =>
-                teamObj.id === userInfo.team?.id,
-            );
-          console.log(teamSetting);
-          if (teamSetting.setting) {
-            return navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{name: 'Tabs'}],
-              }),
-            );
-          } else {
-            return navigation.dispatch(
+        try {
+          await getService({teamId: userInfo.team.id});
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Tabs'}],
+            }),
+          );
+        } catch (error) {
+          const {response} = error as unknown as AxiosError;
+          if (response?.status === 404) {
+            navigation.dispatch(
               CommonActions.reset({
                 index: 0,
                 routes: [{name: 'Stack'}],
               }),
             );
           }
-        } else {
-          return navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{name: 'Stack'}],
-            }),
-          );
         }
       }
     }
