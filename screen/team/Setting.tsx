@@ -46,7 +46,7 @@ function SettingView() {
     } catch (e) {
       // const {response} = e as unknown as AxiosError;
     }
-  }, [team, navigation]);
+  }, [team, navigation, tweet, penalty, pray]);
 
   useEffect(() => {
     navigation.setOptions({
