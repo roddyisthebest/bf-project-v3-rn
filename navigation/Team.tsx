@@ -1,6 +1,8 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import Detail from '../screen/team/Detail';
+import Detail from '../screen/team/Detail/index';
+import InvitationUser from '../screen/team/Detail/InvitationUser';
+import TeamUser from '../screen/team/Detail/TeamUser';
 import Service from '../screen/team/setting/Service';
 import User from '../screen/team/setting/User';
 import Team from '../screen/team/Team';
@@ -28,6 +30,8 @@ const TeamNav = () => (
         presentation: 'card',
       }}
     />
+    <NativeStack.Screen name="InvitationUser" component={InvitationUser} />
+    <NativeStack.Screen name="TeamUser" component={TeamUser} />
     <NativeStack.Screen name="Detail" component={Detail} />
   </NativeStack.Navigator>
 );

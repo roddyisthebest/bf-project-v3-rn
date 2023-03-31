@@ -1,16 +1,16 @@
 import {FlatList, View} from 'react-native';
 import React from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from '../../navigation/Root';
-import Layout from '../../components/layout';
-import {GapRowView} from '../../components/basic/View';
-import DetailHeader from '../../components/container/DetailHeader';
+import {LoggedInParamList} from '../../../navigation/Root';
+import Layout from '../../../components/layout';
+import {GapRowView} from '../../../components/basic/View';
+import DetailHeader from '../../../components/container/DetailHeader';
 import {useRecoilValue} from 'recoil';
-import {rstMyInfo} from '../../recoil/user';
-import TeamType from '../../types/TeamType';
-import {ButtonText, SmButton} from '../../components/basic/Button';
-import {colors} from '../../styles/color';
-import NavItem from '../../components/parts/detail/NavItem';
+import {rstMyInfo} from '../../../recoil/user';
+import TeamType from '../../../types/TeamType';
+import {ButtonText, SmButton} from '../../../components/basic/Button';
+import {colors} from '../../../styles/color';
+import NavItem from '../../../components/parts/detail/NavItem';
 function Detail() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
   const {team} = useRecoilValue(rstMyInfo);
@@ -27,14 +27,14 @@ function Detail() {
       id: 2,
       text: '팀원 리스트',
       onPress: () => {
-        navigation.navigate('Team', {screen: 'UserSetting'});
+        navigation.navigate('Team', {screen: 'TeamUser'});
       },
     },
     {
       id: 3,
       text: '초대한 유저 리스트 ',
       onPress: () => {
-        navigation.navigate('Team', {screen: 'UserSetting'});
+        navigation.navigate('Team', {screen: 'InvitationUser'});
       },
     },
   ];

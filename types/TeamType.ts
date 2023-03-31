@@ -1,5 +1,5 @@
 interface TeamType {
-  bossId: string;
+  bossId: number;
   createdAt: Date;
   deletedAt: Date;
   id: number;

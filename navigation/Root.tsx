@@ -26,7 +26,14 @@ export type LoggedInParamList = {
     screen: 'Home' | 'Pray' | 'Penalty';
   };
   Team: {
-    screen: 'Detail' | 'ServiceSetting' | 'Home' | 'Creating' | 'UserSetting';
+    screen:
+      | 'Detail'
+      | 'ServiceSetting'
+      | 'Home'
+      | 'Creating'
+      | 'UserSetting'
+      | 'InvitationUser'
+      | 'TeamUser';
   };
   User: {
     screen:
