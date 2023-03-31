@@ -1,27 +1,27 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import Layout from '../../components/layout';
-import Setting from '../../components/container/Setting';
-import {GapColumnView, GapRowView} from '../../components/basic/View';
+import Layout from '../../../components/layout';
+import Setting from '../../../components/container/Setting';
+import {GapColumnView, GapRowView} from '../../../components/basic/View';
 import {Pressable, Switch} from 'react-native';
-import Header from '../../components/container/Header';
-import {Image} from '../../components/basic/Image';
-import {colors} from '../../styles/color';
+import Header from '../../../components/container/Header';
+import {Image} from '../../../components/basic/Image';
+import {colors} from '../../../styles/color';
 import {useRecoilValue} from 'recoil';
-import {rstMyInfo} from '../../recoil/user';
-import {ButtonText} from '../../components/basic/Button';
+import {rstMyInfo} from '../../../recoil/user';
+import {ButtonText} from '../../../components/basic/Button';
 import styled from 'styled-components/native';
-import {addService} from '../../api/user';
+import {addService} from '../../../api/user';
 import {
   CommonActions,
   NavigationProp,
   useNavigation,
 } from '@react-navigation/native';
-import {LoggedInParamList} from '../../navigation/Root';
+import {LoggedInParamList} from '../../../navigation/Root';
 
 const ModifiedView = styled(GapColumnView)`
   align-items: center;
 `;
-function SettingView() {
+function Service() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const {team} = useRecoilValue(rstMyInfo);
@@ -112,4 +112,4 @@ Please enter a 6-digit code to prove yourself."
   );
 }
 
-export default SettingView;
+export default Service;

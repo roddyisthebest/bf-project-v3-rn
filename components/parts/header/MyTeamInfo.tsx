@@ -8,6 +8,8 @@ import {ButtonText} from '../../basic/Button';
 import {colors} from '../../../styles/color';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../recoil/user';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {LoggedInParamList} from '../../../navigation/Root';
 
 const Container = styled.Pressable<{borderColor: string}>`
   width: 25px;
@@ -23,6 +25,8 @@ const Image = styled(FastImage)`
 `;
 
 function MyTeamInfo() {
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+
   const myInfo = useRecoilValue(rstMyInfo);
 
   const actionSheetRef = useRef<ActionSheetRef>(null);
@@ -36,7 +40,9 @@ function MyTeamInfo() {
           userInterfaceStyle: 'light',
         },
         buttonIndex => {
-          console.log(buttonIndex);
+          if (buttonIndex === 1) {
+            navigation.navigate('Team', {screen: 'Detail'});
+          }
         },
       );
     } else {
@@ -53,7 +59,11 @@ function MyTeamInfo() {
         />
       </Container>
       <ActionSheet ref={actionSheetRef} gestureEnabled={true}>
-        <Item borderColor={colors.bottomSheetItemBorderColor}>
+        <Item
+          borderColor={colors.bottomSheetItemBorderColor}
+          onPress={() => {
+            navigation.navigate('Team', {screen: 'Detail'});
+          }}>
           <ButtonText
             color={colors.positiveColor}
             fontSize={15}

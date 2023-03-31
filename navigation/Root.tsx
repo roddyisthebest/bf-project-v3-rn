@@ -26,7 +26,7 @@ export type LoggedInParamList = {
     screen: 'Home' | 'Pray' | 'Penalty';
   };
   Team: {
-    screen: 'Detail' | 'Setting' | 'Home' | 'Creating';
+    screen: 'Detail' | 'ServiceSetting' | 'Home' | 'Creating' | 'UserSetting';
   };
   User: {
     screen:
@@ -100,13 +100,18 @@ const Root = () => {
     <Nav.Navigator
       initialRouteName="Auth"
       screenOptions={{
-        presentation: 'modal',
         headerShown: false,
         headerTitleAlign: 'center',
       }}>
       {loggedIn ? (
         <>
-          <Nav.Screen name="Team" component={TeamNav} />
+          <Nav.Screen
+            name="Team"
+            component={TeamNav}
+            options={{
+              presentation: 'card',
+            }}
+          />
           <Nav.Screen name="Tabs" component={TabsNav} />
           <Nav.Screen name="Stack" component={StackNav} />
           <Nav.Screen name="User" component={UserNav} />

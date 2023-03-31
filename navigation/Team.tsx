@@ -1,7 +1,8 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import Detail from '../screen/team/Detail';
-import Setting from '../screen/team/Setting';
+import Service from '../screen/team/setting/Service';
+import User from '../screen/team/setting/User';
 import Team from '../screen/team/Team';
 import TeamCreating from '../screen/team/TeamCreating';
 
@@ -19,7 +20,14 @@ const TeamNav = () => (
       component={TeamCreating}
       options={{title: '팀 만들기'}}
     />
-    <NativeStack.Screen name="Setting" component={Setting} />
+    <NativeStack.Screen name="ServiceSetting" component={Service} />
+    <NativeStack.Screen
+      name="UserSetting"
+      component={User}
+      options={{
+        presentation: 'card',
+      }}
+    />
     <NativeStack.Screen name="Detail" component={Detail} />
   </NativeStack.Navigator>
 );
