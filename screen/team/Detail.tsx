@@ -18,7 +18,21 @@ function Detail() {
   const data = [
     {
       id: 1,
-      text: '팀원설정',
+      text: '팀원초대',
+      onPress: () => {
+        navigation.navigate('Team', {screen: 'UserSetting'});
+      },
+    },
+    {
+      id: 2,
+      text: '팀원 리스트',
+      onPress: () => {
+        navigation.navigate('Team', {screen: 'UserSetting'});
+      },
+    },
+    {
+      id: 3,
+      text: '초대한 유저 리스트 ',
       onPress: () => {
         navigation.navigate('Team', {screen: 'UserSetting'});
       },

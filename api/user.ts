@@ -63,6 +63,8 @@ const updatePayed = (
   payed: boolean,
 ): Promise<AxiosResponse<response>> => api.patch('/user/paycheck', {id, payed});
 
+const getUsers = (keyword: string) => api.get(`/user/search/${keyword}`);
+
 export {
   snsLogin,
   adminLogin,
@@ -71,4 +73,5 @@ export {
   addService,
   updateService,
   updatePayed,
+  getUsers,
 };

@@ -13,7 +13,7 @@ interface UserType {
   updatedAt: Date;
   createdAt: Date;
   deletedAt: Date | null;
-  Penalties: PenaltyType[];
+  Penalties: PenaltyType[] | null;
 }
 
 export default UserType;

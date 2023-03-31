@@ -10,6 +10,7 @@ import {getMyTeams} from '../../api/user';
 import TeamType from '../../types/TeamType';
 import {useRecoilState} from 'recoil';
 import {addTeamFlag} from '../../recoil/flag';
+import MyInfo from '../../components/parts/header/MyInfo';
 
 function Team() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
@@ -28,6 +29,8 @@ function Team() {
 
   useEffect(() => {
     navigation.setOptions({
+      headerLeft: () => <MyInfo />,
+
       headerRight: () => (
         <Pressable
           onPress={() => navigation.navigate('Team', {screen: 'Creating'})}>
