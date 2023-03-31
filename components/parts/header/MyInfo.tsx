@@ -11,6 +11,8 @@ import {ButtonText} from '../../basic/Button';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 import {isLoggedIn} from '../../../recoil/auth';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {LoggedInParamList} from '../../../navigation/Root';
 
 const Container = styled.Pressable<{borderColor: string}>`
   width: 25px;
@@ -26,6 +28,8 @@ const Image = styled(FastImage)`
 `;
 
 function MyInfo() {
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+
   const myInfo = useRecoilValue(rstMyInfo);
   const resetMyInfo = useResetRecoilState(rstMyInfo);
   const resetAuth = useResetRecoilState(isLoggedIn);
@@ -36,6 +40,9 @@ function MyInfo() {
     await EncryptedStorage.clear();
     resetMyInfo();
     resetAuth();
+  };
+  const goToDetail = () => {
+    navigation.navigate('User', {screen: 'Detail'});
   };
 
   const onPress = () => {
@@ -48,7 +55,9 @@ function MyInfo() {
           userInterfaceStyle: 'light',
         },
         async buttonIndex => {
-          if (buttonIndex === 2) {
+          if (buttonIndex === 1) {
+            goToDetail();
+          } else if (buttonIndex === 2) {
             logout();
           }
         },
@@ -67,7 +76,9 @@ function MyInfo() {
         />
       </Container>
       <ActionSheet ref={actionSheetRef} gestureEnabled={true}>
-        <Item borderColor={colors.bottomSheetItemBorderColor}>
+        <Item
+          borderColor={colors.bottomSheetItemBorderColor}
+          onPress={goToDetail}>
           <ButtonText
             color={colors.positiveColor}
             fontSize={15}

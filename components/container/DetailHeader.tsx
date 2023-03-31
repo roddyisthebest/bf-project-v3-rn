@@ -23,18 +23,21 @@ const ImageSection = styled.View`
 
 const ContentSection = styled.View`
   flex: 3;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: flex-start;
   flex-direction: column;
+  row-gap: 7px;
 `;
 
 const ButtonSection = styled.View`
   flex: 2;
   align-items: flex-end;
+  padding-top: 5px;
 `;
 
-const ModifiedSmButton = styled(SmButton)`
+const ModifiedSmButton = styled.TouchableOpacity`
   padding: 0;
+  margin: 0;
 `;
 
 function DetailHeader({
@@ -53,7 +56,12 @@ function DetailHeader({
       <ImageSection>
         <Image
           width={65}
-          source={{uri: `http://192.168.123.104:3000/${data.img}`}}
+          source={{
+            uri:
+              type === 'user'
+                ? data.img
+                : `http://192.168.123.104:3000/${data.img}`,
+          }}
           height={65}
           borderRad={type === 'team' ? 15 : 120}
           borderColor={colors.buttonBorderColor}
@@ -63,7 +71,7 @@ function DetailHeader({
         <ButtonText color="black" fontSize={26} fontWeight={600}>
           {data.name}
         </ButtonText>
-        <ModifiedSmButton bkg="transparent" radius={0}>
+        <ModifiedSmButton>
           <ButtonText
             color={colors.positiveColor}
             fontSize={13}

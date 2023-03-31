@@ -36,7 +36,8 @@ export type LoggedInParamList = {
       | 'Tweet'
       | 'Setting'
       | 'SettingEdit'
-      | 'SettingUsage';
+      | 'SettingUsage'
+      | 'Detail';
   };
 };
 

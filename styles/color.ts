@@ -18,13 +18,15 @@ export const colors = {
   negativeColor: '#FF3B30',
   cardBorderBottomColor: '#CDCACA',
   subTitleColor: '#C2C2C2',
-
   prayButtonEditBkgColor: '#EBF6FD',
   prayButtonSaveBkgColor: '#EAFFEA',
   prayButtonDeleteBkgColor: '#ffeaed',
   prayButtonEditTextColor: '#198CED',
   prayButtonSaveTextColor: '#43A54D',
   prayButtonDeleteTextColor: 'red',
+
+  settingButtonBkgColor: '#F4F4F4',
+  settingButtonTextColor: '#828282',
 
   loadingIconColor: 'gray',
 };
