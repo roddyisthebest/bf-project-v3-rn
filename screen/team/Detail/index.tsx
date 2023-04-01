@@ -1,20 +1,30 @@
-import {FlatList, View} from 'react-native';
-import React from 'react';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from '../../../navigation/Root';
+import {Alert, FlatList, View} from 'react-native';
+import React, {useCallback} from 'react';
+import {
+  CommonActions,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
+import {
+  EncryptedStorageKeyList,
+  LoggedInParamList,
+} from '../../../navigation/Root';
 import Layout from '../../../components/layout';
 import {GapRowView} from '../../../components/basic/View';
 import DetailHeader from '../../../components/container/DetailHeader';
-import {useRecoilValue} from 'recoil';
-import {rstMyInfo} from '../../../recoil/user';
+import {useRecoilValue, useRecoilState, useSetRecoilState} from 'recoil';
+import {myInfoType, rstMyInfo} from '../../../recoil/user';
 import TeamType from '../../../types/TeamType';
 import {ButtonText, SmButton} from '../../../components/basic/Button';
 import {colors} from '../../../styles/color';
 import NavItem from '../../../components/parts/detail/NavItem';
+import {deleteTeam} from '../../../api/team';
+import EncryptedStorage from 'react-native-encrypted-storage/';
+import {updateTeamFlag} from '../../../recoil/flag';
 function Detail() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
-  const {team} = useRecoilValue(rstMyInfo);
-
+  const [userInfo, setUserInfo] = useRecoilState(rstMyInfo);
+  const setFlag = useSetRecoilState(updateTeamFlag);
   const data = [
     {
       id: 1,
@@ -39,6 +49,52 @@ function Detail() {
     },
   ];
 
+  const destoryTeam = useCallback(async () => {
+    Alert.alert(
+      '팀 삭제',
+      `정말로 팀 ${userInfo?.team?.name}(을/를) 삭제하시겠습니까?`,
+      [
+        {
+          text: '취소',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: '삭제',
+          onPress: async () => {
+            try {
+              await deleteTeam({id: userInfo?.team?.id as number});
+
+              const stringData = await EncryptedStorage.getItem(
+                EncryptedStorageKeyList.USERINFO,
+              );
+
+              const parsedData: myInfoType = JSON.parse(stringData as string);
+
+              parsedData.team = null;
+
+              await EncryptedStorage.setItem(
+                EncryptedStorageKeyList.USERINFO,
+                JSON.stringify(parsedData),
+              );
+
+              setFlag(true);
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{name: 'Team'}],
+                }),
+              );
+              Alert.alert('삭제되었습니다.');
+              setUserInfo(prev => ({team: null, user: prev.user}));
+            } catch (e) {}
+          },
+          style: 'destructive',
+        },
+      ],
+    );
+  }, []);
+
   const renderItem = ({item}: {item: {text: string; onPress: () => void}}) => (
     <NavItem text={item.text} onPress={item.onPress} />
   );
@@ -52,10 +108,13 @@ function Detail() {
         paddingHorizontal={0}
         paddingVertical={0}>
         <DetailHeader
-          data={team as TeamType}
+          data={userInfo?.team as TeamType}
           type="team"
           ButtonComponent={() => (
-            <SmButton bkg={colors.prayButtonDeleteBkgColor} radius={10}>
+            <SmButton
+              bkg={colors.prayButtonDeleteBkgColor}
+              radius={10}
+              onPress={destoryTeam}>
               <ButtonText
                 color={colors.prayButtonDeleteTextColor}
                 fontSize={12.5}

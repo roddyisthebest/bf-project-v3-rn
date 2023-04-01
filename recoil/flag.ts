@@ -1,7 +1,7 @@
 import {atom} from 'recoil';
 
-export const addTeamFlag = atom<boolean>({
-  key: 'addTeam',
+export const updateTeamFlag = atom<boolean>({
+  key: 'updateTeam',
   default: false,
 });
 

@@ -9,13 +9,13 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {getMyTeams} from '../../api/user';
 import TeamType from '../../types/TeamType';
 import {useRecoilState} from 'recoil';
-import {addTeamFlag} from '../../recoil/flag';
+import {updateTeamFlag} from '../../recoil/flag';
 import MyInfo from '../../components/parts/header/MyInfo';
 
 function Team() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
-  const [flag, setFlag] = useRecoilState(addTeamFlag);
+  const [flag, setFlag] = useRecoilState(updateTeamFlag);
   const [myTeams, setmyTeams] = useState<TeamType[]>([]);
 
   const getData = useCallback(async () => {
@@ -49,7 +49,6 @@ function Team() {
   useEffect(() => {
     if (flag) {
       getData();
-      Alert.alert('팀이 생성되었습니다.');
       setFlag(false);
     }
   }, [flag, setFlag, getData]);

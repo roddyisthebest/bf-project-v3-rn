@@ -32,6 +32,9 @@ const addTeam = async ({
   });
 };
 
+const deleteTeam = ({id}: {id: number}): Promise<AxiosResponse<response>> =>
+  api.delete(`/team/${id}`);
+
 const addInvitation = async ({
   userId,
   teamId,
@@ -56,4 +59,4 @@ const deleteInvitation = async ({
   id: number;
 }): Promise<AxiosResponse<response>> => api.delete(`/team/invitation/${id}`);
 
-export {addTeam, addInvitation, getInvitaions, deleteInvitation};
+export {addTeam, addInvitation, getInvitaions, deleteInvitation, deleteTeam};

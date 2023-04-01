@@ -9,10 +9,16 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FastImage from 'react-native-fast-image';
 import {Input, Label} from '../../components/basic/Input';
 import dimension from '../../styles/dimension';
-import {KeyboardAvoidingView, Platform, Pressable, View} from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  View,
+} from 'react-native';
 import {ButtonText} from '../../components/basic/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {addTeamFlag} from '../../recoil/flag';
+import {updateTeamFlag} from '../../recoil/flag';
 import FileType from '../../types/FileType';
 import {useSetRecoilState} from 'recoil';
 import {addTeam} from '../../api/team';
@@ -50,7 +56,7 @@ const UploadButtonIconWrapper = styled.View`
 function TeamCreating() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
-  const setAddTeamFlag = useSetRecoilState(addTeamFlag);
+  const setUpdateTeamFlag = useSetRecoilState(updateTeamFlag);
 
   const [file, setFile] = useState<FileType | null>(null);
   const [name, setName] = useState<string>('');
@@ -83,12 +89,13 @@ function TeamCreating() {
         name,
         introducing,
       });
-      setAddTeamFlag(true);
+      setUpdateTeamFlag(true);
+      Alert.alert('팀이 생성되었습니다.');
       navigation.goBack();
     } catch (e) {
       console.log(e);
     }
-  }, [file, name, introducing, navigation, setAddTeamFlag]);
+  }, [file, name, introducing, navigation, setUpdateTeamFlag]);
 
   useEffect(() => {
     navigation.setOptions({

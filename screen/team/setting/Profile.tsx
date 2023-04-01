@@ -12,9 +12,7 @@ import dimension from '../../../styles/dimension';
 import {KeyboardAvoidingView, Platform, Pressable, View} from 'react-native';
 import {ButtonText} from '../../../components/basic/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {addTeamFlag} from '../../../recoil/flag';
 import FileType from '../../../types/FileType';
-import {useSetRecoilState} from 'recoil';
 import {addTeam} from '../../../api/team';
 
 const UploadButton = styled.TouchableOpacity<{borderColor: string}>`
@@ -49,8 +47,6 @@ const UploadButtonIconWrapper = styled.View`
 
 function Profile() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
-
-  const setAddTeamFlag = useSetRecoilState(addTeamFlag);
 
   const [file, setFile] = useState<FileType | null>(null);
   const [name, setName] = useState<string>('');
