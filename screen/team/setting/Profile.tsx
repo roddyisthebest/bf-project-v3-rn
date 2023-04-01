@@ -13,7 +13,9 @@ import {KeyboardAvoidingView, Platform, Pressable, View} from 'react-native';
 import {ButtonText} from '../../../components/basic/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import FileType from '../../../types/FileType';
-import {addTeam} from '../../../api/team';
+import {addTeam, getTeam, updateTeam} from '../../../api/team';
+import {rstMyInfo} from '../../../recoil/user';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
 
 const UploadButton = styled.TouchableOpacity<{borderColor: string}>`
   width: 120px;
@@ -47,11 +49,14 @@ const UploadButtonIconWrapper = styled.View`
 
 function Profile() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+  const {team} = useRecoilValue(rstMyInfo);
+  const setUserInfo = useSetRecoilState(rstMyInfo);
 
   const [file, setFile] = useState<FileType | null>(null);
   const [name, setName] = useState<string>('');
   const [introducing, setIntroducing] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
+  const [editMode, setEditMode] = useState<boolean>(false);
 
   const uploadUsingAlbum = useCallback(async () => {
     try {
@@ -59,6 +64,7 @@ function Profile() {
         quality: 1,
         mediaType: 'photo',
       });
+      setEditMode(true);
 
       if (data) {
         setFile(data.assets[0]);
@@ -70,21 +76,28 @@ function Profile() {
 
   const onUpload = useCallback(async () => {
     try {
-      await addTeam({
-        file: {
-          name: file?.fileName as string,
-          type: 'multipart/form-data',
-          uri: file?.uri as string,
-        },
+      await updateTeam({
+        file: editMode
+          ? {
+              name: file?.fileName as string,
+              type: 'multipart/form-data',
+              uri: file?.uri as string,
+            }
+          : null,
         name,
         introducing,
+        id: team?.id as number,
       });
-      setAddTeamFlag(true);
+
+      const {data} = await getTeam({id: team?.id as number});
+      console.log(data.payload);
+
+      setUserInfo(userInfo => ({user: userInfo.user, team: data.payload}));
       navigation.goBack();
     } catch (e) {
       console.log(e);
     }
-  }, [file, name, introducing, navigation, setAddTeamFlag]);
+  }, [file, name, introducing, navigation, editMode, team]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -100,8 +113,17 @@ function Profile() {
   }, [navigation, onUpload, disabled]);
 
   useEffect(() => {
-    setDisabled(introducing.length < 5 || name.length < 3 || file === null);
-  }, [introducing, name, file]);
+    setDisabled(
+      introducing.length < 5 ||
+        name.length < 3 ||
+        (team?.introducing === introducing && team?.name === name && !editMode),
+    );
+  }, [introducing, name, file, team, editMode]);
+
+  useEffect(() => {
+    setName(team?.name as string);
+    setIntroducing(team?.introducing as string);
+  }, [team]);
 
   return (
     <Layout scrollable={false} isItWhite={true}>
@@ -130,7 +152,9 @@ function Profile() {
               <UploadImage
                 bkg={colors.background}
                 source={{
-                  uri: file ? file.uri : '',
+                  uri: !editMode
+                    ? `http://192.168.123.104:3000/${team?.img}`
+                    : file?.uri,
                 }}
               />
             </UploadButton>
@@ -149,6 +173,7 @@ function Profile() {
               placeholderTextColor={colors.inputPlaceHolderColor}
               borderColor={colors.inputLineColor}
               onChangeText={text => setName(text)}
+              value={name}
             />
           </GapRowView>
           <GapRowView
@@ -164,6 +189,7 @@ function Profile() {
               placeholderTextColor={colors.inputPlaceHolderColor}
               borderColor={colors.inputLineColor}
               onChangeText={text => setIntroducing(text)}
+              value={introducing}
             />
           </GapRowView>
         </GapRowView>

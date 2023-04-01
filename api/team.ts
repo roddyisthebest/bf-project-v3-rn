@@ -32,6 +32,37 @@ const addTeam = async ({
   });
 };
 
+const updateTeam = async ({
+  file,
+  name,
+  introducing,
+  id,
+}: {
+  file: {name: string; type: 'multipart/form-data'; uri: string} | null;
+  name: string;
+  introducing: string;
+  id: number;
+}) => {
+  const formData = new FormData();
+  const accessToken = await EncryptedStorage.getItem(
+    EncryptedStorageKeyList.ACCESSTOKEN,
+  );
+
+  file && formData.append('img', file);
+  formData.append('name', name);
+  formData.append('introducing', introducing);
+  formData.append('id', id);
+
+  return await fetch('http://192.168.123.104:3000/team', {
+    method: 'PUT',
+    headers: {
+      Authorization: accessToken as string,
+      'Content-Type': 'multipart/form-data',
+    },
+    body: formData,
+  });
+};
+
 const deleteTeam = ({id}: {id: number}): Promise<AxiosResponse<response>> =>
   api.delete(`/team/${id}`);
 
@@ -59,4 +90,15 @@ const deleteInvitation = async ({
   id: number;
 }): Promise<AxiosResponse<response>> => api.delete(`/team/invitation/${id}`);
 
-export {addTeam, addInvitation, getInvitaions, deleteInvitation, deleteTeam};
+const getTeam = ({id}: {id: number}): Promise<AxiosResponse<response>> =>
+  api.get(`/team/${id}`);
+
+export {
+  addTeam,
+  getTeam,
+  updateTeam,
+  addInvitation,
+  getInvitaions,
+  deleteInvitation,
+  deleteTeam,
+};
