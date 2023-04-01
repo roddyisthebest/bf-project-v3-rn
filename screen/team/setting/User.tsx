@@ -85,6 +85,7 @@ function User() {
               placeholder="유저이름을 입력해보세요."
               value={keyword}
               onChangeText={text => setKeyword(text)}
+              autoFocus
             />
           </SearchWrapper>
         </SearchSection>

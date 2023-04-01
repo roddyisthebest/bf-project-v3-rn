@@ -7,7 +7,7 @@ import Service from '../screen/team/setting/Service';
 import User from '../screen/team/setting/User';
 import Team from '../screen/team/Team';
 import TeamCreating from '../screen/team/TeamCreating';
-
+import Profile from '../screen/team/setting/Profile';
 const NativeStack = createNativeStackNavigator();
 
 const TeamNav = () => (
@@ -33,6 +33,7 @@ const TeamNav = () => (
     <NativeStack.Screen name="InvitationUser" component={InvitationUser} />
     <NativeStack.Screen name="TeamUser" component={TeamUser} />
     <NativeStack.Screen name="Detail" component={Detail} />
+    <NativeStack.Screen name="Profile" component={Profile} />
   </NativeStack.Navigator>
 );
 

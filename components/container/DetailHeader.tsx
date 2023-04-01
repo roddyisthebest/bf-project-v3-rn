@@ -1,6 +1,8 @@
-import React from 'react';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import React, {useCallback} from 'react';
 
 import styled from 'styled-components/native';
+import {LoggedInParamList} from '../../navigation/Root';
 import {colors} from '../../styles/color';
 import dimension from '../../styles/dimension';
 import TeamType from '../../types/TeamType';
@@ -49,6 +51,15 @@ function DetailHeader({
   ButtonComponent: () => JSX.Element;
   type: 'user' | 'team';
 }) {
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+
+  const onPress = useCallback(() => {
+    if (type === 'team') {
+      navigation.navigate('Team', {screen: 'Profile'});
+    } else {
+    }
+  }, [type]);
+
   return (
     <Container
       borderColor={colors.borderTopBottomColor}
@@ -71,7 +82,7 @@ function DetailHeader({
         <ButtonText color="black" fontSize={26} fontWeight={600}>
           {data.name}
         </ButtonText>
-        <ModifiedSmButton>
+        <ModifiedSmButton onPress={onPress}>
           <ButtonText
             color={colors.positiveColor}
             fontSize={13}
