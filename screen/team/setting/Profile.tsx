@@ -1,6 +1,9 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from '../../../navigation/Root';
+import {
+  EncryptedStorageKeyList,
+  LoggedInParamList,
+} from '../../../navigation/Root';
 import Layout from '../../../components/layout';
 import {GapRowView} from '../../../components/basic/View';
 import styled from 'styled-components/native';
@@ -14,8 +17,9 @@ import {ButtonText} from '../../../components/basic/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import FileType from '../../../types/FileType';
 import {addTeam, getTeam, updateTeam} from '../../../api/team';
-import {rstMyInfo} from '../../../recoil/user';
+import {myInfoType, rstMyInfo} from '../../../recoil/user';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const UploadButton = styled.TouchableOpacity<{borderColor: string}>`
   width: 120px;
@@ -90,9 +94,18 @@ function Profile() {
       });
 
       const {data} = await getTeam({id: team?.id as number});
-      console.log(data.payload);
 
       setUserInfo(userInfo => ({user: userInfo.user, team: data.payload}));
+      const dataString = await EncryptedStorage.getItem(
+        EncryptedStorageKeyList.USERINFO,
+      );
+      const parsedData: myInfoType = JSON.parse(dataString as string);
+
+      parsedData.team = data.payload;
+      await EncryptedStorage.setItem(
+        EncryptedStorageKeyList.USERINFO,
+        JSON.stringify(parsedData),
+      );
       navigation.goBack();
     } catch (e) {
       console.log(e);
@@ -105,7 +118,7 @@ function Profile() {
         disabled ? null : (
           <Pressable onPress={onUpload}>
             <ButtonText color="#3478F6" fontSize={15} fontWeight={500}>
-              생성
+              변경
             </ButtonText>
           </Pressable>
         ),
