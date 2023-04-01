@@ -29,7 +29,7 @@ function PenaltyView() {
             team?.id as number,
           );
           setData(payload);
-          if (code === 'last data') {
+          if (code === 'OK:LAST') {
             setDisabled(true);
           }
         } else {

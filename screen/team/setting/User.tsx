@@ -54,8 +54,8 @@ function User() {
 
   const invite = async (id: number) => {
     try {
-      const res = await addInvitation({userId: id, teamId: team?.id as number});
-      Alert.alert(res.data.payload.message);
+      await addInvitation({userId: id, teamId: team?.id as number});
+      Alert.alert('유저를 초대하였습니다.');
     } catch (error) {
       const {response} = error as unknown as AxiosError;
       if (response?.status === 409) {

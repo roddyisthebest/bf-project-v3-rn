@@ -1,10 +1,10 @@
 import React from 'react';
-import UserType from '../../../types/UserType';
 import styled from 'styled-components/native';
 import dimension from '../../../styles/dimension';
 import {Image} from '../../basic/Image';
 import {colors} from '../../../styles/color';
 import {ButtonText, SmButton} from '../../basic/Button';
+import InvitationType from '../../../types/InvitationType';
 
 const Container = styled.View<{paddingHorizontal: number}>`
   flex-direction: row;
@@ -21,7 +21,13 @@ const Column = styled.View`
 `;
 const Text = styled(ButtonText)``;
 
-function UserInvitationItem({data}: {data: UserType}) {
+function UserInvitationItem({
+  data,
+  onPress,
+}: {
+  data: InvitationType;
+  onPress: (id: number) => void;
+}) {
   return (
     <Container paddingHorizontal={dimension.paddingHorizontal}>
       <Column>
@@ -29,14 +35,17 @@ function UserInvitationItem({data}: {data: UserType}) {
           width={30}
           height={30}
           borderRad={30}
-          source={{uri: `${data.img}`}}
+          source={{uri: `${data?.User?.img}`}}
           borderColor={colors.buttonBorderColor}
         />
         <Text color="black" fontWeight={600} fontSize={25}>
-          {data.name}
+          {data?.User?.name}
         </Text>
       </Column>
-      <SmButton bkg={colors.prayButtonDeleteBkgColor} radius={8}>
+      <SmButton
+        bkg={colors.prayButtonDeleteBkgColor}
+        radius={8}
+        onPress={() => onPress(data.id)}>
         <ButtonText
           color={colors.prayButtonDeleteTextColor}
           fontSize={13}

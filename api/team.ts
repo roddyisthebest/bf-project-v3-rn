@@ -38,7 +38,8 @@ const addInvitation = async ({
 }: {
   userId: number;
   teamId: number;
-}) => api.post('/team/invitation', {userId, teamId});
+}): Promise<AxiosResponse<response>> =>
+  api.post('/team/invitation', {userId, teamId});
 
 const getInvitaions = async ({
   teamId,
@@ -46,6 +47,13 @@ const getInvitaions = async ({
 }: {
   teamId: number;
   lastId: number;
-}) => api.get(`/team/${teamId}/invitation/${lastId}`);
+}): Promise<AxiosResponse<response>> =>
+  api.get(`/team/${teamId}/invitation/${lastId}`);
 
-export {addTeam, addInvitation, getInvitaions};
+const deleteInvitation = async ({
+  id,
+}: {
+  id: number;
+}): Promise<AxiosResponse<response>> => api.delete(`/team/invitation/${id}`);
+
+export {addTeam, addInvitation, getInvitaions, deleteInvitation};
