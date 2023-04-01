@@ -18,7 +18,7 @@ function Detail() {
   const data = [
     {
       id: 1,
-      text: '팀원초대',
+      text: '팀원 초대',
       onPress: () => {
         navigation.navigate('Team', {screen: 'UserSetting'});
       },

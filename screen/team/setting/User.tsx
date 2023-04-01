@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {colors} from '../../../styles/color';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {FlatList} from 'react-native';
+import {Alert, FlatList} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../../navigation/Root';
 import UserType from '../../../types/UserType';
@@ -10,6 +10,10 @@ import UserSearchItem from '../../../components/parts/detail/UserSearchItem';
 import ListEmptyComponent from '../../../components/parts/tabs/ListEmptyComponent';
 import dimension from '../../../styles/dimension';
 import {getUsers} from '../../../api/user';
+import {addInvitation} from '../../../api/team';
+import {useRecoilValue} from 'recoil';
+import {rstMyInfo} from '../../../recoil/user';
+import {AxiosError} from 'axios';
 
 const SearchSection = styled.View<{
   paddingVertical: number;
@@ -43,9 +47,25 @@ const SearchInput = styled.TextInput`
 
 function User() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+  const {team} = useRecoilValue(rstMyInfo);
 
   const [data, setData] = useState<UserType[]>([]);
   const [keyword, setKeyword] = useState<string>('');
+
+  const invite = async (id: number) => {
+    try {
+      const res = await addInvitation({userId: id, teamId: team?.id as number});
+      Alert.alert(res.data.payload.message);
+    } catch (error) {
+      const {response} = error as unknown as AxiosError;
+      if (response?.status === 409) {
+        Alert.alert('이미 초대된 회원입니다.');
+      }
+    } finally {
+      setData([]);
+      setKeyword('');
+    }
+  };
 
   const getData = useCallback(async () => {
     try {
@@ -57,7 +77,7 @@ function User() {
   }, [keyword]);
 
   const renderItem = ({item}: {item: UserType}) => (
-    <UserSearchItem data={item} />
+    <UserSearchItem data={item} onPress={invite} />
   );
 
   useEffect(() => {

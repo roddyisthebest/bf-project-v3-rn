@@ -6,7 +6,7 @@ import {Image} from '../../basic/Image';
 import {colors} from '../../../styles/color';
 import {ButtonText} from '../../basic/Button';
 
-const Container = styled.View<{paddingHorizontal: number}>`
+const Container = styled.TouchableOpacity<{paddingHorizontal: number}>`
   flex-direction: row;
   column-gap: 15px;
   align-items: center;
@@ -16,9 +16,17 @@ const Container = styled.View<{paddingHorizontal: number}>`
 
 const Text = styled(ButtonText)``;
 
-function UserSearchItem({data}: {data: UserType}) {
+function UserSearchItem({
+  data,
+  onPress,
+}: {
+  data: UserType;
+  onPress: (id: number) => void;
+}) {
   return (
-    <Container paddingHorizontal={dimension.paddingHorizontal}>
+    <Container
+      paddingHorizontal={dimension.paddingHorizontal}
+      onPress={() => onPress(data.id)}>
       <Image
         width={30}
         height={30}

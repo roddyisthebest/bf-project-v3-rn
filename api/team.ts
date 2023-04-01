@@ -32,4 +32,20 @@ const addTeam = async ({
   });
 };
 
-export {addTeam};
+const addInvitation = async ({
+  userId,
+  teamId,
+}: {
+  userId: number;
+  teamId: number;
+}) => api.post('/team/invitation', {userId, teamId});
+
+const getInvitaions = async ({
+  teamId,
+  lastId,
+}: {
+  teamId: number;
+  lastId: number;
+}) => api.get(`/team/${teamId}/invitation/${lastId}`);
+
+export {addTeam, addInvitation, getInvitaions};
