@@ -6,8 +6,8 @@ import TeamUser from '../screen/team/after/Detail/TeamUser';
 import Service from '../screen/team/after/setting/Service';
 import User from '../screen/team/after/setting/User';
 import Team from '../screen/team/before/Team';
-import TeamCreating from '../screen/team/before/TeamCreating';
-import TeamSearching from '../screen/team/before/TeamSearching';
+import TeamCreating from '../screen/team/before/setting/TeamCreating';
+import TeamSearching from '../screen/team/before/setting/TeamSearching';
 import Profile from '../screen/team/after/setting/Profile';
 const NativeStack = createNativeStackNavigator();
 

@@ -7,7 +7,7 @@ interface TeamType {
   introducing: string;
   name: string;
   updatedAt: Date;
-  userteam: [Object];
+  userteam: [Object] | null;
 }
 
 export default TeamType;

@@ -1,14 +1,14 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from '../../../navigation/Root';
-import Layout from '../../../components/layout';
-import {GapRowView} from '../../../components/basic/View';
+import {LoggedInParamList} from '../../../../navigation/Root';
+import Layout from '../../../../components/layout';
+import {GapRowView} from '../../../../components/basic/View';
 import styled from 'styled-components/native';
-import {colors} from '../../../styles/color';
+import {colors} from '../../../../styles/color';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FastImage from 'react-native-fast-image';
-import {Input, Label} from '../../../components/basic/Input';
-import dimension from '../../../styles/dimension';
+import {Input, Label} from '../../../../components/basic/Input';
+import dimension from '../../../../styles/dimension';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -16,12 +16,12 @@ import {
   Pressable,
   View,
 } from 'react-native';
-import {ButtonText} from '../../../components/basic/Button';
+import {ButtonText} from '../../../../components/basic/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {updateTeamFlag} from '../../../recoil/flag';
-import FileType from '../../../types/FileType';
+import {updateTeamFlag} from '../../../../recoil/flag';
+import FileType from '../../../../types/FileType';
 import {useSetRecoilState} from 'recoil';
-import {addTeam} from '../../../api/team';
+import {addTeam} from '../../../../api/team';
 
 const UploadButton = styled.TouchableOpacity<{borderColor: string}>`
   width: 120px;

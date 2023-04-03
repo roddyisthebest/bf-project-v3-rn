@@ -1,19 +1,18 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {colors} from '../../../../styles/color';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Alert, FlatList, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../../../navigation/Root';
-import UserType from '../../../../types/UserType';
-import UserSearchItem from '../../../../components/parts/detail/UserSearchItem';
+
+import TeamSearchItem from '../../../../components/parts/detail/TeamSearchItem';
 import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyComponent';
 import dimension from '../../../../styles/dimension';
-import {getUsers} from '../../../../api/user';
-import {addInvitation} from '../../../../api/team';
+
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
-import {AxiosError} from 'axios';
+import TeamType from '../../../../types/TeamType';
 
 const SearchSection = styled.View<{
   paddingVertical: number;
@@ -45,46 +44,39 @@ const SearchInput = styled.TextInput`
   font-size: 17px;
 `;
 
-function User() {
+function TeamSearching() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
   const {team} = useRecoilValue(rstMyInfo);
-
-  const [data, setData] = useState<UserType[]>([]);
+  const date = new Date();
+  const [data, setData] = useState<TeamType[]>([
+    {
+      bossId: 1,
+      createdAt: date,
+      deletedAt: date,
+      id: 1,
+      img: 'https://gdimg.gmarket.co.kr/835583398/still/400?ver=1629339046',
+      introducing: 'asdasda',
+      name: '티샤츄',
+      updatedAt: date,
+      userteam: null,
+    },
+    {
+      bossId: 1,
+      createdAt: date,
+      deletedAt: date,
+      id: 2,
+      img: 'https://gdimg.gmarket.co.kr/835583398/still/400?ver=1629339046',
+      introducing: 'asdasda',
+      name: '티샤츄',
+      updatedAt: date,
+      userteam: null,
+    },
+  ]);
   const [keyword, setKeyword] = useState<string>('');
 
-  const invite = async (id: number) => {
-    try {
-      await addInvitation({userId: id, teamId: team?.id as number});
-      Alert.alert('유저를 초대하였습니다.');
-    } catch (error) {
-      const {response} = error as unknown as AxiosError;
-      if (response?.status === 409) {
-        Alert.alert('이미 초대된 회원입니다.');
-      }
-    } finally {
-      setData([]);
-      setKeyword('');
-    }
-  };
-
-  const getData = useCallback(async () => {
-    try {
-      const res = await getUsers(keyword);
-      setData(res.data.payload);
-    } catch (e) {
-      console.log(e);
-    }
-  }, [keyword]);
-
-  const renderItem = ({item}: {item: UserType}) => (
-    <UserSearchItem data={item} onPress={invite} />
+  const renderItem = ({item}: {item: TeamType}) => (
+    <TeamSearchItem data={item} onPress={() => {}} />
   );
-
-  useEffect(() => {
-    if (keyword.length !== 0) {
-      getData();
-    }
-  }, [keyword]);
 
   return (
     <FlatList
@@ -92,7 +84,7 @@ function User() {
       renderItem={renderItem}
       keyExtractor={item => item.id.toString()}
       ListEmptyComponent={
-        <ListEmptyComponent text="검색된 유저가 없습니다." paddingTop={0} />
+        <ListEmptyComponent text="검색된 팀이 없습니다." paddingTop={0} />
       }
       ListHeaderComponent={
         <SearchSection
@@ -102,7 +94,7 @@ function User() {
           <SearchWrapper borderColor={colors.borderTopBottomColor}>
             <Icon name="search" color={colors.borderTopBottomColor} size={20} />
             <SearchInput
-              placeholder="유저이름을 입력해보세요."
+              placeholder="팀 이름을 검색해보세요."
               value={keyword}
               onChangeText={text => setKeyword(text)}
               autoFocus
@@ -116,4 +108,4 @@ function User() {
   );
 }
 
-export default User;
+export default TeamSearching;
