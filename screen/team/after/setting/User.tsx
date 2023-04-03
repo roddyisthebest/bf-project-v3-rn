@@ -1,18 +1,18 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
-import {colors} from '../../../styles/color';
+import {colors} from '../../../../styles/color';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Alert, FlatList} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from '../../../navigation/Root';
-import UserType from '../../../types/UserType';
-import UserSearchItem from '../../../components/parts/detail/UserSearchItem';
-import ListEmptyComponent from '../../../components/parts/tabs/ListEmptyComponent';
-import dimension from '../../../styles/dimension';
-import {getUsers} from '../../../api/user';
-import {addInvitation} from '../../../api/team';
+import {LoggedInParamList} from '../../../../navigation/Root';
+import UserType from '../../../../types/UserType';
+import UserSearchItem from '../../../../components/parts/detail/UserSearchItem';
+import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyComponent';
+import dimension from '../../../../styles/dimension';
+import {getUsers} from '../../../../api/user';
+import {addInvitation} from '../../../../api/team';
 import {useRecoilValue} from 'recoil';
-import {rstMyInfo} from '../../../recoil/user';
+import {rstMyInfo} from '../../../../recoil/user';
 import {AxiosError} from 'axios';
 
 const SearchSection = styled.View<{

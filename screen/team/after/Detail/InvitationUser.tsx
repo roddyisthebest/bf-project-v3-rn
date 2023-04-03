@@ -1,27 +1,25 @@
-import {ActivityIndicator, FlatList} from 'react-native';
+import {FlatList, ActivityIndicator, Alert} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import UserType from '../../../types/UserType';
-import UserTeamItem from '../../../components/parts/detail/UserTeamItem';
-import {getTeamMates} from '../../../api/team';
+import UserInvitationItem from '../../../../components/parts/detail/UserInvitationItem';
+import InvitationType from '../../../../types/InvitationType';
+import {deleteInvitation, getInvitaions} from '../../../../api/team';
 import {useRecoilValue} from 'recoil';
-import {rstMyInfo} from '../../../recoil/user';
-import {colors} from '../../../styles/color';
-import ListEmptyComponent from '../../../components/parts/tabs/ListEmptyComponent';
-import {LoadingContainer} from '../../../components/basic/View';
+import {rstMyInfo} from '../../../../recoil/user';
+import {LoadingContainer} from '../../../../components/basic/View';
 import styled from 'styled-components/native';
+import {colors} from '../../../../styles/color';
+import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyComponent';
 
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
   padding-top: 20px;
 `;
 
-function TeamUser() {
-  const date = new Date();
-
+function InvitationUser() {
   const {team} = useRecoilValue(rstMyInfo);
 
+  const [data, setData] = useState<InvitationType[]>([]);
   const [lastId, setLastId] = useState<number>(-1);
-  const [data, setData] = useState<UserType[]>([]);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [disabled, setDisabled] = useState<boolean>(false);
@@ -31,10 +29,11 @@ function TeamUser() {
       try {
         const {
           data: {payload, code},
-        }: {data: {payload: UserType[]; code: string}} = await getTeamMates({
-          lastId: id,
-          teamId: team?.id as number,
-        });
+        }: {data: {payload: InvitationType[]; code: string}} =
+          await getInvitaions({
+            teamId: team?.id as number,
+            lastId: id,
+          });
         if (code === 'OK:LAST') {
           setDisabled(true);
         }
@@ -44,7 +43,6 @@ function TeamUser() {
           setData(prev => [...prev, ...payload]);
         }
       } catch (e) {
-        console.log(e);
       } finally {
         if (loading) {
           setLoading(false);
@@ -62,10 +60,11 @@ function TeamUser() {
         if (id === -1) {
           const {
             data: {payload, code},
-          }: {data: {payload: UserType[]; code: string}} = await getTeamMates({
-            teamId: team?.id as number,
-            lastId: id,
-          });
+          }: {data: {payload: InvitationType[]; code: string}} =
+            await getInvitaions({
+              teamId: team?.id as number,
+              lastId: id,
+            });
           setData(payload);
           if (code === 'OK:LAST') {
             setDisabled(true);
@@ -81,13 +80,40 @@ function TeamUser() {
     [team],
   );
 
+  const deleteInvitationFromState = useCallback(
+    async (id: number) => {
+      Alert.alert('초대유저 삭제', '정말로 유저의 초대를 취소할까요?', [
+        {
+          text: '취소',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: '삭제',
+          onPress: async () => {
+            try {
+              await deleteInvitation({id});
+              setData(prev => prev?.filter(pray => pray.id !== id));
+              Alert.alert('삭제되었습니다.');
+            } catch (e) {}
+          },
+          style: 'destructive',
+        },
+      ]);
+    },
+    [data],
+  );
+
+  const renderItem = ({item}: {item: InvitationType}) => (
+    <UserInvitationItem data={item} onPress={deleteInvitationFromState} />
+  );
+
   useEffect(() => {
     if (!disabled) {
       getData(lastId);
     }
   }, [disabled, getData, lastId]);
 
-  const renderItem = ({item}: {item: UserType}) => <UserTeamItem data={item} />;
   return loading ? (
     <ModifiedLoadingContainer>
       <ActivityIndicator color={colors.loadingIconColor} size={25} />
@@ -107,10 +133,10 @@ function TeamUser() {
         }
       }}
       ListEmptyComponent={
-        <ListEmptyComponent text="가입한 유저들이 없습니다." paddingTop={20} />
+        <ListEmptyComponent text="초대한 유저들이 없습니다." paddingTop={20} />
       }
     />
   );
 }
 
-export default TeamUser;
+export default InvitationUser;

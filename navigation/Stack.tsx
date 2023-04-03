@@ -1,6 +1,6 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import Setting from '../screen/team/setting/Service';
+import Setting from '../screen/team/after/setting/Service';
 import Uploading from '../screen/stack/Uploading';
 const NativeStack = createNativeStackNavigator();
 

@@ -31,6 +31,7 @@ export type LoggedInParamList = {
       | 'ServiceSetting'
       | 'Home'
       | 'Creating'
+      | 'Searching'
       | 'UserSetting'
       | 'InvitationUser'
       | 'TeamUser'

@@ -1,9 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {
-  EncryptedStorageKeyList,
-  LoggedInParamList,
-} from '../../../navigation/Root';
+import {LoggedInParamList} from '../../../navigation/Root';
 import Layout from '../../../components/layout';
 import {GapRowView} from '../../../components/basic/View';
 import styled from 'styled-components/native';
@@ -12,14 +9,19 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FastImage from 'react-native-fast-image';
 import {Input, Label} from '../../../components/basic/Input';
 import dimension from '../../../styles/dimension';
-import {KeyboardAvoidingView, Platform, Pressable, View} from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  View,
+} from 'react-native';
 import {ButtonText} from '../../../components/basic/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {updateTeamFlag} from '../../../recoil/flag';
 import FileType from '../../../types/FileType';
-import {getTeam, updateTeam} from '../../../api/team';
-import {myInfoType, rstMyInfo} from '../../../recoil/user';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
-import EncryptedStorage from 'react-native-encrypted-storage';
+import {useSetRecoilState} from 'recoil';
+import {addTeam} from '../../../api/team';
 
 const UploadButton = styled.TouchableOpacity<{borderColor: string}>`
   width: 120px;
@@ -51,16 +53,15 @@ const UploadButtonIconWrapper = styled.View`
   z-index: 1;
 `;
 
-function Profile() {
+function TeamCreating() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
-  const {team} = useRecoilValue(rstMyInfo);
-  const setUserInfo = useSetRecoilState(rstMyInfo);
+
+  const setUpdateTeamFlag = useSetRecoilState(updateTeamFlag);
 
   const [file, setFile] = useState<FileType | null>(null);
   const [name, setName] = useState<string>('');
   const [introducing, setIntroducing] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
-  const [editMode, setEditMode] = useState<boolean>(false);
 
   const uploadUsingAlbum = useCallback(async () => {
     try {
@@ -68,7 +69,6 @@ function Profile() {
         quality: 1,
         mediaType: 'photo',
       });
-      setEditMode(true);
 
       if (data) {
         setFile(data.assets[0]);
@@ -80,37 +80,22 @@ function Profile() {
 
   const onUpload = useCallback(async () => {
     try {
-      await updateTeam({
-        file: editMode
-          ? {
-              name: file?.fileName as string,
-              type: 'multipart/form-data',
-              uri: file?.uri as string,
-            }
-          : null,
+      await addTeam({
+        file: {
+          name: file?.fileName as string,
+          type: 'multipart/form-data',
+          uri: file?.uri as string,
+        },
         name,
         introducing,
-        id: team?.id as number,
       });
-
-      const {data} = await getTeam({id: team?.id as number});
-
-      setUserInfo(userInfo => ({user: userInfo.user, team: data.payload}));
-      const dataString = await EncryptedStorage.getItem(
-        EncryptedStorageKeyList.USERINFO,
-      );
-      const parsedData: myInfoType = JSON.parse(dataString as string);
-
-      parsedData.team = data.payload;
-      await EncryptedStorage.setItem(
-        EncryptedStorageKeyList.USERINFO,
-        JSON.stringify(parsedData),
-      );
+      setUpdateTeamFlag(true);
+      Alert.alert('팀이 생성되었습니다.');
       navigation.goBack();
     } catch (e) {
       console.log(e);
     }
-  }, [file, name, introducing, navigation, editMode, team]);
+  }, [file, name, introducing, navigation, setUpdateTeamFlag]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -118,7 +103,7 @@ function Profile() {
         disabled ? null : (
           <Pressable onPress={onUpload}>
             <ButtonText color="#3478F6" fontSize={15} fontWeight={500}>
-              변경
+              생성
             </ButtonText>
           </Pressable>
         ),
@@ -126,17 +111,8 @@ function Profile() {
   }, [navigation, onUpload, disabled]);
 
   useEffect(() => {
-    setDisabled(
-      introducing.length < 5 ||
-        name.length < 3 ||
-        (team?.introducing === introducing && team?.name === name && !editMode),
-    );
-  }, [introducing, name, file, team, editMode]);
-
-  useEffect(() => {
-    setName(team?.name as string);
-    setIntroducing(team?.introducing as string);
-  }, [team]);
+    setDisabled(introducing.length < 5 || name.length < 3 || file === null);
+  }, [introducing, name, file]);
 
   return (
     <Layout scrollable={false} isItWhite={true}>
@@ -165,9 +141,7 @@ function Profile() {
               <UploadImage
                 bkg={colors.background}
                 source={{
-                  uri: !editMode
-                    ? `http://192.168.123.104:3000/${team?.img}`
-                    : file?.uri,
+                  uri: file ? file.uri : '',
                 }}
               />
             </UploadButton>
@@ -186,7 +160,6 @@ function Profile() {
               placeholderTextColor={colors.inputPlaceHolderColor}
               borderColor={colors.inputLineColor}
               onChangeText={text => setName(text)}
-              value={name}
             />
           </GapRowView>
           <GapRowView
@@ -202,7 +175,6 @@ function Profile() {
               placeholderTextColor={colors.inputPlaceHolderColor}
               borderColor={colors.inputLineColor}
               onChangeText={text => setIntroducing(text)}
-              value={introducing}
             />
           </GapRowView>
         </GapRowView>
@@ -211,4 +183,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default TeamCreating;

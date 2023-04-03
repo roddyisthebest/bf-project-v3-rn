@@ -8,19 +8,19 @@ import {
 import {
   EncryptedStorageKeyList,
   LoggedInParamList,
-} from '../../../navigation/Root';
-import Layout from '../../../components/layout';
-import {GapRowView} from '../../../components/basic/View';
-import DetailHeader from '../../../components/container/DetailHeader';
+} from '../../../../navigation/Root';
+import Layout from '../../../../components/layout';
+import {GapRowView} from '../../../../components/basic/View';
+import DetailHeader from '../../../../components/container/DetailHeader';
 import {useRecoilValue, useRecoilState, useSetRecoilState} from 'recoil';
-import {myInfoType, rstMyInfo} from '../../../recoil/user';
-import TeamType from '../../../types/TeamType';
-import {ButtonText, SmButton} from '../../../components/basic/Button';
-import {colors} from '../../../styles/color';
-import NavItem from '../../../components/parts/detail/NavItem';
-import {deleteTeam} from '../../../api/team';
+import {myInfoType, rstMyInfo} from '../../../../recoil/user';
+import TeamType from '../../../../types/TeamType';
+import {ButtonText, SmButton} from '../../../../components/basic/Button';
+import {colors} from '../../../../styles/color';
+import NavItem from '../../../../components/parts/detail/NavItem';
+import {deleteTeam} from '../../../../api/team';
 import EncryptedStorage from 'react-native-encrypted-storage/';
-import {updateTeamFlag} from '../../../recoil/flag';
+import {updateTeamFlag} from '../../../../recoil/flag';
 function Detail() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
   const [userInfo, setUserInfo] = useRecoilState(rstMyInfo);
