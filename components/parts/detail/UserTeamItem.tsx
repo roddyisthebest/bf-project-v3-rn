@@ -39,18 +39,20 @@ function UserSearchItem({data}: {data: UserType}) {
         <Text color="black" fontWeight={600} fontSize={25}>
           {data.name}
         </Text>
-        {parseInt(team?.bossId as number, 10) === data.id && (
+        {team?.bossId === data.id && (
           <Icon name="crown-circle" color="#FFE600" size={25} />
         )}
       </Column>
-      <SmButton bkg={colors.prayButtonDeleteBkgColor} radius={8}>
-        <ButtonText
-          color={colors.prayButtonDeleteTextColor}
-          fontSize={13}
-          fontWeight={400}>
-          강퇴하기
-        </ButtonText>
-      </SmButton>
+      {team?.bossId !== data.id && (
+        <SmButton bkg={colors.prayButtonDeleteBkgColor} radius={8}>
+          <ButtonText
+            color={colors.prayButtonDeleteTextColor}
+            fontSize={13}
+            fontWeight={400}>
+            강퇴하기
+          </ButtonText>
+        </SmButton>
+      )}
     </Container>
   );
 }

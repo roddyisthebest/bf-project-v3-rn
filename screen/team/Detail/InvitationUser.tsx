@@ -34,7 +34,7 @@ function InvitationUser() {
             teamId: team?.id as number,
             lastId: id,
           });
-        if (code === 'last data') {
+        if (code === 'OK:LAST') {
           setDisabled(true);
         }
         if (id === -1) {

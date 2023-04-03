@@ -93,6 +93,15 @@ const deleteInvitation = async ({
 const getTeam = ({id}: {id: number}): Promise<AxiosResponse<response>> =>
   api.get(`/team/${id}`);
 
+const getTeamMates = ({
+  teamId,
+  lastId,
+}: {
+  teamId: number;
+  lastId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.get(`/team/${teamId}/mates/${lastId}`);
+
 export {
   addTeam,
   getTeam,
@@ -101,4 +110,5 @@ export {
   getInvitaions,
   deleteInvitation,
   deleteTeam,
+  getTeamMates,
 };

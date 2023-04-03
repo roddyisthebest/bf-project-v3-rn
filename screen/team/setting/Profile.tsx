@@ -16,7 +16,7 @@ import {KeyboardAvoidingView, Platform, Pressable, View} from 'react-native';
 import {ButtonText} from '../../../components/basic/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import FileType from '../../../types/FileType';
-import {addTeam, getTeam, updateTeam} from '../../../api/team';
+import {getTeam, updateTeam} from '../../../api/team';
 import {myInfoType, rstMyInfo} from '../../../recoil/user';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import EncryptedStorage from 'react-native-encrypted-storage';
