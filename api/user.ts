@@ -26,6 +26,13 @@ const adminLogin = ({
 const getMyTeams = (): Promise<AxiosResponse<response>> =>
   api.get('/user/myTeams');
 
+const getMyThumbInvitations = ({
+  active,
+}: {
+  active: boolean;
+}): Promise<AxiosResponse<response>> =>
+  api.get(`/user/invitation/thumbnail/${active}`);
+
 const getMyInvitations = ({
   lastId,
 }: {
@@ -69,7 +76,8 @@ const updatePayed = (
   payed: boolean,
 ): Promise<AxiosResponse<response>> => api.patch('/user/paycheck', {id, payed});
 
-const getUsers = (keyword: string) => api.get(`/user/search/${keyword}`);
+const getUsers = (keyword: string): Promise<AxiosResponse<response>> =>
+  api.get(`/user/search/${keyword}`);
 
 export {
   snsLogin,
@@ -81,4 +89,5 @@ export {
   updatePayed,
   getUsers,
   getMyInvitations,
+  getMyThumbInvitations,
 };

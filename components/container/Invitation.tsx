@@ -5,10 +5,9 @@ import {FlatList} from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 import {LoggedInParamList} from '../../navigation/Root';
 import {colors} from '../../styles/color';
-import TeamType from '../../types/TeamType';
+import InvitationType from '../../types/InvitationType';
 import {ButtonText} from '../basic/Button';
-import TeamSet from '../card/TeamSet';
-
+import InvitaionCard from '../card/Invitation';
 const Container = styled.View<{bottomColor: string}>`
   padding: 22.5px 20px 0 20px;
   border-bottom-color: ${props => props.bottomColor};
@@ -47,28 +46,28 @@ const EmptyView = styled.View`
 `;
 
 const EmptyText = styled(ButtonText)``;
-function Team({
+function Invitation({
   props,
 }: {
   props: {
-    data: TeamType[];
+    data: InvitationType[];
     title: string;
-    type: 'default' | 'invitation' | 'apply';
+    type: 'invitation' | 'apply';
   };
 }) {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const onPress = useCallback(() => {
-    if (props.type === 'default') {
-      navigation.navigate('Team', {screen: 'MyTeams'});
-    } else if (props.type === 'invitation') {
+    if (props.type === 'invitation') {
       navigation.navigate('Team', {screen: 'InvitedTeams'});
     } else if (props.type === 'apply') {
       navigation.navigate('Team', {screen: 'AppliedTeams'});
     }
   }, [props]);
 
-  const renderItem = ({item}: {item: TeamType}) => <TeamSet data={item} />;
+  const renderItem = ({item}: {item: InvitationType}) => (
+    <InvitaionCard data={item} />
+  );
 
   return (
     <Container bottomColor={colors.itemBorderBottomColor}>
@@ -108,4 +107,4 @@ function Team({
   );
 }
 
-export default Team;
+export default Invitation;
