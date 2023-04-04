@@ -6,10 +6,18 @@ import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import {Item} from '../../basic/List';
 import {ButtonText} from '../../basic/Button';
 import {colors} from '../../../styles/color';
-import {useRecoilValue} from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../recoil/user';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from '../../../navigation/Root';
+import {
+  CommonActions,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
+import {
+  EncryptedStorageKeyList,
+  LoggedInParamList,
+} from '../../../navigation/Root';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const Container = styled.Pressable<{borderColor: string}>`
   width: 25px;
@@ -27,7 +35,7 @@ const Image = styled(FastImage)`
 function MyTeamInfo() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
-  const myInfo = useRecoilValue(rstMyInfo);
+  const [myInfo, setMyInfo] = useRecoilState(rstMyInfo);
 
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const onPress = () => {
@@ -39,9 +47,23 @@ function MyTeamInfo() {
           cancelButtonIndex: 0,
           userInterfaceStyle: 'light',
         },
-        buttonIndex => {
+        async buttonIndex => {
           if (buttonIndex === 1) {
             navigation.navigate('Team', {screen: 'Detail'});
+          } else if (buttonIndex === 2) {
+            navigation.navigate('Team', {screen: 'UserSetting'});
+          } else if (buttonIndex === 3) {
+            await EncryptedStorage.setItem(
+              EncryptedStorageKeyList.USERINFO,
+              JSON.stringify({user: myInfo.user, team: null}),
+            );
+            setMyInfo(prev => ({user: prev.user, team: null}));
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: 'Team', params: {screen: 'Home'}}],
+              }),
+            );
           }
         },
       );
