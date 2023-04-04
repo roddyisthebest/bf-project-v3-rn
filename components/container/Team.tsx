@@ -59,6 +59,8 @@ function Team({
   const onPress = useCallback(() => {
     if (props.type === 'default') {
       navigation.navigate('Team', {screen: 'MyTeams'});
+    } else if (props.type === 'invitation') {
+      navigation.navigate('Team', {screen: 'InvitedTeams'});
     }
   }, [props]);
 

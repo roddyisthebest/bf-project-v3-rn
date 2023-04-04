@@ -63,7 +63,7 @@ function Team() {
         <TeamContainer
           props={{
             title: '초대된 팀 📮',
-            data: [],
+            data: myTeams,
             type: 'invitation',
           }}
         />

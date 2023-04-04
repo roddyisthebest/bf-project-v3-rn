@@ -36,7 +36,8 @@ export type LoggedInParamList = {
       | 'InvitationUser'
       | 'TeamUser'
       | 'Profile'
-      | 'MyTeams';
+      | 'MyTeams'
+      | 'InvitedTeams';
   };
   User: {
     screen:
