@@ -61,6 +61,8 @@ function Team({
       navigation.navigate('Team', {screen: 'MyTeams'});
     } else if (props.type === 'invitation') {
       navigation.navigate('Team', {screen: 'InvitedTeams'});
+    } else if (props.type === 'apply') {
+      navigation.navigate('Team', {screen: 'AppliedTeams'});
     }
   }, [props]);
 

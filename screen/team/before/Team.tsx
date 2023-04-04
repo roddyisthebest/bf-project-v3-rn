@@ -70,7 +70,7 @@ function Team() {
         <TeamContainer
           props={{
             title: '가입 신청한 팀 😘',
-            data: [],
+            data: myTeams,
             type: 'apply',
           }}
         />
