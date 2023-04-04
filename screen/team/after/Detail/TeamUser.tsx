@@ -1,7 +1,7 @@
 import {ActivityIndicator, FlatList} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import UserType from '../../../../types/UserType';
-import UserTeamItem from '../../../../components/parts/detail/UserTeamItem';
+import UserItem from '../../../../components/parts/detail/UserItem';
 import {getTeamMates} from '../../../../api/team';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
@@ -87,7 +87,7 @@ function TeamUser() {
     }
   }, [disabled, getData, lastId]);
 
-  const renderItem = ({item}: {item: UserType}) => <UserTeamItem data={item} />;
+  const renderItem = ({item}: {item: UserType}) => <UserItem data={item} />;
   return loading ? (
     <ModifiedLoadingContainer>
       <ActivityIndicator color={colors.loadingIconColor} size={25} />

@@ -23,7 +23,7 @@ const Column = styled.View`
 `;
 const Text = styled(ButtonText)``;
 
-function UserSearchItem({data}: {data: UserType}) {
+function UserItem({data}: {data: UserType}) {
   const {team} = useRecoilValue(rstMyInfo);
 
   return (
@@ -57,4 +57,4 @@ function UserSearchItem({data}: {data: UserType}) {
   );
 }
 
-export default UserSearchItem;
+export default UserItem;

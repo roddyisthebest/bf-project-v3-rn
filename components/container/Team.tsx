@@ -1,5 +1,8 @@
-import React from 'react';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import React, {useCallback} from 'react';
+import {Pressable} from 'react-native';
 import styled from 'styled-components/native';
+import {LoggedInParamList} from '../../navigation/Root';
 import {colors} from '../../styles/color';
 import TeamType from '../../types/TeamType';
 import {ButtonText} from '../basic/Button';
@@ -51,12 +54,24 @@ function Team({
     type: 'default' | 'invitation' | 'apply';
   };
 }) {
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+
+  const onPress = useCallback(() => {
+    if (props.type === 'default') {
+      navigation.navigate('Team', {screen: 'MyTeams'});
+    }
+  }, [props]);
+
   return (
     <Container bottomColor={colors.itemBorderBottomColor}>
       <TitleSection>
         <TitleText>{props.title}</TitleText>
         {props.data.length !== 0 && (
-          <MoreButtonText color={colors.moreButtonColor}>더보기</MoreButtonText>
+          <Pressable onPress={onPress}>
+            <MoreButtonText color={colors.moreButtonColor}>
+              더보기
+            </MoreButtonText>
+          </Pressable>
         )}
       </TitleSection>
       <ContentsSection>

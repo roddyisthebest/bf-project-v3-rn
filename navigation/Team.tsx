@@ -9,6 +9,7 @@ import Team from '../screen/team/before/Team';
 import TeamCreating from '../screen/team/before/setting/TeamCreating';
 import TeamSearching from '../screen/team/before/setting/TeamSearching';
 import Profile from '../screen/team/after/setting/Profile';
+import MyTeams from '../screen/team/before/Detail/MyTeams';
 const NativeStack = createNativeStackNavigator();
 
 const TeamNav = () => (
@@ -40,6 +41,7 @@ const TeamNav = () => (
     <NativeStack.Screen name="TeamUser" component={TeamUser} />
     <NativeStack.Screen name="Detail" component={Detail} />
     <NativeStack.Screen name="Profile" component={Profile} />
+    <NativeStack.Screen name="MyTeams" component={MyTeams} />
   </NativeStack.Navigator>
 );
 

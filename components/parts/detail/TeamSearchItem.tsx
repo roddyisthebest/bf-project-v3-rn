@@ -34,7 +34,7 @@ function TeamSearchItem({
         <Image
           width={30}
           height={30}
-          borderRad={30}
+          borderRad={5}
           source={{uri: `${data?.img}`}}
           borderColor={colors.buttonBorderColor}
         />
