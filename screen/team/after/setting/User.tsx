@@ -70,6 +70,7 @@ function User() {
   const getData = useCallback(async () => {
     try {
       const res = await getUsers(keyword);
+      console.log(res.data);
       setData(res.data.payload);
     } catch (e) {
       console.log(e);

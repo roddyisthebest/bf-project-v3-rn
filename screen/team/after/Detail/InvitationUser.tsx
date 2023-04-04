@@ -124,9 +124,7 @@ function InvitationUser() {
       renderItem={renderItem}
       refreshing={refreshing}
       keyExtractor={item => item.id.toString()}
-      onRefresh={() => {
-        handleRefresh(lastId);
-      }}
+      onRefresh={() => handleRefresh(lastId)}
       onEndReached={() => {
         if (data.length !== 0) {
           setLastId(data[data.length - 1].id);

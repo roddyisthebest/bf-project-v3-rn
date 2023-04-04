@@ -102,6 +102,9 @@ const getTeamMates = ({
 }): Promise<AxiosResponse<response>> =>
   api.get(`/team/${teamId}/mates/${lastId}`);
 
+const setApprove = ({id}: {id: number}) =>
+  api.post('/team/invitation/approve', {id});
+
 export {
   addTeam,
   getTeam,
@@ -111,4 +114,5 @@ export {
   deleteInvitation,
   deleteTeam,
   getTeamMates,
+  setApprove,
 };

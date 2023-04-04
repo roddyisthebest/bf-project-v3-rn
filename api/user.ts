@@ -26,6 +26,12 @@ const adminLogin = ({
 const getMyTeams = (): Promise<AxiosResponse<response>> =>
   api.get('/user/myTeams');
 
+const getMyInvitations = ({
+  lastId,
+}: {
+  lastId: number;
+}): Promise<AxiosResponse<response>> => api.get(`/user/invitation/${lastId}`);
+
 const getService = ({
   teamId,
 }: {
@@ -74,4 +80,5 @@ export {
   updateService,
   updatePayed,
   getUsers,
+  getMyInvitations,
 };

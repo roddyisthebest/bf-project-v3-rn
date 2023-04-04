@@ -1,3 +1,4 @@
+import TeamType from './TeamType';
 import UserType from './UserType';
 
 interface InvitationType {
@@ -7,6 +8,7 @@ interface InvitationType {
   createdAt: Date;
   deletedAt: Date | null;
   User: UserType | null;
+  Team: TeamType | null;
 }
 
 export default InvitationType;

@@ -4,7 +4,7 @@ import dimension from '../../../styles/dimension';
 import {Image} from '../../basic/Image';
 import {colors} from '../../../styles/color';
 import {ButtonText, SmButton} from '../../basic/Button';
-import TeamType from '../../../types/TeamType';
+import InvitationType from '../../../types/InvitationType';
 
 const Container = styled.View<{paddingHorizontal: number}>`
   flex-direction: row;
@@ -14,9 +14,9 @@ const Container = styled.View<{paddingHorizontal: number}>`
   background-color: white;
 `;
 
-const Column = styled.View`
+const Column = styled.View<{gap: number}>`
   flex-direction: row;
-  column-gap: 15px;
+  column-gap: ${props => props.gap}px;
   align-items: center;
 `;
 
@@ -24,30 +24,32 @@ const Text = styled(ButtonText)``;
 
 function TeamInvitationItem({
   data,
-  onPress,
+  approve,
+  refuse,
 }: {
-  data: TeamType;
-  onPress: (id: number) => void;
+  data: InvitationType;
+  approve: (id: number) => void;
+  refuse: (id: number) => void;
 }) {
   return (
     <Container paddingHorizontal={dimension.paddingHorizontal}>
-      <Column>
+      <Column gap={15}>
         <Image
           width={30}
           height={30}
           borderRad={5}
-          source={{uri: `${data?.img}`}}
+          source={{uri: `http://192.168.123.104:3000/${data?.Team?.img}`}}
           borderColor={colors.buttonBorderColor}
         />
         <Text color="black" fontWeight={600} fontSize={25}>
-          {data?.name}
+          {data?.Team?.name}
         </Text>
       </Column>
-      <Column>
+      <Column gap={7.5}>
         <SmButton
           bkg={colors.prayButtonEditBkgColor}
           radius={8}
-          onPress={() => onPress(data.id)}>
+          onPress={() => approve(data.id)}>
           <ButtonText
             color={colors.prayButtonEditTextColor}
             fontSize={13}
@@ -58,12 +60,12 @@ function TeamInvitationItem({
         <SmButton
           bkg={colors.prayButtonDeleteBkgColor}
           radius={8}
-          onPress={() => onPress(data.id)}>
+          onPress={() => refuse(data.id)}>
           <ButtonText
             color={colors.prayButtonDeleteTextColor}
             fontSize={13}
             fontWeight={400}>
-            삭제하기
+            거절하기
           </ButtonText>
         </SmButton>
       </Column>
