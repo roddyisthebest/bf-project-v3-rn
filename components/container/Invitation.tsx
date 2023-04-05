@@ -66,7 +66,7 @@ function Invitation({
   }, [props]);
 
   const renderItem = ({item}: {item: InvitationType}) => (
-    <InvitaionCard data={item} />
+    <InvitaionCard data={item} active={props.type === 'invitation'} />
   );
 
   return (
