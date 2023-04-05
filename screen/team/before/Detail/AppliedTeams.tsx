@@ -1,6 +1,6 @@
-import {FlatList, ActivityIndicator, View} from 'react-native';
+import {FlatList, ActivityIndicator, View, Alert} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useRecoilValue} from 'recoil';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
 import {LoadingContainer} from '../../../../components/basic/View';
 import styled from 'styled-components/native';
@@ -9,6 +9,8 @@ import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyCompo
 import TeamApplyItem from '../../../../components/parts/detail/TeamApplyItem';
 import InvitationType from '../../../../types/InvitationType';
 import {getMyApplications} from '../../../../api/user';
+import {deleteInvitation} from '../../../../api/team';
+import {updateTeamFlag} from '../../../../recoil/flag';
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
   padding-top: 20px;
@@ -16,6 +18,7 @@ const ModifiedLoadingContainer = styled(LoadingContainer)`
 
 function AppliedTeams() {
   const {team} = useRecoilValue(rstMyInfo);
+  const setFlag = useSetRecoilState(updateTeamFlag);
 
   const [data, setData] = useState<InvitationType[]>([]);
   const [lastId, setLastId] = useState<number>(-1);
@@ -80,13 +83,28 @@ function AppliedTeams() {
     [team],
   );
 
+  const onPress = useCallback((id: number) => {
+    Alert.alert('가입신청 취소', '정말 가입 신청을 취소하시겠습니까?', [
+      {
+        text: '취소',
+        onPress: () => {},
+        style: 'default',
+      },
+      {
+        text: '가입신청 취소',
+        onPress: async () => {
+          await deleteInvitation({id});
+          setData(prev => prev?.filter(pray => pray.id !== id));
+          setFlag(true);
+          Alert.alert('가입신청이 취소 되었습니다.');
+        },
+        style: 'destructive',
+      },
+    ]);
+  }, []);
+
   const renderItem = ({item}: {item: InvitationType}) => (
-    <TeamApplyItem
-      data={item}
-      onPress={(id: number) => {
-        console.log(id);
-      }}
-    />
+    <TeamApplyItem data={item} onPress={onPress} />
   );
 
   useEffect(() => {
