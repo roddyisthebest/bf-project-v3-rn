@@ -34,7 +34,7 @@ function TeamItem({
         source={{uri: `${data.img}`}}
         borderColor={colors.buttonBorderColor}
       />
-      <Text color="black" fontWeight={500} fontSize={25}>
+      <Text color="black" fontWeight={500} fontSize={20}>
         {data.name}
       </Text>
     </Container>

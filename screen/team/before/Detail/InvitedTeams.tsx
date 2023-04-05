@@ -131,6 +131,7 @@ function InvitedTeams() {
           try {
             await deleteInvitation({id});
             setData(prev => prev?.filter(pray => pray.id !== id));
+            setFlag(true);
             Alert.alert('삭제되었습니다.');
           } catch (e) {
             console.log(e);

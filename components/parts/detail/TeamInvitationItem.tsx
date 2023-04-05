@@ -41,7 +41,7 @@ function TeamInvitationItem({
           source={{uri: `http://192.168.123.104:3000/${data?.Team?.img}`}}
           borderColor={colors.buttonBorderColor}
         />
-        <Text color="black" fontWeight={600} fontSize={25}>
+        <Text color="black" fontWeight={600} fontSize={20}>
           {data?.Team?.name}
         </Text>
       </Column>

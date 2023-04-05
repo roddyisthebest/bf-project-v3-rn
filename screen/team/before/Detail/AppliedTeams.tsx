@@ -1,14 +1,14 @@
 import {FlatList, ActivityIndicator, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
 import {LoadingContainer} from '../../../../components/basic/View';
 import styled from 'styled-components/native';
 import {colors} from '../../../../styles/color';
 import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyComponent';
-import TeamType from '../../../../types/TeamType';
 import TeamApplyItem from '../../../../components/parts/detail/TeamApplyItem';
-
+import InvitationType from '../../../../types/InvitationType';
+import {getMyApplications} from '../../../../api/user';
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
   padding-top: 20px;
@@ -16,40 +16,84 @@ const ModifiedLoadingContainer = styled(LoadingContainer)`
 
 function AppliedTeams() {
   const {team} = useRecoilValue(rstMyInfo);
-  const date = new Date();
 
-  const [data, setData] = useState<TeamType[]>([
-    {
-      bossId: 1,
-      createdAt: date,
-      deletedAt: date,
-      id: 1,
-      img: 'https://gdimg.gmarket.co.kr/835583398/still/400?ver=1629339046',
-      introducing: 'asdasda',
-      name: '티샤츄',
-      updatedAt: date,
-      userteam: null,
-    },
-    {
-      bossId: 1,
-      createdAt: date,
-      deletedAt: date,
-      id: 2,
-      img: 'https://gdimg.gmarket.co.kr/835583398/still/400?ver=1629339046',
-      introducing: 'asdasda',
-      name: '티샤츄',
-      updatedAt: date,
-      userteam: null,
-    },
-  ]);
+  const [data, setData] = useState<InvitationType[]>([]);
   const [lastId, setLastId] = useState<number>(-1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(false);
 
-  const renderItem = ({item}: {item: TeamType}) => (
-    <TeamApplyItem data={item} onPress={() => {}} />
+  const getData = useCallback(
+    async (id: number) => {
+      try {
+        const {
+          data: {payload, code},
+        }: {data: {payload: InvitationType[]; code: string}} =
+          await getMyApplications({
+            lastId: id,
+          });
+
+        console.log(payload);
+        if (code === 'OK:LAST') {
+          setDisabled(true);
+        }
+        if (id === -1) {
+          setData(payload);
+        } else {
+          setData(prev => [...prev, ...payload]);
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        if (loading) {
+          setLoading(false);
+        }
+      }
+    },
+    [team],
   );
+
+  const handleRefresh = useCallback(
+    async (id: number) => {
+      try {
+        setDisabled(false);
+        setRefreshing(true);
+        if (id === -1) {
+          const {
+            data: {payload, code},
+          }: {data: {payload: InvitationType[]; code: string}} =
+            await getMyApplications({
+              lastId: id,
+            });
+          setData(payload);
+          if (code === 'OK:LAST') {
+            setDisabled(true);
+          }
+        } else {
+          setLastId(-1);
+        }
+      } catch (e) {
+      } finally {
+        setRefreshing(false);
+      }
+    },
+    [team],
+  );
+
+  const renderItem = ({item}: {item: InvitationType}) => (
+    <TeamApplyItem
+      data={item}
+      onPress={(id: number) => {
+        console.log(id);
+      }}
+    />
+  );
+
+  useEffect(() => {
+    if (!disabled) {
+      getData(lastId);
+    }
+  }, [disabled, getData, lastId]);
 
   return loading ? (
     <ModifiedLoadingContainer>
@@ -60,6 +104,7 @@ function AppliedTeams() {
       data={data}
       refreshing={refreshing}
       renderItem={renderItem}
+      onRefresh={() => handleRefresh(lastId)}
       keyExtractor={item => item.id.toString()}
       onEndReached={() => {
         if (data.length !== 0) {
@@ -67,7 +112,7 @@ function AppliedTeams() {
         }
       }}
       ListEmptyComponent={
-        <ListEmptyComponent text="가입한 팀이 없습니다." paddingTop={20} />
+        <ListEmptyComponent text="가입신청한 팀이 없습니다." paddingTop={20} />
       }
       ItemSeparatorComponent={() => <View style={{height: 1}} />}
     />

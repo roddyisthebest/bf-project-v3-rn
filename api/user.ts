@@ -39,6 +39,12 @@ const getMyInvitations = ({
   lastId: number;
 }): Promise<AxiosResponse<response>> => api.get(`/user/invitation/${lastId}`);
 
+const getMyApplications = ({
+  lastId,
+}: {
+  lastId: number;
+}): Promise<AxiosResponse<response>> => api.get(`/user/application/${lastId}`);
+
 const getService = ({
   teamId,
 }: {
@@ -85,5 +91,6 @@ export {
   updateService,
   updatePayed,
   getMyInvitations,
+  getMyApplications,
   getMyThumbInvitations,
 };

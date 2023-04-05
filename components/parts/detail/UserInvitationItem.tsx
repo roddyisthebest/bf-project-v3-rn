@@ -38,7 +38,7 @@ function UserInvitationItem({
           source={{uri: `${data?.User?.img}`}}
           borderColor={colors.buttonBorderColor}
         />
-        <Text color="black" fontWeight={600} fontSize={25}>
+        <Text color="black" fontWeight={600} fontSize={20}>
           {data?.User?.name}
         </Text>
       </Column>

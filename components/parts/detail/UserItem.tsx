@@ -36,7 +36,7 @@ function UserItem({data}: {data: UserType}) {
           source={{uri: `${data.img}`}}
           borderColor={colors.buttonBorderColor}
         />
-        <Text color="black" fontWeight={600} fontSize={25}>
+        <Text color="black" fontWeight={600} fontSize={20}>
           {data.name}
         </Text>
         {team?.bossId === data.id && (

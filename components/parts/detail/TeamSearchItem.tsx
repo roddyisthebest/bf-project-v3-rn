@@ -78,7 +78,7 @@ function TeamSearchItem({data}: {data: TeamType}) {
           source={{uri: `http://192.168.123.104:3000/${data?.img}`}}
           borderColor={colors.buttonBorderColor}
         />
-        <Text color="black" fontWeight={600} fontSize={25}>
+        <Text color="black" fontWeight={600} fontSize={20}>
           {data?.name}
         </Text>
       </Column>

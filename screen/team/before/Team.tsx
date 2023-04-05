@@ -66,6 +66,7 @@ function Team() {
   useEffect(() => {
     if (flag) {
       setMyApplicationToState();
+      setMyInvitationsToState();
       setMyTeamsToState();
       setFlag(false);
     }

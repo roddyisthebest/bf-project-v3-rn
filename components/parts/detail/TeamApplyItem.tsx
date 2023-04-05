@@ -4,8 +4,7 @@ import dimension from '../../../styles/dimension';
 import {Image} from '../../basic/Image';
 import {colors} from '../../../styles/color';
 import {ButtonText, SmButton} from '../../basic/Button';
-import TeamType from '../../../types/TeamType';
-
+import InvitationType from '../../../types/InvitationType';
 const Container = styled.View<{paddingHorizontal: number}>`
   flex-direction: row;
   align-items: center;
@@ -26,7 +25,7 @@ function TeamApplyItem({
   data,
   onPress,
 }: {
-  data: TeamType;
+  data: InvitationType;
   onPress: (id: number) => void;
 }) {
   return (
@@ -36,11 +35,11 @@ function TeamApplyItem({
           width={30}
           height={30}
           borderRad={5}
-          source={{uri: `${data?.img}`}}
+          source={{uri: `http://192.168.123.104:3000/${data?.Team?.img}`}}
           borderColor={colors.buttonBorderColor}
         />
-        <Text color="black" fontWeight={600} fontSize={25}>
-          {data?.name}
+        <Text color="black" fontWeight={600} fontSize={20}>
+          {data?.Team?.name}
         </Text>
       </Column>
       <Column>
