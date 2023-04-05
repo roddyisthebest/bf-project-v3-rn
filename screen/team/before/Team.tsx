@@ -5,7 +5,11 @@ import InvitationContainer from '../../../components/container/Invitation';
 import {GapRowView} from '../../../components/basic/View';
 import {LoggedInParamList} from '../../../navigation/Root';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {getMyTeams, getMyThumbInvitations} from '../../../api/user';
+import {
+  getMyTeams,
+  getMyThumbInvitations,
+  getMyThumbTeams,
+} from '../../../api/user';
 import TeamType from '../../../types/TeamType';
 import {useRecoilState} from 'recoil';
 import {updateTeamFlag} from '../../../recoil/flag';
@@ -24,8 +28,8 @@ function Team() {
 
   const setMyTeamsToState = useCallback(async () => {
     try {
-      const {data} = await getMyTeams();
-      setMyTeams(data.payload.Teams as TeamType[]);
+      const {data} = await getMyThumbTeams();
+      setMyTeams(data.payload as TeamType[]);
     } catch (e) {
       console.log(e);
     }

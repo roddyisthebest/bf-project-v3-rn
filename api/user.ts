@@ -26,6 +26,9 @@ const adminLogin = ({
 const getMyTeams = (): Promise<AxiosResponse<response>> =>
   api.get('/user/myTeams');
 
+const getMyThumbTeams = (): Promise<AxiosResponse<response>> =>
+  api.get('/user/team/thumbnail');
+
 const getMyThumbInvitations = ({
   active,
 }: {
@@ -92,5 +95,6 @@ export {
   updatePayed,
   getMyInvitations,
   getMyApplications,
+  getMyThumbTeams,
   getMyThumbInvitations,
 };
