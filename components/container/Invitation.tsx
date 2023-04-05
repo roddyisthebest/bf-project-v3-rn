@@ -36,7 +36,7 @@ const MoreButtonText = styled.Text<{color: string}>`
 const ContentsSection = styled.View`
   flex-direction: row;
   column-gap: 10px;
-  min-height: 80px;
+  min-height: 110px;
 `;
 
 const EmptyView = styled.View`

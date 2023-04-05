@@ -9,7 +9,7 @@ import UserType from '../../../../types/UserType';
 import UserSearchItem from '../../../../components/parts/detail/UserSearchItem';
 import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyComponent';
 import dimension from '../../../../styles/dimension';
-import {getUsers} from '../../../../api/user';
+import {getUsers} from '../../../../api/search';
 import {addInvitation} from '../../../../api/team';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';

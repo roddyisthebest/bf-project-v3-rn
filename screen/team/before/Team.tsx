@@ -20,6 +20,7 @@ function Team() {
   const [flag, setFlag] = useRecoilState(updateTeamFlag);
   const [myTeams, setMyTeams] = useState<TeamType[]>([]);
   const [myInvitations, setMyInvitations] = useState<InvitationType[]>([]);
+  const [myApplications, setMyApplications] = useState<InvitationType[]>([]);
 
   const setMyTeamsToState = useCallback(async () => {
     try {
@@ -40,6 +41,15 @@ function Team() {
     }
   }, []);
 
+  const setMyApplicationToState = useCallback(async () => {
+    try {
+      const {data} = await getMyThumbInvitations({active: false});
+      setMyApplications(data.payload as InvitationType[]);
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => <MyInfo />,
@@ -50,10 +60,12 @@ function Team() {
   useEffect(() => {
     setMyTeamsToState();
     setMyInvitationsToState();
+    setMyApplicationToState();
   }, []);
 
   useEffect(() => {
     if (flag) {
+      setMyApplicationToState();
       setMyTeamsToState();
       setFlag(false);
     }
@@ -81,10 +93,10 @@ function Team() {
             type: 'invitation',
           }}
         />
-        <TeamContainer
+        <InvitationContainer
           props={{
             title: '가입 신청한 팀 😘',
-            data: [],
+            data: myApplications,
             type: 'apply',
           }}
         />
