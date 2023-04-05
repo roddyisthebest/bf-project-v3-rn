@@ -23,8 +23,11 @@ const adminLogin = ({
 }): Promise<AxiosResponse<response>> =>
   api.post('/user/signin', {uid, password});
 
-const getMyTeams = (): Promise<AxiosResponse<response>> =>
-  api.get('/user/myTeams');
+const getMyTeams = ({
+  lastId,
+}: {
+  lastId: number;
+}): Promise<AxiosResponse<response>> => api.get(`/user/team/lastId/${lastId}`);
 
 const getMyThumbTeams = (): Promise<AxiosResponse<response>> =>
   api.get('/user/team/thumbnail');

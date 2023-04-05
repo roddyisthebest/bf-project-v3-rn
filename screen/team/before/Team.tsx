@@ -5,11 +5,7 @@ import InvitationContainer from '../../../components/container/Invitation';
 import {GapRowView} from '../../../components/basic/View';
 import {LoggedInParamList} from '../../../navigation/Root';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {
-  getMyTeams,
-  getMyThumbInvitations,
-  getMyThumbTeams,
-} from '../../../api/user';
+import {getMyThumbInvitations, getMyThumbTeams} from '../../../api/user';
 import TeamType from '../../../types/TeamType';
 import {useRecoilState} from 'recoil';
 import {updateTeamFlag} from '../../../recoil/flag';

@@ -1,5 +1,5 @@
 import {FlatList, ActivityIndicator, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
 import {LoadingContainer} from '../../../../components/basic/View';
@@ -8,6 +8,7 @@ import {colors} from '../../../../styles/color';
 import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyComponent';
 import TeamType from '../../../../types/TeamType';
 import TeamItem from '../../../../components/parts/detail/TeamItem';
+import {getMyTeams} from '../../../../api/user';
 
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
@@ -16,40 +17,74 @@ const ModifiedLoadingContainer = styled(LoadingContainer)`
 
 function MyTeams() {
   const {team} = useRecoilValue(rstMyInfo);
-  const date = new Date();
 
-  const [data, setData] = useState<TeamType[]>([
-    {
-      bossId: 1,
-      createdAt: date,
-      deletedAt: date,
-      id: 1,
-      img: 'https://gdimg.gmarket.co.kr/835583398/still/400?ver=1629339046',
-      introducing: 'asdasda',
-      name: '티샤츄',
-      updatedAt: date,
-      userteam: null,
-    },
-    {
-      bossId: 1,
-      createdAt: date,
-      deletedAt: date,
-      id: 2,
-      img: 'https://gdimg.gmarket.co.kr/835583398/still/400?ver=1629339046',
-      introducing: 'asdasda',
-      name: '티샤츄',
-      updatedAt: date,
-      userteam: null,
-    },
-  ]);
+  const [data, setData] = useState<TeamType[]>([]);
   const [lastId, setLastId] = useState<number>(-1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [disabled, setDisabled] = useState<boolean>(false);
 
-  const renderItem = ({item}: {item: TeamType}) => (
-    <TeamItem data={item} onPress={() => {}} />
+  const getData = useCallback(
+    async (id: number) => {
+      try {
+        const {
+          data: {payload, code},
+        }: {data: {payload: TeamType[]; code: string}} = await getMyTeams({
+          lastId: id,
+        });
+
+        if (code === 'OK:LAST') {
+          setDisabled(true);
+        }
+        if (id === -1) {
+          setData(payload);
+        } else {
+          setData(prev => [...prev, ...payload]);
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        if (loading) {
+          setLoading(false);
+        }
+      }
+    },
+    [team],
   );
+
+  const handleRefresh = useCallback(
+    async (id: number) => {
+      try {
+        setDisabled(false);
+        setRefreshing(true);
+        if (id === -1) {
+          const {
+            data: {payload, code},
+          }: {data: {payload: TeamType[]; code: string}} = await getMyTeams({
+            lastId: id,
+          });
+          setData(payload);
+          if (code === 'OK:LAST') {
+            setDisabled(true);
+          }
+        } else {
+          setLastId(-1);
+        }
+      } catch (e) {
+      } finally {
+        setRefreshing(false);
+      }
+    },
+    [team],
+  );
+
+  const renderItem = ({item}: {item: TeamType}) => <TeamItem data={item} />;
+
+  useEffect(() => {
+    if (!disabled) {
+      getData(lastId);
+    }
+  }, [disabled, getData, lastId]);
 
   return loading ? (
     <ModifiedLoadingContainer>
@@ -66,6 +101,7 @@ function MyTeams() {
           setLastId(data[data.length - 1].id);
         }
       }}
+      onRefresh={() => handleRefresh(lastId)}
       ListEmptyComponent={
         <ListEmptyComponent text="가입한 팀이 없습니다." paddingTop={20} />
       }
