@@ -205,7 +205,7 @@ function Pray({data}: {data: UserType}) {
       <Contents
         paddingHorizontal={0}
         paddingVertical={0}
-        marginTop={15}
+        marginTop={prays.length !== 0 ? 15 : 0}
         marginBottom={0}
         gap={20}>
         {prays?.map((pray, index) => (
