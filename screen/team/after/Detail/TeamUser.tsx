@@ -1,8 +1,8 @@
-import {ActivityIndicator, FlatList} from 'react-native';
+import {ActivityIndicator, Alert, FlatList} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import UserType from '../../../../types/UserType';
 import UserItem from '../../../../components/parts/detail/UserItem';
-import {getTeamMates} from '../../../../api/team';
+import {dropout, getTeamMates} from '../../../../api/team';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
 import {colors} from '../../../../styles/color';
@@ -16,8 +16,6 @@ const ModifiedLoadingContainer = styled(LoadingContainer)`
 `;
 
 function TeamUser() {
-  const date = new Date();
-
   const {team} = useRecoilValue(rstMyInfo);
 
   const [lastId, setLastId] = useState<number>(-1);
@@ -81,13 +79,41 @@ function TeamUser() {
     [team],
   );
 
+  const deleteUserFromState = useCallback(
+    (id: number) => {
+      Alert.alert('회원 강퇴', '정말 강퇴하시겠습니까?', [
+        {
+          onPress: () => {},
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          onPress: async () => {
+            try {
+              await dropout({teamId: team?.id as number, userId: id});
+              setData(prev => prev.filter(user => user.id !== id));
+              Alert.alert('강퇴하였습니다.');
+            } catch (e) {
+              console.log(e);
+            }
+          },
+          text: '강퇴',
+          style: 'destructive',
+        },
+      ]);
+    },
+    [team],
+  );
+
   useEffect(() => {
     if (!disabled) {
       getData(lastId);
     }
   }, [disabled, getData, lastId]);
 
-  const renderItem = ({item}: {item: UserType}) => <UserItem data={item} />;
+  const renderItem = ({item}: {item: UserType}) => (
+    <UserItem data={item} onPress={deleteUserFromState} />
+  );
   return loading ? (
     <ModifiedLoadingContainer>
       <ActivityIndicator color={colors.loadingIconColor} size={25} />

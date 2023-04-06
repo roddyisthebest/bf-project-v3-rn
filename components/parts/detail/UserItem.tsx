@@ -23,8 +23,14 @@ const Column = styled.View`
 `;
 const Text = styled(ButtonText)``;
 
-function UserItem({data}: {data: UserType}) {
-  const {team} = useRecoilValue(rstMyInfo);
+function UserItem({
+  data,
+  onPress,
+}: {
+  data: UserType;
+  onPress: (id: number) => void;
+}) {
+  const userInfo = useRecoilValue(rstMyInfo);
 
   return (
     <Container paddingHorizontal={dimension.paddingHorizontal}>
@@ -39,20 +45,24 @@ function UserItem({data}: {data: UserType}) {
         <Text color="black" fontWeight={600} fontSize={20}>
           {data.name}
         </Text>
-        {team?.bossId === data.id && (
+        {userInfo?.team?.bossId === data.id && (
           <Icon name="crown-circle" color="#FFE600" size={25} />
         )}
       </Column>
-      {team?.bossId !== data.id && (
-        <SmButton bkg={colors.prayButtonDeleteBkgColor} radius={8}>
-          <ButtonText
-            color={colors.prayButtonDeleteTextColor}
-            fontSize={13}
-            fontWeight={400}>
-            강퇴하기
-          </ButtonText>
-        </SmButton>
-      )}
+      {userInfo?.team?.bossId !== data.id &&
+        userInfo?.team?.bossId === userInfo?.user?.id && (
+          <SmButton
+            bkg={colors.prayButtonDeleteBkgColor}
+            radius={8}
+            onPress={() => onPress(data.id)}>
+            <ButtonText
+              color={colors.prayButtonDeleteTextColor}
+              fontSize={13}
+              fontWeight={400}>
+              강퇴하기
+            </ButtonText>
+          </SmButton>
+        )}
     </Container>
   );
 }

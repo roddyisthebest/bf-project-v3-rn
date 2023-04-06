@@ -133,6 +133,15 @@ const setApproveApplication = ({
 }): Promise<AxiosResponse<response>> =>
   api.post('/team/application/approve', {id, teamId});
 
+const dropout = ({
+  teamId,
+  userId,
+}: {
+  teamId: number;
+  userId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.delete(`/team/${teamId}/dropout/${userId}`);
+
 export {
   addTeam,
   getTeam,
@@ -146,4 +155,5 @@ export {
   setApproveInvitation,
   setApproveApplication,
   addApplication,
+  dropout,
 };

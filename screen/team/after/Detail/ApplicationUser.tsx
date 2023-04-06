@@ -121,7 +121,9 @@ function ApplicationUser() {
               await deleteInvitation({id});
               setData(prev => prev?.filter(pray => pray.id !== id));
               Alert.alert('가입 신청이 거절 되었습니다.');
-            } catch (e) {}
+            } catch (e) {
+              console.log(e);
+            }
           },
           style: 'destructive',
         },
