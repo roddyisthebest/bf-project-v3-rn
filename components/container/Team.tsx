@@ -59,12 +59,14 @@ function Team({
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const onPress = useCallback(() => {
-    if (props.type === 'default') {
-      navigation.navigate('Team', {screen: 'MyTeams'});
-    } else if (props.type === 'invitation') {
-      navigation.navigate('Team', {screen: 'InvitedTeams'});
-    } else if (props.type === 'apply') {
-      navigation.navigate('Team', {screen: 'AppliedTeams'});
+    if (props.data.length !== 0) {
+      if (props.type === 'default') {
+        navigation.navigate('Team', {screen: 'MyTeams'});
+      } else if (props.type === 'invitation') {
+        navigation.navigate('Team', {screen: 'InvitedTeams'});
+      } else if (props.type === 'apply') {
+        navigation.navigate('Team', {screen: 'AppliedTeams'});
+      }
     }
   }, [props]);
 
@@ -72,14 +74,10 @@ function Team({
 
   return (
     <Container bottomColor={colors.itemBorderBottomColor}>
-      <TitleSection>
+      <TitleSection onPress={onPress}>
         <TitleText>{props.title}</TitleText>
         {props.data.length !== 0 && (
-          <Pressable onPress={onPress}>
-            <MoreButtonText color={colors.moreButtonColor}>
-              더보기
-            </MoreButtonText>
-          </Pressable>
+          <MoreButtonText color={colors.moreButtonColor}>더보기</MoreButtonText>
         )}
       </TitleSection>
       <ContentsSection>
