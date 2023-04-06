@@ -10,7 +10,7 @@ import TeamApplyItem from '../../../../components/parts/detail/TeamApplyItem';
 import InvitationType from '../../../../types/InvitationType';
 import {getMyApplications} from '../../../../api/user';
 import {deleteInvitation} from '../../../../api/team';
-import {updateTeamFlag} from '../../../../recoil/flag';
+import {rstTeamFlag} from '../../../../recoil/flag';
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
   padding-top: 20px;
@@ -18,7 +18,7 @@ const ModifiedLoadingContainer = styled(LoadingContainer)`
 
 function AppliedTeams() {
   const {team} = useRecoilValue(rstMyInfo);
-  const setFlag = useSetRecoilState(updateTeamFlag);
+  const setFlag = useSetRecoilState(rstTeamFlag);
 
   const [data, setData] = useState<InvitationType[]>([]);
   const [lastId, setLastId] = useState<number>(-1);
@@ -95,7 +95,15 @@ function AppliedTeams() {
         onPress: async () => {
           await deleteInvitation({id});
           setData(prev => prev?.filter(pray => pray.id !== id));
-          setFlag(true);
+          setFlag(prev => ({
+            home: {
+              update: {
+                application: true,
+                invitation: prev.home.update.invitation,
+                myteam: prev.home.update.myteam,
+              },
+            },
+          }));
           Alert.alert('가입신청이 취소 되었습니다.');
         },
         style: 'destructive',

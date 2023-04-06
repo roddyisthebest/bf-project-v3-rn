@@ -17,7 +17,7 @@ import {ButtonText} from '../../../../components/basic/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import FileType from '../../../../types/FileType';
 import {getTeam, updateTeam} from '../../../../api/team';
-import {myInfoType, rstMyInfo} from '../../../../recoil/user';
+import {rstMyInfoType, rstMyInfo} from '../../../../recoil/user';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
@@ -99,7 +99,7 @@ function Profile() {
       const dataString = await EncryptedStorage.getItem(
         EncryptedStorageKeyList.USERINFO,
       );
-      const parsedData: myInfoType = JSON.parse(dataString as string);
+      const parsedData: rstMyInfoType = JSON.parse(dataString as string);
 
       parsedData.team = data.payload;
       await EncryptedStorage.setItem(

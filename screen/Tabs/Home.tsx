@@ -5,7 +5,7 @@ import Tweet from '../../components/card/Tweet';
 import {deleteTweet, getTweets} from '../../api/tweet';
 import {useRecoilValue, useRecoilState} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
-import {addTweetFlag} from '../../recoil/flag';
+import {rstTweetFlag} from '../../recoil/flag';
 import {LoadingContainer} from '../../components/basic/View';
 import {colors} from '../../styles/color';
 import ListEmptyComponent from '../../components/parts/tabs/ListEmptyComponent';
@@ -13,7 +13,7 @@ function Home() {
   const ref = useRef<FlatList>(null);
 
   const userInfo = useRecoilValue(rstMyInfo);
-  const [flag, setFlag] = useRecoilState(addTweetFlag);
+  const [flag, setFlag] = useRecoilState(rstTweetFlag);
 
   const [data, setData] = useState<TweetType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -58,9 +58,7 @@ function Home() {
           id,
           userInfo.team?.id as number,
         );
-        payload.map(p => {
-          console.log(p.id);
-        });
+
         if (code === 'OK:LAST') {
           setDisabled(true);
         }
@@ -118,12 +116,13 @@ function Home() {
   }, [getData, lastId, disabled]);
 
   useEffect(() => {
-    if (flag) {
+    if (flag.upload) {
       onRefresh();
       ref.current?.scrollToOffset({animated: true, offset: 0});
-      setFlag(false);
+      setFlag({upload: false});
+      console.log('home 업로드 플래그!');
     }
-  }, [flag, onRefresh, setFlag]);
+  }, [flag.upload, onRefresh, setFlag]);
 
   const renderItem = ({item}: {item: TweetType}) => (
     <Tweet data={item} deleteFuc={delTweet} />

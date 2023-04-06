@@ -2,14 +2,11 @@ import React, {useCallback} from 'react';
 import styled from 'styled-components/native';
 import FastImage from 'react-native-fast-image';
 import {colors} from '../../styles/color';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from '../../navigation/Root';
-import {useRecoilState, useSetRecoilState} from 'recoil';
-import {rstMyInfo} from '../../recoil/user';
+import {useSetRecoilState} from 'recoil';
 import InvitationType from '../../types/InvitationType';
 import {Alert} from 'react-native';
 import {setApprove} from '../../api/team';
-import {updateTeamFlag} from '../../recoil/flag';
+import {rstTeamFlag} from '../../recoil/flag';
 
 const Container = styled.TouchableOpacity<{buttonBorderColor: string}>`
   border-radius: 10px;
@@ -23,7 +20,7 @@ const Image = styled(FastImage)`
   border-radius: 10px;
 `;
 function Invitation({data, active}: {data: InvitationType; active: boolean}) {
-  const setFlag = useSetRecoilState(updateTeamFlag);
+  const setFlag = useSetRecoilState(rstTeamFlag);
 
   console.log(data);
   const onPress = useCallback(async () => {
@@ -42,7 +39,15 @@ function Invitation({data, active}: {data: InvitationType; active: boolean}) {
             onPress: async () => {
               try {
                 await setApprove({id: data?.id});
-                setFlag(true);
+                setFlag(prev => ({
+                  home: {
+                    update: {
+                      myteam: true,
+                      invitation: true,
+                      application: prev.home.update.application,
+                    },
+                  },
+                }));
                 Alert.alert(
                   `팀 ${data?.Team?.name}에 성공적으로 가입되었습니다.`,
                 );

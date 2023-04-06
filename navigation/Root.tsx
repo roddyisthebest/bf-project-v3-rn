@@ -6,9 +6,9 @@ import StackNav from './Stack';
 import TeamNav from './Team';
 import UserNav from './User';
 import {useRecoilState, useSetRecoilState} from 'recoil';
-import {isLoggedIn} from '../recoil/auth';
+import {rstAuth} from '../recoil/auth';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {myInfoType, rstMyInfo} from '../recoil/user';
+import {rstMyInfoType, rstMyInfo} from '../recoil/user';
 import {
   CommonActions,
   NavigationProp,
@@ -68,7 +68,7 @@ export enum EncryptedStorageKeyList {
 const Nav = createNativeStackNavigator();
 
 const Root = () => {
-  const [loggedIn, setLoggedIn] = useRecoilState(isLoggedIn);
+  const [rstAuthState, setRstAuthState] = useRecoilState(rstAuth);
   const setRstMyInfo = useSetRecoilState(rstMyInfo);
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
@@ -77,10 +77,10 @@ const Root = () => {
       EncryptedStorageKeyList.USERINFO,
     );
     if (userInfoString) {
-      const userInfo: myInfoType = JSON.parse(userInfoString);
+      const userInfo: rstMyInfoType = JSON.parse(userInfoString);
       setRstMyInfo(userInfo);
       await setTokenToAxios();
-      setLoggedIn(true);
+      setRstAuthState(true);
       if (userInfo.team) {
         try {
           await getService({teamId: userInfo.team.id});
@@ -103,7 +103,7 @@ const Root = () => {
         }
       }
     }
-  }, [setLoggedIn, setRstMyInfo, navigation]);
+  }, [setRstAuthState, setRstMyInfo, navigation]);
 
   useEffect(() => {
     getUserInfo();
@@ -116,7 +116,7 @@ const Root = () => {
         headerShown: false,
         headerTitleAlign: 'center',
       }}>
-      {loggedIn ? (
+      {rstAuthState ? (
         <>
           <Nav.Screen
             name="Team"

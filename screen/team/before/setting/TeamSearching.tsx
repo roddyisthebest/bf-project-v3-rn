@@ -105,7 +105,6 @@ function TeamSearching() {
         keyword,
         lastId,
       );
-      console.log(payload);
       if (code === 'OK:LAST') {
         setDisabled(true);
       }
@@ -176,7 +175,6 @@ function TeamSearching() {
       stickyHeaderIndices={[0]}
       onEndReached={() => {
         if (data.length !== 0) {
-          console.log(data[data.length - 1].id);
           setLastId(data[data.length - 1].id);
         }
       }}

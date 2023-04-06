@@ -10,13 +10,9 @@ import TeamInvitationItem from '../../../../components/parts/detail/TeamInvitati
 import InvitationType from '../../../../types/InvitationType';
 import {getMyInvitations} from '../../../../api/user';
 import {deleteInvitation, setApprove} from '../../../../api/team';
-import {
-  CommonActions,
-  NavigationProp,
-  useNavigation,
-} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../../../navigation/Root';
-import {updateTeamFlag} from '../../../../recoil/flag';
+import {rstTeamFlag} from '../../../../recoil/flag';
 
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
@@ -25,7 +21,7 @@ const ModifiedLoadingContainer = styled(LoadingContainer)`
 
 function InvitedTeams() {
   const {team} = useRecoilValue(rstMyInfo);
-  const setFlag = useSetRecoilState(updateTeamFlag);
+  const setFlag = useSetRecoilState(rstTeamFlag);
 
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
@@ -101,13 +97,15 @@ function InvitedTeams() {
         onPress: async () => {
           try {
             await setApprove({id});
-            setFlag(true);
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{name: 'Team'}],
-              }),
-            );
+            setFlag(prev => ({
+              home: {
+                update: {
+                  invitation: true,
+                  application: prev.home.update.application,
+                  myteam: prev.home.update.myteam,
+                },
+              },
+            }));
             Alert.alert('팀에 성공적으로 가입되었습니다.');
           } catch (e) {
             console.log(e);
@@ -131,7 +129,15 @@ function InvitedTeams() {
           try {
             await deleteInvitation({id});
             setData(prev => prev?.filter(pray => pray.id !== id));
-            setFlag(true);
+            setFlag(prev => ({
+              home: {
+                update: {
+                  invitation: true,
+                  application: prev.home.update.application,
+                  myteam: prev.home.update.myteam,
+                },
+              },
+            }));
             Alert.alert('삭제되었습니다.');
           } catch (e) {
             console.log(e);

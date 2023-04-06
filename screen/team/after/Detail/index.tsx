@@ -13,18 +13,18 @@ import Layout from '../../../../components/layout';
 import {GapRowView} from '../../../../components/basic/View';
 import DetailHeader from '../../../../components/container/DetailHeader';
 import {useRecoilValue, useRecoilState, useSetRecoilState} from 'recoil';
-import {myInfoType, rstMyInfo} from '../../../../recoil/user';
+import {rstMyInfoType, rstMyInfo} from '../../../../recoil/user';
 import TeamType from '../../../../types/TeamType';
 import {ButtonText, SmButton} from '../../../../components/basic/Button';
 import {colors} from '../../../../styles/color';
 import NavItem from '../../../../components/parts/detail/NavItem';
 import {deleteTeam} from '../../../../api/team';
 import EncryptedStorage from 'react-native-encrypted-storage/';
-import {updateTeamFlag} from '../../../../recoil/flag';
+import {rstTeamFlag} from '../../../../recoil/flag';
 function Detail() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
   const [userInfo, setUserInfo] = useRecoilState(rstMyInfo);
-  const setFlag = useSetRecoilState(updateTeamFlag);
+  const setFlag = useSetRecoilState(rstTeamFlag);
   const data = [
     {
       id: 1,
@@ -69,7 +69,9 @@ function Detail() {
                 EncryptedStorageKeyList.USERINFO,
               );
 
-              const parsedData: myInfoType = JSON.parse(stringData as string);
+              const parsedData: rstMyInfoType = JSON.parse(
+                stringData as string,
+              );
 
               parsedData.team = null;
 
@@ -78,7 +80,15 @@ function Detail() {
                 JSON.stringify(parsedData),
               );
 
-              setFlag(true);
+              setFlag(() => ({
+                home: {
+                  update: {
+                    application: true,
+                    invitation: true,
+                    myteam: true,
+                  },
+                },
+              }));
               navigation.dispatch(
                 CommonActions.reset({
                   index: 0,

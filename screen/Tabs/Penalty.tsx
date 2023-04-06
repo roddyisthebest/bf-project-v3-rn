@@ -78,6 +78,7 @@ function PenaltyView() {
       getData(lastId);
     }
   }, [disabled, getData, lastId]);
+
   return (
     <FlatList
       data={data}

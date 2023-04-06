@@ -10,7 +10,7 @@ import Division from '../../components/basic/Division';
 import {Label, Input} from '../../components/basic/Input';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 import {useSetRecoilState} from 'recoil';
-import {isLoggedIn} from '../../recoil/auth';
+import {rstAuth} from '../../recoil/auth';
 import {
   getProfile as getProfileWithKakao,
   login,
@@ -34,7 +34,7 @@ const HeaderText = styled.Text`
 `;
 
 function Login() {
-  const setLoggedIn = useSetRecoilState(isLoggedIn);
+  const setRstAuth = useSetRecoilState(rstAuth);
   const setMyInfo = useSetRecoilState(rstMyInfo);
 
   const [uid, setUid] = useState<string>('');
@@ -79,16 +79,15 @@ function Login() {
         team: info.team,
       }));
 
-      setLoggedIn(true);
+      setRstAuth(true);
     },
-    [setLoggedIn, setMyInfo],
+    [setRstAuth, setMyInfo],
   );
 
   const kakaoLogin = useCallback(async () => {
     try {
       await login();
       const res = await getProfileWithKakao();
-      console.log(res);
 
       const {data} = await snsLogin({
         uid: res.id,
@@ -97,7 +96,6 @@ function Login() {
         oauth: 'kakao',
       });
 
-      console.log(data);
       setAtom({
         refreshToken: data.payload.token.refreshToken,
         accessToken: data.payload.token.accessToken,

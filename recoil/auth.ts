@@ -5,7 +5,7 @@ export interface TokensObject {
   accessToken: string;
 }
 
-export const isLoggedIn = atom<boolean>({
-  key: 'isLoggedIn',
+export const rstAuth = atom<boolean>({
+  key: 'rstAuth',
   default: false,
 });

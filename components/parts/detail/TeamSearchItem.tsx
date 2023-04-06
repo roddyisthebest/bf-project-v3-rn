@@ -7,13 +7,9 @@ import {colors} from '../../../styles/color';
 import {ButtonText, SmButton} from '../../basic/Button';
 import TeamType from '../../../types/TeamType';
 import {addApplication} from '../../../api/team';
-import {updateTeamFlag} from '../../../recoil/flag';
+import {rstTeamFlag} from '../../../recoil/flag';
 import {useSetRecoilState} from 'recoil';
-import {
-  CommonActions,
-  NavigationProp,
-  useNavigation,
-} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../../navigation/Root';
 import {AxiosError} from 'axios';
 const Container = styled.View<{paddingHorizontal: number}>`
@@ -32,7 +28,7 @@ const Column = styled.View`
 const Text = styled(ButtonText)``;
 
 function TeamSearchItem({data}: {data: TeamType}) {
-  const setFlag = useSetRecoilState(updateTeamFlag);
+  const setFlag = useSetRecoilState(rstTeamFlag);
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const applyForTeam = useCallback(async () => {
@@ -48,13 +44,15 @@ function TeamSearchItem({data}: {data: TeamType}) {
           text: '신청',
           onPress: async () => {
             await addApplication({teamId: data?.id as number});
-            setFlag(true);
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{name: 'Team'}],
-              }),
-            );
+            setFlag(prev => ({
+              home: {
+                update: {
+                  myteam: prev.home.update.myteam,
+                  application: true,
+                  invitation: prev.home.update.invitation,
+                },
+              },
+            }));
             Alert.alert(`${data?.name} (팀)에 가입신청 하였습니다!`);
           },
           style: 'default',

@@ -16,7 +16,9 @@ import Preview from '../parts/tabs/Preview';
 import {useSetRecoilState} from 'recoil';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import {addTweet} from '../../api/tweet';
-import {addTweetFlag} from '../../recoil/flag';
+import {rstTweetFlag} from '../../recoil/flag';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {LoggedInParamList} from '../../navigation/Root';
 
 const Container = styled.View<{minHeight: number}>`
   min-height: ${props => `${props.minHeight}px`};
@@ -68,11 +70,13 @@ const BtnsWrapper = styled(ColumnSection)`
 
 const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
   const myInfo = useRecoilValue(rstMyInfo);
-  const setFlag = useSetRecoilState(addTweetFlag);
+  const setFlag = useSetRecoilState(rstTweetFlag);
 
   const [file, setFile] = useState<FileType | null>(null);
   const [content, setContent] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
+
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   useEffect(() => {
     setDisabled(file === null && content.length === 0);
@@ -125,8 +129,8 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
       } else if ((res.status as number) === 200) {
         //ok
         console.log('ok');
-        setFlag(true);
-
+        setFlag({upload: true});
+        navigation.navigate('Tabs', {screen: 'Home'});
         (ref as React.RefObject<ActionSheetRef>).current?.hide();
       }
     } catch (e) {

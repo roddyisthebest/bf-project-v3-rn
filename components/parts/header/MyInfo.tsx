@@ -10,7 +10,7 @@ import {Item} from '../../basic/List';
 import {ButtonText} from '../../basic/Button';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-import {isLoggedIn} from '../../../recoil/auth';
+import {rstAuth} from '../../../recoil/auth';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../../navigation/Root';
 
@@ -31,15 +31,15 @@ function MyInfo() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const myInfo = useRecoilValue(rstMyInfo);
-  const resetMyInfo = useResetRecoilState(rstMyInfo);
-  const resetAuth = useResetRecoilState(isLoggedIn);
+  const resetRstMyInfo = useResetRecoilState(rstMyInfo);
+  const resetRstAuth = useResetRecoilState(rstAuth);
 
   const actionSheetRef = useRef<ActionSheetRef>(null);
 
   const logout = async () => {
     await EncryptedStorage.clear();
-    resetMyInfo();
-    resetAuth();
+    resetRstMyInfo();
+    resetRstAuth();
   };
   const goToDetail = () => {
     navigation.navigate('User', {screen: 'Detail'});

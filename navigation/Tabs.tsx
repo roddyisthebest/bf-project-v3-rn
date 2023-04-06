@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../screen/tabs/Home';
 import Pray from '../screen/tabs/Pray';
@@ -10,25 +10,11 @@ import MyTeamInfo from '../components/parts/header/MyTeamInfo';
 import UploadButton from '../components/parts/tabs/UploadButton';
 import UploadModal from '../components/modal/UploadModal';
 import {ActionSheetRef} from 'react-native-actions-sheet';
-import {useRecoilValue} from 'recoil';
-import {addTweetFlag} from '../recoil/flag';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from './Root';
 
 const Tab = createBottomTabNavigator();
 
 const TabsNav = () => {
   const actionSheetRef = useRef<ActionSheetRef>(null);
-  const rstFlag = useRecoilValue(addTweetFlag);
-
-  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
-
-  useEffect(() => {
-    if (rstFlag) {
-      console.log('upupupp');
-      navigation.navigate('Tabs', {screen: 'Home'});
-    }
-  }, [rstFlag, navigation]);
 
   return (
     <>
