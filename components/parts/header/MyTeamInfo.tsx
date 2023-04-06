@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useCallback, useRef} from 'react';
 import FastImage from 'react-native-fast-image';
 import styled from 'styled-components/native';
 import {ActionSheetIOS, Platform} from 'react-native';
@@ -38,6 +38,31 @@ function MyTeamInfo() {
   const [myInfo, setMyInfo] = useRecoilState(rstMyInfo);
 
   const actionSheetRef = useRef<ActionSheetRef>(null);
+
+  const goToDetail = useCallback(
+    () => navigation.navigate('Team', {screen: 'Detail'}),
+    [navigation],
+  );
+
+  const goToUserSetting = useCallback(
+    () => navigation.navigate('Team', {screen: 'UserSetting'}),
+    [navigation],
+  );
+
+  const teamReset = useCallback(async () => {
+    await EncryptedStorage.setItem(
+      EncryptedStorageKeyList.USERINFO,
+      JSON.stringify({user: myInfo.user, team: null}),
+    );
+    setMyInfo(prev => ({user: prev.user, team: null}));
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Team', params: {screen: 'Home'}}],
+      }),
+    );
+  }, [navigation, setMyInfo]);
+
   const onPress = () => {
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
@@ -49,21 +74,11 @@ function MyTeamInfo() {
         },
         async buttonIndex => {
           if (buttonIndex === 1) {
-            navigation.navigate('Team', {screen: 'Detail'});
+            goToDetail();
           } else if (buttonIndex === 2) {
-            navigation.navigate('Team', {screen: 'UserSetting'});
+            goToUserSetting();
           } else if (buttonIndex === 3) {
-            await EncryptedStorage.setItem(
-              EncryptedStorageKeyList.USERINFO,
-              JSON.stringify({user: myInfo.user, team: null}),
-            );
-            setMyInfo(prev => ({user: prev.user, team: null}));
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{name: 'Team', params: {screen: 'Home'}}],
-              }),
-            );
+            teamReset();
           }
         },
       );
@@ -83,9 +98,7 @@ function MyTeamInfo() {
       <ActionSheet ref={actionSheetRef} gestureEnabled={true}>
         <Item
           borderColor={colors.bottomSheetItemBorderColor}
-          onPress={() => {
-            navigation.navigate('Team', {screen: 'Detail'});
-          }}>
+          onPress={goToDetail}>
           <ButtonText
             color={colors.positiveColor}
             fontSize={15}
@@ -93,7 +106,9 @@ function MyTeamInfo() {
             팀 정보
           </ButtonText>
         </Item>
-        <Item borderColor={colors.bottomSheetItemBorderColor}>
+        <Item
+          borderColor={colors.bottomSheetItemBorderColor}
+          onPress={goToUserSetting}>
           <ButtonText
             color={colors.positiveColor}
             fontSize={15}
@@ -101,7 +116,9 @@ function MyTeamInfo() {
             팀원 초대
           </ButtonText>
         </Item>
-        <Item borderColor={colors.bottomSheetItemBorderColor}>
+        <Item
+          borderColor={colors.bottomSheetItemBorderColor}
+          onPress={teamReset}>
           <ButtonText
             color={colors.negativeColor}
             fontSize={15}
