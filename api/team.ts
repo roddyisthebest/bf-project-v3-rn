@@ -142,6 +142,12 @@ const dropout = ({
 }): Promise<AxiosResponse<response>> =>
   api.delete(`/team/${teamId}/dropout/${userId}`);
 
+const withdraw = ({
+  teamId,
+}: {
+  teamId: number;
+}): Promise<AxiosResponse<response>> => api.delete(`/team/${teamId}/withdraw`);
+
 export {
   addTeam,
   getTeam,
@@ -156,4 +162,5 @@ export {
   setApproveApplication,
   addApplication,
   dropout,
+  withdraw,
 };

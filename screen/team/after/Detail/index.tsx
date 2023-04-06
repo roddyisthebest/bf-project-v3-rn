@@ -18,7 +18,7 @@ import TeamType from '../../../../types/TeamType';
 import {ButtonText, SmButton} from '../../../../components/basic/Button';
 import {colors} from '../../../../styles/color';
 import NavItem from '../../../../components/parts/detail/NavItem';
-import {deleteTeam} from '../../../../api/team';
+import {deleteTeam, withdraw} from '../../../../api/team';
 import EncryptedStorage from 'react-native-encrypted-storage/';
 import {rstTeamFlag} from '../../../../recoil/flag';
 function Detail() {
@@ -56,6 +56,65 @@ function Detail() {
     },
   ];
 
+  const resetTeam = async () => {
+    const stringData = await EncryptedStorage.getItem(
+      EncryptedStorageKeyList.USERINFO,
+    );
+
+    const parsedData: rstMyInfoType = JSON.parse(stringData as string);
+
+    parsedData.team = null;
+
+    await EncryptedStorage.setItem(
+      EncryptedStorageKeyList.USERINFO,
+      JSON.stringify(parsedData),
+    );
+
+    setFlag(() => ({
+      home: {
+        update: {
+          application: true,
+          invitation: true,
+          myteam: true,
+        },
+      },
+    }));
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Team'}],
+      }),
+    );
+    setUserInfo(prev => ({team: null, user: prev.user}));
+  };
+
+  const withdrawTeam = useCallback(() => {
+    Alert.alert(
+      '팀 탈퇴',
+      `정말로 팀 ${userInfo?.team?.name} 탈퇴하시겠습니까?`,
+      [
+        {
+          text: '취소',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: '탈퇴',
+          onPress: async () => {
+            try {
+              await withdraw({teamId: userInfo?.team?.id as number});
+              resetTeam();
+              Alert.alert('탈퇴되었습니다.');
+            } catch (e) {
+              console.log(e);
+            }
+          },
+          style: 'destructive',
+        },
+      ],
+    );
+  }, []);
+
   const destoryTeam = useCallback(async () => {
     Alert.alert(
       '팀 삭제',
@@ -71,39 +130,8 @@ function Detail() {
           onPress: async () => {
             try {
               await deleteTeam({id: userInfo?.team?.id as number});
-
-              const stringData = await EncryptedStorage.getItem(
-                EncryptedStorageKeyList.USERINFO,
-              );
-
-              const parsedData: rstMyInfoType = JSON.parse(
-                stringData as string,
-              );
-
-              parsedData.team = null;
-
-              await EncryptedStorage.setItem(
-                EncryptedStorageKeyList.USERINFO,
-                JSON.stringify(parsedData),
-              );
-
-              setFlag(() => ({
-                home: {
-                  update: {
-                    application: true,
-                    invitation: true,
-                    myteam: true,
-                  },
-                },
-              }));
-              navigation.dispatch(
-                CommonActions.reset({
-                  index: 0,
-                  routes: [{name: 'Team'}],
-                }),
-              );
+              resetTeam();
               Alert.alert('삭제되었습니다.');
-              setUserInfo(prev => ({team: null, user: prev.user}));
             } catch (e) {}
           },
           style: 'destructive',
@@ -131,12 +159,18 @@ function Detail() {
             <SmButton
               bkg={colors.prayButtonDeleteBkgColor}
               radius={10}
-              onPress={destoryTeam}>
+              onPress={
+                userInfo?.team?.bossId === userInfo?.user?.id
+                  ? destoryTeam
+                  : withdrawTeam
+              }>
               <ButtonText
                 color={colors.prayButtonDeleteTextColor}
                 fontSize={12.5}
                 fontWeight={400}>
-                삭제하기
+                {userInfo?.team?.bossId === userInfo?.user?.id
+                  ? '팀 삭제하기'
+                  : '탈퇴하기'}
               </ButtonText>
             </SmButton>
           )}
