@@ -9,7 +9,7 @@ import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyCompo
 import TeamInvitationItem from '../../../../components/parts/detail/TeamInvitationItem';
 import InvitationType from '../../../../types/InvitationType';
 import {getMyInvitations} from '../../../../api/user';
-import {deleteInvitation, setApprove} from '../../../../api/team';
+import {deleteInvitation, setApproveInvitation} from '../../../../api/team';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../../../navigation/Root';
 import {rstTeamFlag} from '../../../../recoil/flag';
@@ -96,7 +96,7 @@ function InvitedTeams() {
         text: '수락',
         onPress: async () => {
           try {
-            await setApprove({id});
+            await setApproveInvitation({id});
             setFlag(prev => ({
               home: {
                 update: {

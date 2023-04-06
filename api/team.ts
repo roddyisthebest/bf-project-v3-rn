@@ -90,6 +90,15 @@ const getInvitaions = async ({
 }): Promise<AxiosResponse<response>> =>
   api.get(`/team/${teamId}/invitation/${lastId}`);
 
+const getApplications = async ({
+  teamId,
+  lastId,
+}: {
+  teamId: number;
+  lastId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.get(`/team/${teamId}/application/${lastId}`);
+
 const deleteInvitation = async ({
   id,
 }: {
@@ -108,8 +117,21 @@ const getTeamMates = ({
 }): Promise<AxiosResponse<response>> =>
   api.get(`/team/${teamId}/mates/${lastId}`);
 
-const setApprove = ({id}: {id: number}): Promise<AxiosResponse<response>> =>
+const setApproveInvitation = ({
+  id,
+}: {
+  id: number;
+}): Promise<AxiosResponse<response>> =>
   api.post('/team/invitation/approve', {id});
+
+const setApproveApplication = ({
+  id,
+  teamId,
+}: {
+  id: number;
+  teamId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.post('/team/application/approve', {id, teamId});
 
 export {
   addTeam,
@@ -117,9 +139,11 @@ export {
   updateTeam,
   addInvitation,
   getInvitaions,
+  getApplications,
   deleteInvitation,
   deleteTeam,
   getTeamMates,
-  setApprove,
+  setApproveInvitation,
+  setApproveApplication,
   addApplication,
 };

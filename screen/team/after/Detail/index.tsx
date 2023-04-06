@@ -12,7 +12,7 @@ import {
 import Layout from '../../../../components/layout';
 import {GapRowView} from '../../../../components/basic/View';
 import DetailHeader from '../../../../components/container/DetailHeader';
-import {useRecoilValue, useRecoilState, useSetRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 import {rstMyInfoType, rstMyInfo} from '../../../../recoil/user';
 import TeamType from '../../../../types/TeamType';
 import {ButtonText, SmButton} from '../../../../components/basic/Button';
@@ -45,6 +45,13 @@ function Detail() {
       text: '초대한 유저 리스트 ',
       onPress: () => {
         navigation.navigate('Team', {screen: 'InvitationUser'});
+      },
+    },
+    {
+      id: 4,
+      text: '가입 신청한 유저 리스트',
+      onPress: () => {
+        navigation.navigate('Team', {screen: 'ApplicationUser'});
       },
     },
   ];

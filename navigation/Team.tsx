@@ -14,6 +14,7 @@ import InvitedTeams from '../screen/team/before/Detail/InvitedTeams';
 import AppliedTeams from '../screen/team/before/Detail/AppliedTeams';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../recoil/user';
+import ApplicationUser from '../screen/team/after/Detail/ApplicationUser';
 const NativeStack = createNativeStackNavigator();
 
 const TeamNav = () => {
@@ -34,6 +35,10 @@ const TeamNav = () => {
           <NativeStack.Screen
             name="InvitationUser"
             component={InvitationUser}
+          />
+          <NativeStack.Screen
+            name="ApplicationUser"
+            component={ApplicationUser}
           />
           <NativeStack.Screen name="TeamUser" component={TeamUser} />
           <NativeStack.Screen name="Detail" component={Detail} />

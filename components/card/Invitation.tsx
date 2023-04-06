@@ -5,7 +5,7 @@ import {colors} from '../../styles/color';
 import {useSetRecoilState} from 'recoil';
 import InvitationType from '../../types/InvitationType';
 import {Alert} from 'react-native';
-import {setApprove} from '../../api/team';
+import {setApproveInvitation} from '../../api/team';
 import {rstTeamFlag} from '../../recoil/flag';
 
 const Container = styled.TouchableOpacity<{buttonBorderColor: string}>`
@@ -38,7 +38,7 @@ function Invitation({data, active}: {data: InvitationType; active: boolean}) {
             text: '수락',
             onPress: async () => {
               try {
-                await setApprove({id: data?.id});
+                await setApproveInvitation({id: data?.id});
                 setFlag(prev => ({
                   home: {
                     update: {

@@ -34,6 +34,7 @@ export type LoggedInParamList = {
       | 'Searching'
       | 'UserSetting'
       | 'InvitationUser'
+      | 'ApplicationUser'
       | 'TeamUser'
       | 'Profile'
       | 'MyTeams'
