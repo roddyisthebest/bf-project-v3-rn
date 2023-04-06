@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ActivityIndicator, Platform} from 'react-native';
+import {ActivityIndicator, Alert, Platform} from 'react-native';
 import styled from 'styled-components/native';
 import {colors} from '../../styles/color';
 import dimension from '../../styles/dimension';
@@ -160,6 +160,21 @@ function Pray({data}: {data: UserType}) {
     [team, prays],
   );
 
+  const sendAlertToUser = useCallback(() => {
+    Alert.alert('기도제목 응원', '익명으로 응원알림을 보내시겠습니까?', [
+      {
+        onPress: () => {},
+        text: '예',
+        style: 'cancel',
+      },
+      {
+        onPress: () => {},
+        text: '아니오',
+        style: 'destructive',
+      },
+    ]);
+  }, []);
+
   return (
     <Container
       paddingHorizontal={dimension.paddingHorizontal}
@@ -229,7 +244,7 @@ function Pray({data}: {data: UserType}) {
               onSubmitEditing={() => editPrayFromState(index, pray.id)}
             />
 
-            {editable && (
+            {editable ? (
               <ButtonColumn>
                 {pray.edit ? (
                   <PrayButton
@@ -277,6 +292,21 @@ function Pray({data}: {data: UserType}) {
                       size={10}
                     />
                   )}
+                </PrayButton>
+              </ButtonColumn>
+            ) : (
+              <ButtonColumn>
+                <PrayButton
+                  bkg={colors.prayButtonAlarmBkgColor}
+                  onPress={sendAlertToUser}>
+                  <Image
+                    source={require('../../assets/img/PrayAlertLoveIcon.png')}
+                    width={10}
+                    height={9}
+                    borderRad={0}
+                    borderColor="transparent"
+                    style={{borderWidth: 0}}
+                  />
                 </PrayButton>
               </ButtonColumn>
             )}
