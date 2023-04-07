@@ -23,6 +23,15 @@ const adminLogin = ({
 }): Promise<AxiosResponse<response>> =>
   api.post('/user/signin', {uid, password});
 
+const getMyTweets = ({
+  teamId,
+  lastId = -1,
+}: {
+  teamId: number;
+  lastId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.get(`/user/team/${teamId}/tweets/${lastId}`);
+
 const getMyTeams = ({
   lastId,
 }: {
@@ -93,6 +102,7 @@ export {
   adminLogin,
   getMyTeams,
   getService,
+  getMyTweets,
   addService,
   updateService,
   updatePayed,
