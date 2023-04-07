@@ -102,7 +102,7 @@ function Penalty({data}: {data: UserType}) {
             color={colors.subTitleColor}
             fontWeight={600}
             fontSize={20}>
-            {data.Penalties[0].paper}
+            {data?.Penalties[0]?.paper}
           </ContentSubTitleText>
         </ContentColumn>
         <ContentColumn>
@@ -110,7 +110,7 @@ function Penalty({data}: {data: UserType}) {
             payed
           </ContentTitleText>
           <Button
-            onPress={() => onPress(data.Penalties[0].id, payed)}
+            onPress={() => onPress(data?.Penalties[0]?.id, payed)}
             disabled={loading}
             bkg={
               payed
