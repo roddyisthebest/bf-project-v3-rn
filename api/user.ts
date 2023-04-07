@@ -41,6 +41,15 @@ const getMyPrays = ({
 }): Promise<AxiosResponse<response>> =>
   api.get(`/user/team/${teamId}/prays/${lastId}`);
 
+const getMyPenaltys = ({
+  teamId,
+  lastId = -1,
+}: {
+  teamId: number;
+  lastId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.get(`/user/team/${teamId}/penaltys/${lastId}`);
+
 const getMyTeams = ({
   lastId,
 }: {
@@ -113,6 +122,7 @@ export {
   getService,
   getMyTweets,
   getMyPrays,
+  getMyPenaltys,
   addService,
   updateService,
   updatePayed,
