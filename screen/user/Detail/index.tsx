@@ -57,7 +57,10 @@ function Detail() {
           data={user as UserType}
           type="user"
           ButtonComponent={() => (
-            <SmButton bkg={colors.settingButtonBkgColor} radius={10}>
+            <SmButton
+              bkg={colors.settingButtonBkgColor}
+              radius={10}
+              onPress={() => navigation.navigate('User', {screen: 'Setting'})}>
               <Icon
                 name="settings"
                 color={colors.settingButtonTextColor}

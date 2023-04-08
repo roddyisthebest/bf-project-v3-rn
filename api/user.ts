@@ -97,19 +97,6 @@ const addService = ({
 }): Promise<AxiosResponse<response>> =>
   api.post('/user/service', {tweet, pray, penalty, teamId});
 
-const updateService = ({
-  tweet,
-  pray,
-  penalty,
-  teamId,
-}: {
-  tweet: boolean;
-  pray: boolean;
-  penalty: boolean;
-  teamId: number;
-}): Promise<AxiosResponse<response>> =>
-  api.put('/user/service', {tweet, pray, penalty, teamId});
-
 const updatePayed = (
   id: number,
   payed: boolean,
@@ -124,7 +111,6 @@ export {
   getMyPrays,
   getMyPenaltys,
   addService,
-  updateService,
   updatePayed,
   getMyInvitations,
   getMyApplications,

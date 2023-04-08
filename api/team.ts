@@ -99,6 +99,27 @@ const getApplications = async ({
 }): Promise<AxiosResponse<response>> =>
   api.get(`/team/${teamId}/application/${lastId}`);
 
+const getService = ({
+  teamId,
+}: {
+  teamId: number;
+}): Promise<AxiosResponse<response>> => api.get(`/team/${teamId}/service`);
+
+const updateService = ({
+  tweet,
+  pray,
+  penalty,
+  id,
+  teamId,
+}: {
+  tweet: boolean;
+  pray: boolean;
+  penalty: boolean;
+  id: number;
+  teamId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.put(`/team/${teamId}/service`, {tweet, pray, penalty, id});
+
 const deleteInvitation = async ({
   id,
 }: {
@@ -153,6 +174,8 @@ export {
   getTeam,
   updateTeam,
   addInvitation,
+  getService,
+  updateService,
   getInvitaions,
   getApplications,
   deleteInvitation,

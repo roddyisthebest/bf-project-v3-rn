@@ -43,13 +43,12 @@ export type LoggedInParamList = {
   };
   User: {
     screen:
-      | 'Home'
       | 'Penalty'
       | 'Pray'
       | 'Tweet'
       | 'Setting'
-      | 'SettingEdit'
-      | 'SettingUsage'
+      | 'Profile'
+      | 'Service'
       | 'Detail';
   };
 };

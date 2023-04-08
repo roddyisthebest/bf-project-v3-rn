@@ -1,12 +1,12 @@
 import {Text, View} from 'react-native';
 import React from 'react';
 
-function Setting() {
+function Profile() {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Setting</Text>
+      <Text>Profile</Text>
     </View>
   );
 }
 
-export default Setting;
+export default Profile;
