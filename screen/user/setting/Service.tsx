@@ -8,11 +8,7 @@ import {rstMyInfo} from '../../../recoil/user';
 import {ButtonText} from '../../../components/basic/Button';
 import {getService} from '../../../api/user';
 
-import {
-  CommonActions,
-  NavigationProp,
-  useNavigation,
-} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../../navigation/Root';
 import {GapRowView} from '../../../components/basic/View';
 import {updateService} from '../../../api/team';

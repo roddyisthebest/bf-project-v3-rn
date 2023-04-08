@@ -102,6 +102,13 @@ const updatePayed = (
   payed: boolean,
 ): Promise<AxiosResponse<response>> => api.patch('/user/paycheck', {id, payed});
 
+const updateInfo = ({
+  name,
+  img,
+}: {
+  name: string;
+  img: string;
+}): Promise<AxiosResponse<response>> => api.patch('/user', {name, img});
 export {
   snsLogin,
   adminLogin,
@@ -116,4 +123,5 @@ export {
   getMyApplications,
   getMyThumbTeams,
   getMyThumbInvitations,
+  updateInfo,
 };

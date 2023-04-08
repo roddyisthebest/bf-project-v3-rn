@@ -7,7 +7,7 @@ import {colors} from '../../styles/color';
 import dimension from '../../styles/dimension';
 import TeamType from '../../types/TeamType';
 import UserType from '../../types/UserType';
-import {ButtonText, SmButton} from '../basic/Button';
+import {ButtonText} from '../basic/Button';
 import {Image} from '../basic/Image';
 
 const Container = styled.View<{borderColor: string; paddingHorizontal: number}>`
@@ -57,6 +57,7 @@ function DetailHeader({
     if (type === 'team') {
       navigation.navigate('Team', {screen: 'Profile'});
     } else {
+      navigation.navigate('User', {screen: 'Profile'});
     }
   }, [type]);
 
