@@ -15,6 +15,8 @@ import PrayType from '../../types/PrayType';
 import {addPray, deletePray, updatePray} from '../../api/pray';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
+import {AxiosError} from 'axios';
+import {response} from '../../api';
 const Container = styled(GapRowView)<{borderColor: string}>`
   border-bottom-color: ${props => props.borderColor};
   border-bottom-width: 1px;
@@ -99,7 +101,11 @@ function Pray({data}: {data: UserType}) {
           deleteLoading: false,
         },
       ]);
-    } catch (e) {
+    } catch (error) {
+      const {response} = error as unknown as AxiosError<response>;
+      if (response?.status === 403) {
+        Alert.alert(response?.data.message);
+      }
     } finally {
       setLoading(false);
     }

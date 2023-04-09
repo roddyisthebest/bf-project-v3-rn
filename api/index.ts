@@ -19,5 +19,5 @@ export async function setTokenToAxios() {
 export type response = {
   payload: any;
   code: string;
-  msg: string;
+  message: string;
 };
