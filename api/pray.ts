@@ -8,8 +8,10 @@ const getPrays = (
 ): Promise<AxiosResponse<response>> =>
   api.get(`/pray/${lastId}/team/${teamId}/weekend/${weekend}`);
 
-const addPray = (teamId: number): Promise<AxiosResponse<response>> =>
-  api.post('/pray', {teamId});
+const addPray = (
+  teamId: number,
+  userId: number,
+): Promise<AxiosResponse<response>> => api.post('/pray', {teamId, userId});
 
 const updatePray = (
   id: number,

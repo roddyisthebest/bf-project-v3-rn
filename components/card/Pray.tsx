@@ -87,7 +87,7 @@ function Pray({data}: {data: UserType}) {
       setLoading(true);
       const {
         data: {payload},
-      } = await addPray(team?.id as number);
+      } = await addPray(team?.id as number, data.id as number);
       setPrays(prev => [
         ...prev,
         {
@@ -103,7 +103,7 @@ function Pray({data}: {data: UserType}) {
     } finally {
       setLoading(false);
     }
-  }, [team]);
+  }, [team, data]);
 
   const deletePrayFromState = useCallback(
     async (index: number, id: number) => {
