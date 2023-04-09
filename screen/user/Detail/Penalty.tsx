@@ -28,7 +28,6 @@ function Penalty() {
           lastId: lastId,
           teamId: userInfo.team?.id as number,
         });
-        console.log(payload);
         setData(payload);
         setRefreshing(false);
       } else {

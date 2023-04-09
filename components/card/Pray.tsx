@@ -236,6 +236,7 @@ function Pray({data}: {data: UserType}) {
             isItIos={Platform.OS === 'ios'}>
             <ModifiedTextArea
               returnKeyType="done"
+              scrollEnabled={editable}
               ref={el => (target.current[index] = el)}
               placeholder="새로운 기도제목입니다."
               borderColor="transparent"

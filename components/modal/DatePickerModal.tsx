@@ -20,6 +20,8 @@ const UnclickedText = styled(ButtonText)``;
 
 interface Props {
   setWeekend: Dispatch<SetStateAction<string>>;
+  setLastId: Dispatch<SetStateAction<number>>;
+  setDisabled: Dispatch<SetStateAction<boolean>>;
   weekend: string;
 }
 
@@ -43,6 +45,8 @@ const DatePickerModal = forwardRef(
     }, []);
 
     const onPress = (content: string, id: number) => {
+      props.setLastId(-1);
+      props.setDisabled(false);
       props.setWeekend(content);
       (ref as React.ForwardedRef<ActionSheetRef>)?.current.hide();
       setScrollPosition(id * -1 * 50);
