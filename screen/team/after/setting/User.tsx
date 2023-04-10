@@ -14,6 +14,7 @@ import {addInvitation} from '../../../../api/team';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
 import {AxiosError} from 'axios';
+import {response} from '../../../../api';
 
 const SearchSection = styled.View<{
   paddingVertical: number;
@@ -57,10 +58,8 @@ function User() {
       await addInvitation({userId: id, teamId: team?.id as number});
       Alert.alert('유저를 초대하였습니다.');
     } catch (error) {
-      const {response} = error as unknown as AxiosError;
-      if (response?.status === 409) {
-        Alert.alert('이미 초대된 회원입니다.');
-      }
+      const {response} = error as unknown as AxiosError<response>;
+      Alert.alert(response?.data.message as string);
     } finally {
       setData([]);
       setKeyword('');

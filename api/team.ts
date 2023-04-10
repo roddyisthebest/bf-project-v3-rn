@@ -51,9 +51,8 @@ const updateTeam = async ({
   file && formData.append('img', file);
   formData.append('name', name);
   formData.append('introducing', introducing);
-  formData.append('id', id);
 
-  return await fetch('http://192.168.123.104:3000/team', {
+  return await fetch(`http://192.168.123.104:3000/team/${id}`, {
     method: 'PUT',
     headers: {
       Authorization: accessToken as string,
@@ -122,9 +121,12 @@ const updateService = ({
 
 const deleteInvitation = async ({
   id,
+  teamId,
 }: {
   id: number;
-}): Promise<AxiosResponse<response>> => api.delete(`/team/invitation/${id}`);
+  teamId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.delete(`/team/${teamId}/invitation/${id}`);
 
 const getTeam = ({id}: {id: number}): Promise<AxiosResponse<response>> =>
   api.get(`/team/${id}`);

@@ -83,33 +83,36 @@ function AppliedTeams() {
     [team],
   );
 
-  const onPress = useCallback((id: number) => {
-    Alert.alert('가입신청 취소', '정말 가입 신청을 취소하시겠습니까?', [
-      {
-        text: '취소',
-        onPress: () => {},
-        style: 'default',
-      },
-      {
-        text: '가입신청 취소',
-        onPress: async () => {
-          await deleteInvitation({id});
-          setData(prev => prev?.filter(pray => pray.id !== id));
-          setFlag(prev => ({
-            home: {
-              update: {
-                application: true,
-                invitation: prev.home.update.invitation,
-                myteam: prev.home.update.myteam,
-              },
-            },
-          }));
-          Alert.alert('가입신청이 취소 되었습니다.');
+  const onPress = useCallback(
+    (id: number) => {
+      Alert.alert('가입신청 취소', '정말 가입 신청을 취소하시겠습니까?', [
+        {
+          text: '취소',
+          onPress: () => {},
+          style: 'default',
         },
-        style: 'destructive',
-      },
-    ]);
-  }, []);
+        {
+          text: '가입신청 취소',
+          onPress: async () => {
+            await deleteInvitation({id, teamId: team?.id as number});
+            setData(prev => prev?.filter(pray => pray.id !== id));
+            setFlag(prev => ({
+              home: {
+                update: {
+                  application: true,
+                  invitation: prev.home.update.invitation,
+                  myteam: prev.home.update.myteam,
+                },
+              },
+            }));
+            Alert.alert('가입신청이 취소 되었습니다.');
+          },
+          style: 'destructive',
+        },
+      ]);
+    },
+    [team],
+  );
 
   const renderItem = ({item}: {item: InvitationType}) => (
     <TeamApplyItem data={item} onPress={onPress} />

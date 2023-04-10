@@ -100,7 +100,9 @@ const addService = ({
 const updatePayed = (
   id: number,
   payed: boolean,
-): Promise<AxiosResponse<response>> => api.patch('/user/paycheck', {id, payed});
+  teamId: number,
+): Promise<AxiosResponse<response>> =>
+  api.patch('/user/paycheck', {id, payed, teamId});
 
 const updateInfo = ({
   name,

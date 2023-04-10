@@ -80,7 +80,7 @@ function Profile() {
 
   const onUpload = useCallback(async () => {
     try {
-      await updateTeam({
+      const res = await updateTeam({
         file: editMode
           ? {
               name: file?.fileName as string,
@@ -92,6 +92,8 @@ function Profile() {
         introducing,
         id: team?.id as number,
       });
+
+      console.log(res);
 
       const {data} = await getTeam({id: team?.id as number});
 

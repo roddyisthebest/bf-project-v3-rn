@@ -116,37 +116,40 @@ function InvitedTeams() {
     ]);
   }, []);
 
-  const deleteInvitaionFromState = useCallback((id: number) => {
-    Alert.alert('초대 거절', '정말 팀의 초대를 거절하시겠습니까?', [
-      {
-        text: '취소',
-        onPress: () => {},
-        style: 'default',
-      },
-      {
-        text: '거절',
-        onPress: async () => {
-          try {
-            await deleteInvitation({id});
-            setData(prev => prev?.filter(pray => pray.id !== id));
-            setFlag(prev => ({
-              home: {
-                update: {
-                  invitation: true,
-                  application: prev.home.update.application,
-                  myteam: prev.home.update.myteam,
-                },
-              },
-            }));
-            Alert.alert('삭제되었습니다.');
-          } catch (e) {
-            console.log(e);
-          }
+  const deleteInvitaionFromState = useCallback(
+    (id: number) => {
+      Alert.alert('초대 거절', '정말 팀의 초대를 거절하시겠습니까?', [
+        {
+          text: '취소',
+          onPress: () => {},
+          style: 'default',
         },
-        style: 'destructive',
-      },
-    ]);
-  }, []);
+        {
+          text: '거절',
+          onPress: async () => {
+            try {
+              await deleteInvitation({id, teamId: team?.id as number});
+              setData(prev => prev?.filter(pray => pray.id !== id));
+              setFlag(prev => ({
+                home: {
+                  update: {
+                    invitation: true,
+                    application: prev.home.update.application,
+                    myteam: prev.home.update.myteam,
+                  },
+                },
+              }));
+              Alert.alert('삭제되었습니다.');
+            } catch (e) {
+              console.log(e);
+            }
+          },
+          style: 'destructive',
+        },
+      ]);
+    },
+    [team],
+  );
 
   const renderItem = ({item}: {item: InvitationType}) => (
     <TeamInvitationItem

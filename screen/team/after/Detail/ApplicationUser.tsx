@@ -118,7 +118,7 @@ function ApplicationUser() {
           text: '거절',
           onPress: async () => {
             try {
-              await deleteInvitation({id});
+              await deleteInvitation({id, teamId: team?.id as number});
               setData(prev => prev?.filter(pray => pray.id !== id));
               Alert.alert('가입 신청이 거절 되었습니다.');
             } catch (e) {
@@ -129,7 +129,7 @@ function ApplicationUser() {
         },
       ]);
     },
-    [data],
+    [data, team],
   );
 
   const renderItem = ({item}: {item: InvitationType}) => (

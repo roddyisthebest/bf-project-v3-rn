@@ -9,6 +9,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import UserType from '../../types/UserType';
 import {updatePayed} from '../../api/user';
 import {ActivityIndicator} from 'react-native';
+import {useRecoilValue} from 'recoil';
+import {rstMyInfo} from '../../recoil/user';
 
 const Container = styled(GapRowView)<{borderColor: string}>`
   border-bottom-color: ${props => props.borderColor};
@@ -48,20 +50,24 @@ const Button = styled.TouchableOpacity<{bkg: string}>`
 `;
 
 function Penalty({data}: {data: UserType}) {
+  const {team} = useRecoilValue(rstMyInfo);
   const [payed, setpayed] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const onPress = useCallback(async (id: number, stPayed: boolean) => {
-    try {
-      setLoading(true);
-      await updatePayed(id, !stPayed);
-      setpayed(prev => !prev);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const onPress = useCallback(
+    async (id: number, stPayed: boolean) => {
+      try {
+        setLoading(true);
+        await updatePayed(id, !stPayed, team?.id as number);
+        setpayed(prev => !prev);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [team],
+  );
 
   useEffect(() => {
     setpayed(data.Penalties[0].payed);

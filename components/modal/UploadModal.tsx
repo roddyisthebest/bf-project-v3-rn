@@ -113,6 +113,7 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
       const res: any = await addTweet({
         file: file ? file : null,
         content: content.length === 0 ? null : content,
+        teamId: myInfo?.team?.id as number,
       });
 
       if ((res.status as number) === 500) {
@@ -136,7 +137,7 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
     } catch (e) {
       console.log(e);
     }
-  }, [content, file, ref, setFlag]);
+  }, [content, file, ref, setFlag, myInfo]);
 
   return (
     <ActionSheet ref={ref} gestureEnabled={true} keyboardHandlerEnabled={false}>

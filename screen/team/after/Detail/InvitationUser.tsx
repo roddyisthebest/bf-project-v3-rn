@@ -92,7 +92,7 @@ function InvitationUser() {
           text: '삭제',
           onPress: async () => {
             try {
-              await deleteInvitation({id});
+              await deleteInvitation({id, teamId: team?.id as number});
               setData(prev => prev?.filter(pray => pray.id !== id));
               Alert.alert('삭제되었습니다.');
             } catch (e) {}
@@ -101,7 +101,7 @@ function InvitationUser() {
         },
       ]);
     },
-    [data],
+    [data, team],
   );
 
   const renderItem = ({item}: {item: InvitationType}) => (

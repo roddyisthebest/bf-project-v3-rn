@@ -47,7 +47,7 @@ function PrayView() {
     } finally {
       setLoading(false);
     }
-  }, [lastId, team?.id, weekend]);
+  }, [lastId, team, weekend]);
 
   const handleRefresh = useCallback(async () => {
     try {
