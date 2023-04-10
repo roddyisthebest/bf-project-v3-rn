@@ -17,6 +17,8 @@ import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
 import {AxiosError} from 'axios';
 import {response} from '../../api';
+import {thisSunday} from '../../util/Date';
+import {rstStore} from '../../recoil/store';
 const Container = styled(GapRowView)<{borderColor: string}>`
   border-bottom-color: ${props => props.borderColor};
   border-bottom-width: 1px;
@@ -65,6 +67,7 @@ const AddButtonColumn = styled.View`
 
 function Pray({data}: {data: UserType}) {
   const {team} = useRecoilValue(rstMyInfo);
+  const {weekend} = useRecoilValue(rstStore);
 
   const target = useRef<any[]>([]);
 
@@ -204,11 +207,14 @@ function Pray({data}: {data: UserType}) {
             {data.name}
           </UserNameText>
         </UserColumn>
+
         <SmButton
           bkg="transparent"
           radius={0}
           style={{paddingRight: 0}}
-          onPress={() => setEditable(prev => !prev)}>
+          onPress={() =>
+            weekend === thisSunday(0) && setEditable(prev => !prev)
+          }>
           <Icon
             name="chevron-down-outline"
             color={colors.inputLabelColor}

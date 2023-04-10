@@ -12,11 +12,9 @@ import ListEmptyComponent from '../../components/parts/tabs/ListEmptyComponent';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
 import {getPrays} from '../../api/pray';
-import {LoadingContainer} from '../../components/basic/View';
 import {colors} from '../../styles/color';
 function PrayView() {
   const {team} = useRecoilValue(rstMyInfo);
-  const date = new Date();
 
   const [data, setData] = useState<UserType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,7 +33,6 @@ function PrayView() {
         weekend,
       );
 
-      console.log(lastId, weekend);
       if (code === 'OK:LAST') {
         setDisabled(true);
       }
@@ -83,48 +80,54 @@ function PrayView() {
   const renderItem = ({item}: {item: UserType}) => <Pray data={item} />;
 
   const ref = useRef<ActionSheetRef>(null);
+  const flatListRef = useRef<KeyboardAwareFlatList>(null);
 
   useEffect(() => {
-    console.log(disabled, lastId);
     if (!disabled) {
       getData();
     }
   }, [lastId, weekend, disabled]);
 
-  return loading ? (
-    <LoadingContainer>
-      <ActivityIndicator color={colors.loadingIconColor} size={50} />
-    </LoadingContainer>
-  ) : (
+  useEffect(() => {
+    flatListRef.current?.scrollToPosition(0, 0, true);
+    setLoading(true);
+  }, [weekend]);
+
+  return (
     <>
-      <KeyboardAwareFlatList
-        data={data}
-        onRefresh={handleRefresh}
-        extraScrollHeight={100}
-        renderItem={renderItem}
-        refreshing={refreshing}
-        onEndReached={onEndReached}
-        keyExtractor={(item, _) => item.id.toString()}
-        ItemSeparatorComponent={() => <View style={{height: 15}} />}
-        ListFooterComponent={() => (
-          <View style={{height: Platform.OS === 'ios' ? 160 : 200}} />
-        )}
-        ListEmptyComponent={
-          <ListEmptyComponent
-            text={`${weekend} 기간의 기도제목이 없습니다.`}
-            paddingTop={0}
-          />
-        }
-        ListHeaderComponent={
-          <DateHeader
-            weekend={weekend}
-            onPress={() => {
-              ref.current?.show();
-            }}
-          />
-        }
-        stickyHeaderIndices={[0]}
+      <DateHeader
+        weekend={weekend}
+        onPress={() => {
+          ref.current?.show();
+        }}
       />
+      {loading ? (
+        <View style={{alignItems: 'center'}}>
+          <ActivityIndicator color={colors.loadingIconColor} size={50} />
+        </View>
+      ) : (
+        <KeyboardAwareFlatList
+          data={data}
+          onRefresh={handleRefresh}
+          extraScrollHeight={100}
+          renderItem={renderItem}
+          refreshing={refreshing}
+          onEndReached={onEndReached}
+          ref={flatListRef}
+          keyExtractor={(item, _) => item.id.toString()}
+          ItemSeparatorComponent={() => <View style={{height: 15}} />}
+          ListFooterComponent={() => (
+            <View style={{height: Platform.OS === 'ios' ? 160 : 200}} />
+          )}
+          ListEmptyComponent={
+            <ListEmptyComponent
+              text={`${weekend} 기간의 기도제목이 없습니다.`}
+              paddingTop={0}
+            />
+          }
+        />
+      )}
+
       <DatePickerModal
         ref={ref}
         weekend={weekend}

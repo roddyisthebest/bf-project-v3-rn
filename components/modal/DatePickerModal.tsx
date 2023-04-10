@@ -14,7 +14,8 @@ import dimension from '../../styles/dimension';
 import styled from 'styled-components/native';
 import {ButtonText} from '../basic/Button';
 import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
-
+import {useSetRecoilState} from 'recoil';
+import {rstStore} from '../../recoil/store';
 const ClickedText = styled(ButtonText)``;
 const UnclickedText = styled(ButtonText)``;
 
@@ -27,6 +28,8 @@ interface Props {
 
 const DatePickerModal = forwardRef(
   (props: Props, ref: React.ForwardedRef<ActionSheetRef>) => {
+    const setRstWeekend = useSetRecoilState(rstStore);
+
     const [data, setData] = useState<{id: number; content: string}[]>([]);
     const [day, setDay] = useState<number>(0);
     const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -48,6 +51,7 @@ const DatePickerModal = forwardRef(
       props.setLastId(-1);
       props.setDisabled(false);
       props.setWeekend(content);
+      setRstWeekend(prev => ({...prev, weekend: content}));
       (ref as React.ForwardedRef<ActionSheetRef>)?.current.hide();
       setScrollPosition(id * -1 * 50);
     };
