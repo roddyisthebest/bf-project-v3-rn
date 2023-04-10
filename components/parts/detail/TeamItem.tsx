@@ -46,25 +46,12 @@ function TeamItem({data}: {data: TeamType}) {
       objToString,
     );
 
-    try {
-      await getService({teamId: data.id});
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{name: 'Tabs'}],
-        }),
-      );
-    } catch (error) {
-      const {response} = error as unknown as AxiosError;
-      if (response?.status === 404) {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Stack'}],
-          }),
-        );
-      }
-    }
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Tabs'}],
+      }),
+    );
   }, [data, navigation, rstUserInfo, setRstUserInfo]);
 
   return (

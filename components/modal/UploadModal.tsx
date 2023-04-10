@@ -142,7 +142,7 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
     <ActionSheet ref={ref} gestureEnabled={true} keyboardHandlerEnabled={false}>
       <Container
         minHeight={
-          Platform.OS === 'ios' ? dimension.height * 0.87 : dimension.height * 1
+          Platform.OS === 'ios' ? dimension.height * 0.79 : dimension.height * 1
         }>
         <Header paddingVertical={dimension.paddingVertical}>
           <HeaderTitleText color="black" fontSize={20} fontWeight={600}>

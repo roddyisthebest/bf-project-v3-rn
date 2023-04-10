@@ -2,7 +2,6 @@ import React, {useCallback, useEffect} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import TabsNav from './Tabs';
 import AuthNav from './Auth';
-import StackNav from './Stack';
 import TeamNav from './Team';
 import UserNav from './User';
 import {useRecoilState, useSetRecoilState} from 'recoil';
@@ -15,13 +14,8 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {setTokenToAxios} from '../api';
-import {getService} from '../api/user';
-import {AxiosError} from 'axios';
 
 export type LoggedInParamList = {
-  Stack: {
-    screen: 'Setting' | 'Uploading';
-  };
   Tabs: {
     screen: 'Home' | 'Pray' | 'Penalty';
   };
@@ -82,25 +76,12 @@ const Root = () => {
       await setTokenToAxios();
       setRstAuthState(true);
       if (userInfo.team) {
-        try {
-          await getService({teamId: userInfo.team.id});
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{name: 'Tabs'}],
-            }),
-          );
-        } catch (error) {
-          const {response} = error as unknown as AxiosError;
-          if (response?.status === 404) {
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{name: 'Stack'}],
-              }),
-            );
-          }
-        }
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Tabs'}],
+          }),
+        );
       }
     }
   }, [setRstAuthState, setRstMyInfo, navigation]);
@@ -126,7 +107,6 @@ const Root = () => {
             }}
           />
           <Nav.Screen name="Tabs" component={TabsNav} />
-          <Nav.Screen name="Stack" component={StackNav} />
           <Nav.Screen name="User" component={UserNav} />
         </>
       ) : (

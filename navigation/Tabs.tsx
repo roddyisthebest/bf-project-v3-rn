@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../screen/tabs/Home';
 import Pray from '../screen/tabs/Pray';
@@ -9,12 +9,34 @@ import MyInfo from '../components/parts/header/MyInfo';
 import MyTeamInfo from '../components/parts/header/MyTeamInfo';
 import UploadButton from '../components/parts/tabs/UploadButton';
 import UploadModal from '../components/modal/UploadModal';
+import ServiceModal from '../components/modal/ServiceModal';
 import {ActionSheetRef} from 'react-native-actions-sheet';
+import {getService} from '../api/user';
+import {useRecoilValue} from 'recoil';
+import {rstMyInfo} from '../recoil/user';
+import {AxiosError} from 'axios';
 
 const Tab = createBottomTabNavigator();
 
 const TabsNav = () => {
-  const actionSheetRef = useRef<ActionSheetRef>(null);
+  const uploadRef = useRef<ActionSheetRef>(null);
+  const serviceRef = useRef<ActionSheetRef>(null);
+  const {team} = useRecoilValue(rstMyInfo);
+
+  const checkService = useCallback(async () => {
+    try {
+      await getService({teamId: team?.id as number});
+    } catch (error) {
+      const {response} = error as unknown as AxiosError;
+      if (response?.status === 404) {
+        serviceRef.current?.show();
+      }
+    }
+  }, [team, serviceRef]);
+
+  useEffect(() => {
+    checkService();
+  }, []);
 
   return (
     <>
@@ -110,10 +132,11 @@ const TabsNav = () => {
       </Tab.Navigator>
       <UploadButton
         onPress={() => {
-          actionSheetRef.current?.show();
+          uploadRef.current?.show();
         }}
       />
-      <UploadModal ref={actionSheetRef} />
+      <UploadModal ref={uploadRef} />
+      <ServiceModal ref={serviceRef} />
     </>
   );
 };
