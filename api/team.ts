@@ -128,6 +128,15 @@ const deleteInvitation = async ({
 }): Promise<AxiosResponse<response>> =>
   api.delete(`/team/${teamId}/invitation/${id}`);
 
+const deleteApplication = async ({
+  id,
+  teamId,
+}: {
+  id: number;
+  teamId: number;
+}): Promise<AxiosResponse<response>> =>
+  api.delete(`/team/${teamId}/application/${id}`);
+
 const getTeam = ({id}: {id: number}): Promise<AxiosResponse<response>> =>
   api.get(`/team/${id}`);
 
@@ -187,5 +196,6 @@ export {
   setApproveApplication,
   addApplication,
   dropout,
+  deleteApplication,
   withdraw,
 };

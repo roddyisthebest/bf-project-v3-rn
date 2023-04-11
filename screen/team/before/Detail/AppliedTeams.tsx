@@ -9,7 +9,7 @@ import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyCompo
 import TeamApplyItem from '../../../../components/parts/detail/TeamApplyItem';
 import InvitationType from '../../../../types/InvitationType';
 import {getMyApplications} from '../../../../api/user';
-import {deleteInvitation} from '../../../../api/team';
+import {deleteApplication} from '../../../../api/team';
 import {rstTeamFlag} from '../../../../recoil/flag';
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
@@ -94,7 +94,7 @@ function AppliedTeams() {
         {
           text: '가입신청 취소',
           onPress: async () => {
-            await deleteInvitation({id, teamId: team?.id as number});
+            await deleteApplication({id, teamId: team?.id as number});
             setData(prev => prev?.filter(pray => pray.id !== id));
             setFlag(prev => ({
               home: {

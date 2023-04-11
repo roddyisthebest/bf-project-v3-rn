@@ -144,6 +144,8 @@ const Root = () => {
         const message = response?.data.message as string;
         const code = response?.data?.code;
         const status = response?.status;
+
+        console.log(code, status);
         if (status !== 401 && code !== 'Expired:AccessToken') {
           Alert.alert(message);
           console.log(status, code);

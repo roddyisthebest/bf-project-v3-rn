@@ -96,12 +96,13 @@ function InvitedTeams() {
         text: '수락',
         onPress: async () => {
           await setApproveInvitation({id});
+          setData(prev => prev?.filter(pray => pray.id !== id));
           setFlag(prev => ({
             home: {
               update: {
                 invitation: true,
                 application: prev.home.update.application,
-                myteam: prev.home.update.myteam,
+                myteam: true,
               },
             },
           }));
