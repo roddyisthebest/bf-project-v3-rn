@@ -87,11 +87,11 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
     setDisabled(file === null && content.length === 0);
   }, [file, content]);
 
-  const logout = useCallback(async () => {
+  const logout = async () => {
+    await EncryptedStorage.clear();
     resetRstAuth();
     resetRstMyInfo();
-    await EncryptedStorage.clear();
-  }, []);
+  };
 
   const uploadUsingCamera = useCallback(async () => {
     const data: any = await launchCamera({
@@ -114,7 +114,7 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
     }
   }, []);
 
-  const onPress = useCallback(async () => {
+  const onPress = async () => {
     const res: any = await addTweet({
       file: file ? file : null,
       content: content.length === 0 ? null : content,
@@ -138,7 +138,10 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
       if (response) {
         return Alert.alert('토큰을 갱신했습니다. 다시한번 업로드해주세요!');
       } else {
-        logout();
+        (ref as React.RefObject<ActionSheetRef>).current?.hide({
+          animated: false,
+        });
+        setTimeout(() => logout(), 250);
         Alert.alert('다시 로그인 해주세요.');
       }
     } else if ((res.status as number) === 200) {
@@ -147,7 +150,7 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
       navigation.navigate('Tabs', {screen: 'Home'});
       (ref as React.RefObject<ActionSheetRef>).current?.hide();
     }
-  }, [content, file, ref, setFlag, myInfo]);
+  };
 
   return (
     <ActionSheet ref={ref} gestureEnabled={true} keyboardHandlerEnabled={false}>

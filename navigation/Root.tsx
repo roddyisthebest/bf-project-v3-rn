@@ -89,6 +89,7 @@ const Root = () => {
     if (userInfoString) {
       const userInfo: rstMyInfoType = JSON.parse(userInfoString);
 
+      setRstMyInfoState(userInfo);
       setRstAuthState(true);
       if (userInfo.team) {
         const {data} = await getTeam({id: userInfo?.team?.id as number});
@@ -126,8 +127,8 @@ const Root = () => {
 
   const logout = useCallback(async () => {
     await EncryptedStorage.clear();
-    resetRstMyInfo();
     resetRstAuth();
+    resetRstMyInfo();
   }, []);
 
   useEffect(() => {
@@ -143,7 +144,10 @@ const Root = () => {
         const message = response?.data.message as string;
         const code = response?.data?.code;
         const status = response?.status;
-        Alert.alert(message);
+        if (status !== 401 && code !== 'Expired:AccessToken') {
+          Alert.alert(message);
+          console.log(status, code);
+        }
 
         if (status === 403) {
           if (code === 'Forbidden:AuthTeam') {
@@ -175,13 +179,17 @@ const Root = () => {
                   EncryptedStorageKeyList.ACCESSTOKEN,
                   data.payload.accessToken,
                 );
+
                 await setTokenToAxios();
+                originalRequest.headers.Authorization =
+                  data.payload.accessToken;
+
                 return axios(originalRequest);
               } catch (axiosError) {
                 const {response: axiosResponse} =
                   axiosError as unknown as AxiosError<responseType>;
-
                 Alert.alert(axiosResponse?.data?.message as string);
+
                 logout();
               }
             } else {
@@ -200,7 +208,7 @@ const Root = () => {
     const unsubscribe = () =>
       setTimeout(() => {
         SplashScreen.hide();
-      }, 2000);
+      }, 1000);
     unsubscribe();
 
     return () => clearTimeout(unsubscribe);

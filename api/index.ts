@@ -9,7 +9,7 @@ export async function setTokenToAxios() {
   const accessToken = await EncryptedStorage.getItem(
     EncryptedStorageKeyList.ACCESSTOKEN,
   );
-  console.log(accessToken, 'axiosToken');
+  console.log(accessToken, 'axiosTokenToAxios');
   api.defaults.headers.common.Authorization = accessToken;
 
   return new Promise(function (resolve, _) {

@@ -38,8 +38,8 @@ function MyInfo() {
 
   const logout = async () => {
     await EncryptedStorage.clear();
-    resetRstMyInfo();
     resetRstAuth();
+    resetRstMyInfo();
   };
   const goToDetail = () => {
     navigation.navigate('User', {screen: 'Detail'});

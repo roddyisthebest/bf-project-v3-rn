@@ -120,7 +120,7 @@ function Profile() {
       //토큰 갱신
       const response = await getTokenByRefresh();
       if (response) {
-        return Alert.alert('토큰을 갱신했습니다. 다시한번 업로드해주세요!');
+        return Alert.alert('토큰을 갱신했습니다. 다시한번 요청해주세요!');
       } else {
         logout();
         Alert.alert('다시 로그인 해주세요.');
