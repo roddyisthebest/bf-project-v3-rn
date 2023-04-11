@@ -101,13 +101,9 @@ function Detail() {
         {
           text: '탈퇴',
           onPress: async () => {
-            try {
-              await withdraw({teamId: userInfo?.team?.id as number});
-              resetTeam();
-              Alert.alert('탈퇴되었습니다.');
-            } catch (e) {
-              console.log(e);
-            }
+            await withdraw({teamId: userInfo?.team?.id as number});
+            resetTeam();
+            Alert.alert('탈퇴되었습니다.');
           },
           style: 'destructive',
         },
@@ -128,11 +124,9 @@ function Detail() {
         {
           text: '삭제',
           onPress: async () => {
-            try {
-              await deleteTeam({id: userInfo?.team?.id as number});
-              resetTeam();
-              Alert.alert('삭제되었습니다.');
-            } catch (e) {}
+            await deleteTeam({id: userInfo?.team?.id as number});
+            resetTeam();
+            Alert.alert('삭제되었습니다.');
           },
           style: 'destructive',
         },

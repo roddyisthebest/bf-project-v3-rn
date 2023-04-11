@@ -42,7 +42,6 @@ const ServiceModal = forwardRef(
           animation: true,
         });
       } catch (e) {
-        console.log(e);
       } finally {
         setLoading(false);
       }

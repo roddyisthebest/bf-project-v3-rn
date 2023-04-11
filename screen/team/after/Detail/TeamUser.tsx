@@ -42,7 +42,6 @@ function TeamUser() {
           setData(prev => [...prev, ...payload]);
         }
       } catch (e) {
-        console.log(e);
       } finally {
         if (loading) {
           setLoading(false);
@@ -89,13 +88,9 @@ function TeamUser() {
         },
         {
           onPress: async () => {
-            try {
-              await dropout({teamId: team?.id as number, userId: id});
-              setData(prev => prev.filter(user => user.id !== id));
-              Alert.alert('강퇴하였습니다.');
-            } catch (e) {
-              console.log(e);
-            }
+            await dropout({teamId: team?.id as number, userId: id});
+            setData(prev => prev.filter(user => user.id !== id));
+            Alert.alert('강퇴하였습니다.');
           },
           text: '강퇴',
           style: 'destructive',

@@ -20,8 +20,12 @@ import {ButtonText} from '../../../../components/basic/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {rstTeamFlag} from '../../../../recoil/flag';
 import FileType from '../../../../types/FileType';
-import {useSetRecoilState} from 'recoil';
+import {useResetRecoilState, useSetRecoilState} from 'recoil';
 import {addTeam} from '../../../../api/team';
+import {rstMyInfo} from '../../../../recoil/user';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {getTokenByRefresh} from '../../../../util/Func';
+import {rstAuth} from '../../../../recoil/auth';
 
 const UploadButton = styled.TouchableOpacity<{borderColor: string}>`
   width: 120px;
@@ -57,11 +61,19 @@ function TeamCreating() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const setFlag = useSetRecoilState(rstTeamFlag);
+  const resetRstMyInfo = useResetRecoilState(rstMyInfo);
+  const resetRstAuth = useResetRecoilState(rstAuth);
 
   const [file, setFile] = useState<FileType | null>(null);
   const [name, setName] = useState<string>('');
   const [introducing, setIntroducing] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
+
+  const logout = useCallback(async () => {
+    resetRstAuth();
+    resetRstMyInfo();
+    await EncryptedStorage.clear();
+  }, []);
 
   const uploadUsingAlbum = useCallback(async () => {
     try {
@@ -74,21 +86,43 @@ function TeamCreating() {
         setFile(data.assets[0]);
       }
     } catch (e) {
-      console.log(e);
+      console.log('launchImageLibrary 모듈 에러입니다.');
     }
   }, []);
 
   const onUpload = useCallback(async () => {
-    try {
-      await addTeam({
-        file: {
-          name: file?.fileName as string,
-          type: 'multipart/form-data',
-          uri: file?.uri as string,
-        },
-        name,
-        introducing,
-      });
+    const res: any = await addTeam({
+      file: {
+        name: file?.fileName as string,
+        type: 'multipart/form-data',
+        uri: file?.uri as string,
+      },
+      name,
+      introducing,
+    });
+
+    if ((res.status as number) === 500) {
+      logout();
+
+      Alert.alert('서버 오류 입니다. 관리자에게 문의주세요. 010-5152-9445');
+
+      return;
+    } else if ((res.status as number) === 403) {
+      Alert.alert('팀 최대 생성 횟수를 초과했습니다.');
+      return;
+    } else if ((res.status as number) === 400) {
+      logout();
+      Alert.alert('400 : 다시 로그인 해주세요.');
+    } else if ((res.status as number) === 401) {
+      //토큰 갱신
+      const response = await getTokenByRefresh();
+      if (response) {
+        return Alert.alert('토큰을 갱신했습니다. 다시한번 업로드해주세요!');
+      } else {
+        logout();
+        Alert.alert('다시 로그인 해주세요.');
+      }
+    } else if ((res.status as number) === 200) {
       setFlag(prev => ({
         home: {
           update: {
@@ -100,8 +134,6 @@ function TeamCreating() {
       }));
       Alert.alert('팀이 생성되었습니다.');
       navigation.goBack();
-    } catch (e) {
-      console.log(e);
     }
   }, [file, name, introducing, navigation, setFlag]);
 

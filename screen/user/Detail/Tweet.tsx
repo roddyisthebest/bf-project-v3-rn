@@ -89,11 +89,9 @@ function Home() {
         {
           text: '삭제',
           onPress: async () => {
-            try {
-              await deleteTweet(id);
-              setData(tweet => tweet.filter(e => e.id !== id));
-              onRefresh();
-            } catch (e) {}
+            await deleteTweet(id);
+            setData(tweet => tweet.filter(e => e.id !== id));
+            onRefresh();
           },
           style: 'destructive',
         },

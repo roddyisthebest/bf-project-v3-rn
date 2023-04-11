@@ -12,14 +12,22 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FastImage from 'react-native-fast-image';
 import {Input, Label} from '../../../../components/basic/Input';
 import dimension from '../../../../styles/dimension';
-import {KeyboardAvoidingView, Platform, Pressable, View} from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  View,
+} from 'react-native';
 import {ButtonText} from '../../../../components/basic/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import FileType from '../../../../types/FileType';
 import {getTeam, updateTeam} from '../../../../api/team';
 import {rstMyInfoType, rstMyInfo} from '../../../../recoil/user';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
+import {useRecoilValue, useResetRecoilState, useSetRecoilState} from 'recoil';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {getTokenByRefresh} from '../../../../util/Func';
+import {rstAuth} from '../../../../recoil/auth';
 
 const UploadButton = styled.TouchableOpacity<{borderColor: string}>`
   width: 120px;
@@ -56,11 +64,20 @@ function Profile() {
   const {team} = useRecoilValue(rstMyInfo);
   const setUserInfo = useSetRecoilState(rstMyInfo);
 
+  const resetRstMyInfo = useResetRecoilState(rstMyInfo);
+  const resetRstAuth = useResetRecoilState(rstAuth);
+
   const [file, setFile] = useState<FileType | null>(null);
   const [name, setName] = useState<string>('');
   const [introducing, setIntroducing] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
   const [editMode, setEditMode] = useState<boolean>(false);
+
+  const logout = useCallback(async () => {
+    resetRstAuth();
+    resetRstMyInfo();
+    await EncryptedStorage.clear();
+  }, []);
 
   const uploadUsingAlbum = useCallback(async () => {
     try {
@@ -74,27 +91,41 @@ function Profile() {
         setFile(data.assets[0]);
       }
     } catch (e) {
-      console.log(e);
+      console.log('launchImageLibrary 모듈 오류입니다.');
     }
   }, []);
 
   const onUpload = useCallback(async () => {
-    try {
-      const res = await updateTeam({
-        file: editMode
-          ? {
-              name: file?.fileName as string,
-              type: 'multipart/form-data',
-              uri: file?.uri as string,
-            }
-          : null,
-        name,
-        introducing,
-        id: team?.id as number,
-      });
+    const res: any = await updateTeam({
+      file: editMode
+        ? {
+            name: file?.fileName as string,
+            type: 'multipart/form-data',
+            uri: file?.uri as string,
+          }
+        : null,
+      name,
+      introducing,
+      id: team?.id as number,
+    });
 
-      console.log(res);
-
+    if ((res.status as number) === 500) {
+      Alert.alert('서버 오류 입니다. 관리자에게 문의주세요. 010-5152-9445');
+      logout();
+      return;
+    } else if ((res.status as number) === 400) {
+      Alert.alert('400 : 다시 로그인 해주세요.');
+      logout();
+    } else if ((res.status as number) === 401) {
+      //토큰 갱신
+      const response = await getTokenByRefresh();
+      if (response) {
+        return Alert.alert('토큰을 갱신했습니다. 다시한번 업로드해주세요!');
+      } else {
+        logout();
+        Alert.alert('다시 로그인 해주세요.');
+      }
+    } else if ((res.status as number) === 200) {
       const {data} = await getTeam({id: team?.id as number});
 
       setUserInfo(userInfo => ({user: userInfo.user, team: data.payload}));
@@ -109,8 +140,6 @@ function Profile() {
         JSON.stringify(parsedData),
       );
       navigation.goBack();
-    } catch (e) {
-      console.log(e);
     }
   }, [file, name, introducing, navigation, editMode, team]);
 

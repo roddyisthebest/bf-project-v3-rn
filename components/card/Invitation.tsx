@@ -37,23 +37,19 @@ function Invitation({data, active}: {data: InvitationType; active: boolean}) {
           {
             text: '수락',
             onPress: async () => {
-              try {
-                await setApproveInvitation({id: data?.id});
-                setFlag(prev => ({
-                  home: {
-                    update: {
-                      myteam: true,
-                      invitation: true,
-                      application: prev.home.update.application,
-                    },
+              await setApproveInvitation({id: data?.id});
+              setFlag(prev => ({
+                home: {
+                  update: {
+                    myteam: true,
+                    invitation: true,
+                    application: prev.home.update.application,
                   },
-                }));
-                Alert.alert(
-                  `팀 ${data?.Team?.name}에 성공적으로 가입되었습니다.`,
-                );
-              } catch (e) {
-                console.log(e);
-              }
+                },
+              }));
+              Alert.alert(
+                `팀 ${data?.Team?.name}에 성공적으로 가입되었습니다.`,
+              );
             },
             style: 'default',
           },

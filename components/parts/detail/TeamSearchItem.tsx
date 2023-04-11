@@ -32,38 +32,30 @@ function TeamSearchItem({data}: {data: TeamType}) {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const applyForTeam = useCallback(async () => {
-    try {
-      console.log(data?.name?.length);
-      Alert.alert('가입신청', `${data?.name} (팀)에 가입신청 하시겠습니까?`, [
-        {
-          text: '취소',
-          onPress: () => {},
-          style: 'cancel',
-        },
-        {
-          text: '신청',
-          onPress: async () => {
-            await addApplication({teamId: data?.id as number});
-            setFlag(prev => ({
-              home: {
-                update: {
-                  myteam: prev.home.update.myteam,
-                  application: true,
-                  invitation: prev.home.update.invitation,
-                },
+    Alert.alert('가입신청', `${data?.name} (팀)에 가입신청 하시겠습니까?`, [
+      {
+        text: '취소',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {
+        text: '신청',
+        onPress: async () => {
+          await addApplication({teamId: data?.id as number});
+          setFlag(prev => ({
+            home: {
+              update: {
+                myteam: prev.home.update.myteam,
+                application: true,
+                invitation: prev.home.update.invitation,
               },
-            }));
-            Alert.alert(`${data?.name} (팀)에 가입신청 하였습니다!`);
-          },
-          style: 'default',
+            },
+          }));
+          Alert.alert(`${data?.name} (팀)에 가입신청 하였습니다!`);
         },
-      ]);
-    } catch (error) {
-      const {response} = error as unknown as AxiosError;
-      if (response?.status === 409) {
-        Alert.alert('이미 가입신청한 팀입니다.');
-      }
-    }
+        style: 'default',
+      },
+    ]);
   }, [data]);
 
   return (

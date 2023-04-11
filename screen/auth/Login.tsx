@@ -85,25 +85,21 @@ function Login() {
   );
 
   const kakaoLogin = useCallback(async () => {
-    try {
-      await login();
-      const res = await getProfileWithKakao();
+    await login();
+    const res = await getProfileWithKakao();
 
-      const {data} = await snsLogin({
-        uid: res.id,
-        img: res.thumbnailImageUrl,
-        name: res.nickname,
-        oauth: 'kakao',
-      });
+    const {data} = await snsLogin({
+      uid: res.id,
+      img: res.thumbnailImageUrl,
+      name: res.nickname,
+      oauth: 'kakao',
+    });
 
-      setAtom({
-        refreshToken: data.payload.token.refreshToken,
-        accessToken: data.payload.token.accessToken,
-        userInfo: data.payload.userInfo,
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    setAtom({
+      refreshToken: data.payload.token.refreshToken,
+      accessToken: data.payload.token.accessToken,
+      userInfo: data.payload.userInfo,
+    });
   }, [setAtom]);
 
   const appleLogin = useCallback(async () => {
@@ -119,24 +115,20 @@ function Login() {
     if (credentialState === appleAuth.State.AUTHORIZED) {
       // return
 
-      try {
-        const {data} = await snsLogin({
-          uid: appleAuthRequestResponse.user,
-          img: null,
-          name: appleAuthRequestResponse.fullName?.givenName
-            ? appleAuthRequestResponse.fullName.givenName
-            : '아무개 회원',
-          oauth: 'apple',
-        });
+      const {data} = await snsLogin({
+        uid: appleAuthRequestResponse.user,
+        img: null,
+        name: appleAuthRequestResponse.fullName?.givenName
+          ? appleAuthRequestResponse.fullName.givenName
+          : '아무개 회원',
+        oauth: 'apple',
+      });
 
-        setAtom({
-          refreshToken: data.payload.token.refreshToken,
-          accessToken: data.payload.token.accessToken,
-          userInfo: data.payload.userInfo,
-        });
-      } catch (e) {
-        console.log(e);
-      }
+      setAtom({
+        refreshToken: data.payload.token.refreshToken,
+        accessToken: data.payload.token.accessToken,
+        userInfo: data.payload.userInfo,
+      });
     }
     // 에러처리
   }, [setAtom]);
@@ -178,16 +170,12 @@ function Login() {
   }, [setAtom]);
 
   const localLogin = useCallback(async () => {
-    try {
-      const {data} = await adminLogin({uid, password});
-      setAtom({
-        refreshToken: data.payload.token.refreshToken,
-        accessToken: data.payload.token.accessToken,
-        userInfo: data.payload.userInfo,
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    const {data} = await adminLogin({uid, password});
+    setAtom({
+      refreshToken: data.payload.token.refreshToken,
+      accessToken: data.payload.token.accessToken,
+      userInfo: data.payload.userInfo,
+    });
   }, [password, setAtom, uid]);
 
   return (

@@ -58,8 +58,6 @@ function User() {
       await addInvitation({userId: id, teamId: team?.id as number});
       Alert.alert('유저를 초대하였습니다.');
     } catch (error) {
-      const {response} = error as unknown as AxiosError<response>;
-      Alert.alert(response?.data.message as string);
     } finally {
       setData([]);
       setKeyword('');
@@ -67,13 +65,9 @@ function User() {
   };
 
   const getData = useCallback(async () => {
-    try {
-      const res = await getUsers(keyword);
-      console.log(res.data);
-      setData(res.data.payload);
-    } catch (e) {
-      console.log(e);
-    }
+    const res = await getUsers(keyword);
+    console.log(res.data);
+    setData(res.data.payload);
   }, [keyword]);
 
   const renderItem = ({item}: {item: UserType}) => (

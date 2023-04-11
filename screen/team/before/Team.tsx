@@ -23,33 +23,21 @@ function Team() {
   const [myApplications, setMyApplications] = useState<InvitationType[]>([]);
 
   const setMyTeamsToState = useCallback(async () => {
-    try {
-      const {data} = await getMyThumbTeams();
-      setMyTeams(data.payload as TeamType[]);
-      console.log('팀정보');
-    } catch (e) {
-      console.log(e);
-    }
+    const {data} = await getMyThumbTeams();
+    setMyTeams(data.payload as TeamType[]);
+    console.log('팀정보');
   }, []);
 
   const setMyInvitationsToState = useCallback(async () => {
-    try {
-      const {data} = await getMyThumbInvitations({active: true});
-      setMyInvitations(data.payload as InvitationType[]);
-      console.log('초대장정보');
-    } catch (e) {
-      console.log(e);
-    }
+    const {data} = await getMyThumbInvitations({active: true});
+    setMyInvitations(data.payload as InvitationType[]);
+    console.log('초대장정보');
   }, []);
 
   const setMyApplicationToState = useCallback(async () => {
-    try {
-      const {data} = await getMyThumbInvitations({active: false});
-      setMyApplications(data.payload as InvitationType[]);
-      console.log('가입신청정보');
-    } catch (e) {
-      console.log(e);
-    }
+    const {data} = await getMyThumbInvitations({active: false});
+    setMyApplications(data.payload as InvitationType[]);
+    console.log('가입신청정보');
   }, []);
 
   useEffect(() => {

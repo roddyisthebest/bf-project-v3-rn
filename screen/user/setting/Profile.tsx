@@ -72,35 +72,31 @@ function Profile() {
   }, [rand]);
 
   const onUpload = useCallback(async () => {
-    try {
-      await updateInfo({
-        img: uri,
-        name,
-      });
+    await updateInfo({
+      img: uri,
+      name,
+    });
 
-      setUserInfo(prev => ({
-        ...prev,
-        user: {...(prev.user as UserType), name, img: uri},
-      }));
+    setUserInfo(prev => ({
+      ...prev,
+      user: {...(prev.user as UserType), name, img: uri},
+    }));
 
-      const dataString = await EncryptedStorage.getItem(
-        EncryptedStorageKeyList.USERINFO,
-      );
-      const parsedData: rstMyInfoType = JSON.parse(dataString as string);
+    const dataString = await EncryptedStorage.getItem(
+      EncryptedStorageKeyList.USERINFO,
+    );
+    const parsedData: rstMyInfoType = JSON.parse(dataString as string);
 
-      parsedData.user = {
-        ...(user as UserType),
-        name,
-        img: uri,
-      };
-      await EncryptedStorage.setItem(
-        EncryptedStorageKeyList.USERINFO,
-        JSON.stringify(parsedData),
-      );
-      navigation.goBack();
-    } catch (e) {
-      console.log(e);
-    }
+    parsedData.user = {
+      ...(user as UserType),
+      name,
+      img: uri,
+    };
+    await EncryptedStorage.setItem(
+      EncryptedStorageKeyList.USERINFO,
+      JSON.stringify(parsedData),
+    );
+    navigation.goBack();
   }, [uri, name, navigation]);
 
   useEffect(() => {

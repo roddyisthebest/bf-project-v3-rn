@@ -31,41 +31,32 @@ function ServiceView() {
   }>({pray: false, penalty: false, tweet: false});
 
   const getData = useCallback(async () => {
-    try {
-      const res = await getService({teamId: team?.id as number});
-      setData(prev => ({
-        ...prev,
-        pray: res.data.payload.pray,
-        penalty: res.data.payload.penalty,
-        tweet: res.data.payload.tweet,
-        id: res.data.payload.id,
-      }));
-      setPrevData({
-        pray: res.data.payload.pray,
-        penalty: res.data.payload.penalty,
-        tweet: res.data.payload.tweet,
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    const res = await getService({teamId: team?.id as number});
+    setData(prev => ({
+      ...prev,
+      pray: res.data.payload.pray,
+      penalty: res.data.payload.penalty,
+      tweet: res.data.payload.tweet,
+      id: res.data.payload.id,
+    }));
+    setPrevData({
+      pray: res.data.payload.pray,
+      penalty: res.data.payload.penalty,
+      tweet: res.data.payload.tweet,
+    });
   }, [team]);
 
   const onPress = useCallback(async () => {
-    try {
-      await updateService({
-        tweet: data.tweet,
-        penalty: data.penalty,
-        pray: data.pray,
-        teamId: team?.id as number,
-        id: data.id,
-      });
+    await updateService({
+      tweet: data.tweet,
+      penalty: data.penalty,
+      pray: data.pray,
+      teamId: team?.id as number,
+      id: data.id,
+    });
 
-      setPrevData({tweet: data.tweet, penalty: data.penalty, pray: data.pray});
-      Alert.alert('서비스 이용 정보가 변경되었습니다.');
-    } catch (e) {
-      console.log(e);
-      // const {response} = e as unknown as AxiosError;
-    }
+    setPrevData({tweet: data.tweet, penalty: data.penalty, pray: data.pray});
+    Alert.alert('서비스 이용 정보가 변경되었습니다.');
   }, [team, navigation, data]);
 
   useEffect(() => {

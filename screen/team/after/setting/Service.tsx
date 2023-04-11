@@ -30,22 +30,18 @@ function Service() {
   const [tweet, setTweet] = useState<boolean>(false);
 
   const onPress = useCallback(async () => {
-    try {
-      await addService({
-        tweet,
-        penalty,
-        pray,
-        teamId: team?.id as number,
-      });
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{name: 'Tabs'}],
-        }),
-      );
-    } catch (e) {
-      // const {response} = e as unknown as AxiosError;
-    }
+    await addService({
+      tweet,
+      penalty,
+      pray,
+      teamId: team?.id as number,
+    });
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Tabs'}],
+      }),
+    );
   }, [team, navigation, tweet, penalty, pray]);
 
   useEffect(() => {

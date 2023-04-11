@@ -43,7 +43,6 @@ function PrayView() {
         setData(prev => [...prev, ...payload]);
       }
     } catch (e) {
-      console.log(e);
     } finally {
       setLoading(false);
     }

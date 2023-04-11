@@ -8,7 +8,7 @@ import {SmButton, ButtonText} from '../basic/Button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {GapColumnView, GapRowView} from '../basic/View';
 import FastImage from 'react-native-fast-image';
-import {useRecoilValue} from 'recoil';
+import {useRecoilValue, useResetRecoilState} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
 import {TextArea} from '../basic/Input';
 import FileType from '../../types/FileType';
@@ -19,7 +19,9 @@ import {addTweet} from '../../api/tweet';
 import {rstTweetFlag} from '../../recoil/flag';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../navigation/Root';
-
+import {getTokenByRefresh} from '../../util/Func';
+import {rstAuth} from '../../recoil/auth';
+import EncryptedStorage from 'react-native-encrypted-storage';
 const Container = styled.View<{minHeight: number}>`
   min-height: ${props => `${props.minHeight}px`};
   background-color: white;
@@ -72,6 +74,9 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
   const myInfo = useRecoilValue(rstMyInfo);
   const setFlag = useSetRecoilState(rstTweetFlag);
 
+  const resetRstMyInfo = useResetRecoilState(rstMyInfo);
+  const resetRstAuth = useResetRecoilState(rstAuth);
+
   const [file, setFile] = useState<FileType | null>(null);
   const [content, setContent] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
@@ -82,17 +87,19 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
     setDisabled(file === null && content.length === 0);
   }, [file, content]);
 
+  const logout = useCallback(async () => {
+    resetRstAuth();
+    resetRstMyInfo();
+    await EncryptedStorage.clear();
+  }, []);
+
   const uploadUsingCamera = useCallback(async () => {
-    try {
-      const data: any = await launchCamera({
-        quality: 0.2,
-        mediaType: 'photo',
-      });
-      setFile(data.assets[0] as FileType);
-      console.log(data);
-    } catch (e) {
-      console.log(e);
-    }
+    const data: any = await launchCamera({
+      quality: 0.2,
+      mediaType: 'photo',
+    });
+    setFile(data.assets[0] as FileType);
+    console.log(data);
   }, []);
 
   const uploadUsingAlbum = useCallback(async () => {
@@ -101,41 +108,44 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
         quality: 0.2,
         mediaType: 'photo',
       });
-      console.log(data);
       setFile(data.assets[0] as FileType);
     } catch (e) {
-      console.log(e);
+      console.log('launchImageLibrary 모듈 에러입니다.');
     }
   }, []);
 
   const onPress = useCallback(async () => {
-    try {
-      const res: any = await addTweet({
-        file: file ? file : null,
-        content: content.length === 0 ? null : content,
-        teamId: myInfo?.team?.id as number,
-      });
+    const res: any = await addTweet({
+      file: file ? file : null,
+      content: content.length === 0 ? null : content,
+      teamId: myInfo?.team?.id as number,
+    });
 
-      if ((res.status as number) === 500) {
-        Alert.alert('서버 오류 입니다.');
-        return;
-      } else if ((res.status as number) === 403) {
-        Alert.alert('게시글을 업로드하는 서비스를 이용하지 않으셨습니다.⚠️');
-        return;
-      } else if ((res.status as number) === 406) {
-        Alert.alert('오늘 업로드 된 게시물이 존재합니다. ⚠️');
-        return;
-      } else if ((res.status as number) === 401) {
-        //토큰 갱신
-      } else if ((res.status as number) === 200) {
-        //ok
-        console.log('ok');
-        setFlag({upload: true});
-        navigation.navigate('Tabs', {screen: 'Home'});
-        (ref as React.RefObject<ActionSheetRef>).current?.hide();
+    if ((res.status as number) === 500) {
+      Alert.alert('서버 오류 입니다.');
+      return;
+    } else if ((res.status as number) === 403) {
+      Alert.alert('게시글을 업로드하는 서비스를 이용하지 않으셨습니다.⚠️');
+      return;
+    } else if ((res.status as number) === 406) {
+      Alert.alert('오늘 업로드 된 게시물이 존재합니다. ⚠️');
+      return;
+    } else if ((res.status as number) === 400) {
+      logout();
+      Alert.alert('400 : 다시 로그인 해주세요.');
+    } else if ((res.status as number) === 401) {
+      const response = await getTokenByRefresh();
+      if (response) {
+        return Alert.alert('토큰을 갱신했습니다. 다시한번 업로드해주세요!');
+      } else {
+        logout();
+        Alert.alert('다시 로그인 해주세요.');
       }
-    } catch (e) {
-      console.log(e);
+    } else if ((res.status as number) === 200) {
+      //ok
+      setFlag({upload: true});
+      navigation.navigate('Tabs', {screen: 'Home'});
+      (ref as React.RefObject<ActionSheetRef>).current?.hide();
     }
   }, [content, file, ref, setFlag, myInfo]);
 

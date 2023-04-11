@@ -105,10 +105,6 @@ function Pray({data}: {data: UserType}) {
         },
       ]);
     } catch (error) {
-      const {response} = error as unknown as AxiosError<response>;
-      if (response?.status === 403) {
-        Alert.alert(response?.data.message);
-      }
     } finally {
       setLoading(false);
     }

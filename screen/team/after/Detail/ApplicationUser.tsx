@@ -91,13 +91,9 @@ function ApplicationUser() {
         {
           text: '수락',
           onPress: async () => {
-            try {
-              await setApproveApplication({id, teamId: team?.id as number});
-              setData(prev => prev?.filter(pray => pray.id !== id));
-              Alert.alert('가입 신청을 수락하였습니다.');
-            } catch (e) {
-              console.log(e);
-            }
+            await setApproveApplication({id, teamId: team?.id as number});
+            setData(prev => prev?.filter(pray => pray.id !== id));
+            Alert.alert('가입 신청을 수락하였습니다.');
           },
           style: 'default',
         },
@@ -117,13 +113,9 @@ function ApplicationUser() {
         {
           text: '거절',
           onPress: async () => {
-            try {
-              await deleteInvitation({id, teamId: team?.id as number});
-              setData(prev => prev?.filter(pray => pray.id !== id));
-              Alert.alert('가입 신청이 거절 되었습니다.');
-            } catch (e) {
-              console.log(e);
-            }
+            await deleteInvitation({id, teamId: team?.id as number});
+            setData(prev => prev?.filter(pray => pray.id !== id));
+            Alert.alert('가입 신청이 거절 되었습니다.');
           },
           style: 'destructive',
         },

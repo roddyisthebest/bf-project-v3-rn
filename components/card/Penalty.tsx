@@ -61,7 +61,6 @@ function Penalty({data}: {data: UserType}) {
         await updatePayed(id, !stPayed, team?.id as number);
         setpayed(prev => !prev);
       } catch (e) {
-        console.log(e);
       } finally {
         setLoading(false);
       }

@@ -95,21 +95,17 @@ function InvitedTeams() {
       {
         text: '수락',
         onPress: async () => {
-          try {
-            await setApproveInvitation({id});
-            setFlag(prev => ({
-              home: {
-                update: {
-                  invitation: true,
-                  application: prev.home.update.application,
-                  myteam: prev.home.update.myteam,
-                },
+          await setApproveInvitation({id});
+          setFlag(prev => ({
+            home: {
+              update: {
+                invitation: true,
+                application: prev.home.update.application,
+                myteam: prev.home.update.myteam,
               },
-            }));
-            Alert.alert('팀에 성공적으로 가입되었습니다.');
-          } catch (e) {
-            console.log(e);
-          }
+            },
+          }));
+          Alert.alert('팀에 성공적으로 가입되었습니다.');
         },
         style: 'default',
       },
@@ -127,22 +123,18 @@ function InvitedTeams() {
         {
           text: '거절',
           onPress: async () => {
-            try {
-              await deleteInvitation({id, teamId: team?.id as number});
-              setData(prev => prev?.filter(pray => pray.id !== id));
-              setFlag(prev => ({
-                home: {
-                  update: {
-                    invitation: true,
-                    application: prev.home.update.application,
-                    myteam: prev.home.update.myteam,
-                  },
+            await deleteInvitation({id, teamId: team?.id as number});
+            setData(prev => prev?.filter(pray => pray.id !== id));
+            setFlag(prev => ({
+              home: {
+                update: {
+                  invitation: true,
+                  application: prev.home.update.application,
+                  myteam: prev.home.update.myteam,
                 },
-              }));
-              Alert.alert('삭제되었습니다.');
-            } catch (e) {
-              console.log(e);
-            }
+              },
+            }));
+            Alert.alert('삭제되었습니다.');
           },
           style: 'destructive',
         },
