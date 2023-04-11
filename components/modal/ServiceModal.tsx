@@ -52,7 +52,11 @@ const ServiceModal = forwardRef(
       if (Platform.OS === 'ios') {
         if (model.includes('14')) {
           setPadding(55);
-        } else if (model.includes('13')) {
+        } else if (
+          model.includes('13') ||
+          model.includes('12') ||
+          model.includes('11')
+        ) {
           setPadding(50);
         } else {
           setPadding(20);

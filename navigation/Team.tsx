@@ -1,9 +1,8 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
+import React from 'react';
 import Detail from '../screen/team/after/Detail/index';
 import InvitationUser from '../screen/team/after/Detail/InvitationUser';
 import TeamUser from '../screen/team/after/Detail/TeamUser';
-import Service from '../screen/team/after/setting/Service';
 import User from '../screen/team/after/setting/User';
 import Team from '../screen/team/before/Team';
 import TeamCreating from '../screen/team/before/setting/TeamCreating';
@@ -24,7 +23,6 @@ const TeamNav = () => {
     <NativeStack.Navigator>
       {team ? (
         <>
-          <NativeStack.Screen name="ServiceSetting" component={Service} />
           <NativeStack.Screen
             name="UserSetting"
             component={User}
