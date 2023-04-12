@@ -5,6 +5,7 @@ interface PrayType {
   edit: boolean;
   editLoading: boolean;
   deleteLoading: boolean;
+  cheerLoading: boolean;
 }
 
 export default PrayType;

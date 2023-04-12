@@ -12,11 +12,9 @@ import {Image} from '../../components/basic/Image';
 import {SmButton} from '../basic/Button';
 import UserType from '../../types/UserType';
 import PrayType from '../../types/PrayType';
-import {addPray, deletePray, updatePray} from '../../api/pray';
+import {addPray, cheerPray, deletePray, updatePray} from '../../api/pray';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
-import {AxiosError} from 'axios';
-import {response} from '../../api';
 import {thisSunday} from '../../util/Date';
 import {rstStore} from '../../recoil/store';
 const Container = styled(GapRowView)<{borderColor: string}>`
@@ -67,6 +65,7 @@ const AddButtonColumn = styled.View`
 
 function Pray({data}: {data: UserType}) {
   const {team} = useRecoilValue(rstMyInfo);
+  const {user} = useRecoilValue(rstMyInfo);
   const {weekend} = useRecoilValue(rstStore);
 
   const target = useRef<any[]>([]);
@@ -80,7 +79,13 @@ function Pray({data}: {data: UserType}) {
       data.Prays?.map(e => {
         setPrays(prev => [
           ...prev,
-          {...e, edit: false, editLoading: false, deleteLoading: false},
+          {
+            ...e,
+            edit: false,
+            editLoading: false,
+            deleteLoading: false,
+            cheerLoading: false,
+          },
         ]);
       });
     unSubscribe();
@@ -102,6 +107,7 @@ function Pray({data}: {data: UserType}) {
           edit: false,
           editLoading: false,
           deleteLoading: false,
+          cheerLoading: false,
         },
       ]);
     } catch (error) {
@@ -165,20 +171,46 @@ function Pray({data}: {data: UserType}) {
     [team, prays],
   );
 
-  const sendAlertToUser = useCallback(() => {
-    Alert.alert('기도제목 응원', '익명으로 응원알림을 보내시겠습니까?', [
-      {
-        onPress: () => {},
-        text: '예',
-        style: 'cancel',
-      },
-      {
-        onPress: () => {},
-        text: '아니오',
-        style: 'destructive',
-      },
-    ]);
-  }, []);
+  const sendAlertToUser = useCallback(
+    (index: number, id: number) => {
+      Alert.alert('기도제목 응원', '익명으로 응원알림을 보내시겠습니까?', [
+        {
+          onPress: async () => {
+            prays.splice(index, 1, {...prays[index], cheerLoading: true});
+            setPrays([...prays]);
+            const res = await cheerPray({
+              teamId: team?.id as number,
+              userId: id,
+              anonymity: true,
+            });
+            console.log(res.data.payload);
+            Alert.alert(res.data.message);
+            prays.splice(index, 1, {...prays[index], cheerLoading: false});
+            setPrays([...prays]);
+          },
+          text: '예',
+          style: 'cancel',
+        },
+        {
+          onPress: async () => {
+            prays.splice(index, 1, {...prays[index], cheerLoading: true});
+            setPrays([...prays]);
+            const res = await cheerPray({
+              teamId: team?.id as number,
+              userId: id,
+              anonymity: false,
+            });
+            Alert.alert(res.data.message);
+            prays.splice(index, 1, {...prays[index], cheerLoading: false});
+            setPrays([...prays]);
+          },
+          text: '아니오',
+          style: 'destructive',
+        },
+      ]);
+    },
+    [team, prays],
+  );
 
   return (
     <Container
@@ -304,20 +336,30 @@ function Pray({data}: {data: UserType}) {
                 </PrayButton>
               </ButtonColumn>
             ) : (
-              <ButtonColumn>
-                <PrayButton
-                  bkg={colors.prayButtonAlarmBkgColor}
-                  onPress={sendAlertToUser}>
-                  <Image
-                    source={require('../../assets/img/PrayAlertLoveIcon.png')}
-                    width={10}
-                    height={9}
-                    borderRad={0}
-                    borderColor="transparent"
-                    style={{borderWidth: 0}}
-                  />
-                </PrayButton>
-              </ButtonColumn>
+              data.id !== user?.id && (
+                <ButtonColumn>
+                  <PrayButton
+                    bkg={colors.prayButtonAlarmBkgColor}
+                    onPress={() => sendAlertToUser(index, data.id)}
+                    disabled={pray.cheerLoading}>
+                    {pray.cheerLoading ? (
+                      <ActivityIndicator
+                        color={colors.prayButtonCheerTextColor}
+                        size={10}
+                      />
+                    ) : (
+                      <Image
+                        source={require('../../assets/img/PrayAlertLoveIcon.png')}
+                        width={10}
+                        height={9}
+                        borderRad={0}
+                        borderColor="transparent"
+                        style={{borderWidth: 0}}
+                      />
+                    )}
+                  </PrayButton>
+                </ButtonColumn>
+              )
             )}
           </TextAreaWrapper>
         ))}

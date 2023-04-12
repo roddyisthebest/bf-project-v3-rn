@@ -26,6 +26,7 @@ export const colors = {
   prayButtonDeleteTextColor: 'red',
   prayButtonAlarmBkgColor: 'rgba(158, 0, 255, 0.08)',
   prayButtonAlarmTextColor: '#DB00FF',
+  prayButtonCheerTextColor: 'D004FF',
   settingButtonBkgColor: '#F4F4F4',
   settingButtonTextColor: '#828282',
 

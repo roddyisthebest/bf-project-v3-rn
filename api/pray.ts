@@ -25,4 +25,15 @@ const deletePray = (
   teamId: number,
 ): Promise<AxiosResponse<response>> => api.delete(`/pray/${id}/team/${teamId}`);
 
-export {getPrays, addPray, updatePray, deletePray};
+const cheerPray = ({
+  userId,
+  teamId,
+  anonymity,
+}: {
+  userId: number;
+  teamId: number;
+  anonymity: boolean;
+}): Promise<AxiosResponse<response>> =>
+  api.post('/pray/cheer', {userId, teamId, anonymity});
+
+export {getPrays, addPray, updatePray, deletePray, cheerPray};
