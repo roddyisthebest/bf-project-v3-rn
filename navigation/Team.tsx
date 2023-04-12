@@ -20,7 +20,7 @@ const TeamNav = () => {
   const {team} = useRecoilValue(rstMyInfo);
 
   return (
-    <NativeStack.Navigator>
+    <NativeStack.Navigator initialRouteName="Detail">
       {team ? (
         <>
           <NativeStack.Screen

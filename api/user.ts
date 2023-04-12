@@ -111,6 +111,14 @@ const updateInfo = ({
   name: string;
   img: string;
 }): Promise<AxiosResponse<response>> => api.patch('/user', {name, img});
+
+const setPhoneToken = ({
+  phoneToken,
+}: {
+  phoneToken: string;
+}): Promise<AxiosResponse<response>> =>
+  api.post('/user/phoneToken', {phoneToken});
+
 export {
   snsLogin,
   adminLogin,
@@ -126,4 +134,5 @@ export {
   getMyThumbTeams,
   getMyThumbInvitations,
   updateInfo,
+  setPhoneToken,
 };

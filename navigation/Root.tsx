@@ -20,6 +20,8 @@ import {Alert} from 'react-native';
 import {getTokenByRefresh} from '../util/Func';
 import {getTeam} from '../api/team';
 import SplashScreen from 'react-native-splash-screen';
+import messaging from '@react-native-firebase/messaging';
+import {setPhoneToken} from '../api/user';
 
 export type LoggedInParamList = {
   Tabs: {
@@ -82,15 +84,22 @@ const Root = () => {
       return;
     }
 
+    if (!messaging().isDeviceRegisteredForRemoteMessages) {
+      await messaging().registerDeviceForRemoteMessages();
+    }
+    const phoneToken = await messaging().getToken();
+    console.log('phoneToken', phoneToken);
+    await setPhoneToken({phoneToken});
+
     const userInfoString = await EncryptedStorage.getItem(
       EncryptedStorageKeyList.USERINFO,
     );
 
     if (userInfoString) {
       const userInfo: rstMyInfoType = JSON.parse(userInfoString);
-
-      setRstMyInfoState(userInfo);
       setRstAuthState(true);
+      setRstMyInfoState(userInfo);
+
       if (userInfo.team) {
         const {data} = await getTeam({id: userInfo?.team?.id as number});
         userInfo.team = data.payload;
@@ -99,8 +108,8 @@ const Root = () => {
           EncryptedStorageKeyList.USERINFO,
           JSON.stringify(userInfo),
         );
-
         setRstMyInfoState(userInfo);
+
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -210,7 +219,7 @@ const Root = () => {
     const unsubscribe = () =>
       setTimeout(() => {
         SplashScreen.hide();
-      }, 1000);
+      }, 2500);
     unsubscribe();
 
     return () => clearTimeout(unsubscribe);

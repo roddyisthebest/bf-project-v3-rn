@@ -26,7 +26,8 @@ import {setTokenToAxios} from '../../api';
 import {rstMyInfo} from '../../recoil/user';
 import UserType from '../../types/UserType';
 import {EncryptedStorageKeyList} from '../../navigation/Root';
-
+import messaging from '@react-native-firebase/messaging';
+import {setPhoneToken} from '../../api/user';
 const HeaderText = styled.Text`
   color: black;
   font-size: 25px;
@@ -74,6 +75,11 @@ function Login() {
       );
       await setTokenToAxios();
 
+      if (!messaging().isDeviceRegisteredForRemoteMessages) {
+        await messaging().registerDeviceForRemoteMessages();
+      }
+      const phoneToken = await messaging().getToken();
+      await setPhoneToken({phoneToken});
       setMyInfo(info => ({
         user: obj.user,
         team: info.team,
@@ -85,7 +91,9 @@ function Login() {
   );
 
   const kakaoLogin = useCallback(async () => {
-    await login();
+    const ress = await login();
+    console.log(ress);
+
     const res = await getProfileWithKakao();
 
     const {data} = await snsLogin({
