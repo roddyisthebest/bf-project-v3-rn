@@ -1,4 +1,4 @@
-package com.stubb.newarchitecture.components;
+package com.roddyisthebest.stubb.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

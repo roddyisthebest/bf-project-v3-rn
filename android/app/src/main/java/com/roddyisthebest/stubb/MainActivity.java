@@ -1,4 +1,4 @@
-package com.stubb;
+package com.roddyisthebest.stubb;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

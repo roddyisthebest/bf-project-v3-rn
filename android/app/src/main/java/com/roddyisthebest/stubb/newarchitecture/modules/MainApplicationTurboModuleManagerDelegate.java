@@ -1,4 +1,4 @@
-package com.stubb.newarchitecture.modules;
+package com.roddyisthebest.stubb.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

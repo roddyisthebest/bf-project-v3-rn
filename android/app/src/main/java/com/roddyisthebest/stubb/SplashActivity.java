@@ -1,4 +1,4 @@
-package com.stubb; 
+package com.roddyisthebest.stubb; 
 
 import android.content.Intent;
 import android.os.Bundle;

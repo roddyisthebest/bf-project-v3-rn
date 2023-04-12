@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>170124524085-oltl43h9ejjrp65p47qb79lurdor5733.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.170124524085-oltl43h9ejjrp65p47qb79lurdor5733</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC-sBURsS8y0Kuy9ZM8v_qNn6hYiL2Wrz4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>170124524085</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.roddyisthebest.stubb</string>
+	<key>PROJECT_ID</key>
+	<string>bf-project-v3</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bf-project-v3.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:170124524085:ios:7aacaf429ed1a762600f7c</string>
+</dict>
+</plist>

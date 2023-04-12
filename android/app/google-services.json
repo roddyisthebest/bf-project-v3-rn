@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "170124524085",
+    "project_id": "bf-project-v3",
+    "storage_bucket": "bf-project-v3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170124524085:android:2ade36bb4c7f59e7600f7c",
+        "android_client_info": {
+          "package_name": "com.roddyisthebest.stubb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "170124524085-can2362kf820tojltmc99q9svnta08j8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyVZEDDKGnbMN9aLj4AW2E7nIByd4K2vU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "170124524085-can2362kf820tojltmc99q9svnta08j8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170124524085:android:95863827080b42dc600f7c",
+        "android_client_info": {
+          "package_name": "com.stubb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "170124524085-can2362kf820tojltmc99q9svnta08j8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyVZEDDKGnbMN9aLj4AW2E7nIByd4K2vU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "170124524085-can2362kf820tojltmc99q9svnta08j8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

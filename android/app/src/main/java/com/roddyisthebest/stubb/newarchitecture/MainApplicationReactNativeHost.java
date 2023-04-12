@@ -1,4 +1,4 @@
-package com.stubb.newarchitecture;
+package com.roddyisthebest.stubb.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.stubb.BuildConfig;
-import com.stubb.newarchitecture.components.MainComponentsRegistry;
-import com.stubb.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.roddyisthebest.stubb.BuildConfig;
+import com.roddyisthebest.stubb.newarchitecture.components.MainComponentsRegistry;
+import com.roddyisthebest.stubb.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

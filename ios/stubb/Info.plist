@@ -22,36 +22,36 @@
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
-	<dict>
-	<key>CFBundleTypeRole</key>
-	<string>Editor</string>
-	<key>CFBundleURLName</key>
-	<string>naver</string>
-	<key>CFBundleURLSchemes</key>
-	<array>
-	<string>naverLogin</string>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>naver</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>naverLogin</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakao352fa14e9a082a1a7d7566356bb945a9</string>
+			</array>
+		</dict>
 	</array>
-	</dict>
- 	<dict>
-  	<key>CFBundleTypeRole</key>
-   	<string>Editor</string>
-	<key>CFBundleURLSchemes</key>
-	<array>
-    <string>kakao352fa14e9a082a1a7d7566356bb945a9</string>
-   	</array>
- 	</dict>
- 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>352fa14e9a082a1a7d7566356bb945a9</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-   	<string>kakaokompassauth</string>
-	<string>storykompassauth</string>
-   	<string>kakaolink</string>
-	<string>naversearchapp</string>
-  	<string>naversearchthirdlogin</string>
+		<string>kakaokompassauth</string>
+		<string>storykompassauth</string>
+		<string>kakaolink</string>
+		<string>naversearchapp</string>
+		<string>naversearchthirdlogin</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -68,19 +68,6 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -98,6 +85,22 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
