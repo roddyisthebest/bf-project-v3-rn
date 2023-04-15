@@ -1,16 +1,21 @@
-import {NavigationContainer} from '@react-navigation/native';
-import React, {useEffect} from 'react';
+import {
+  NavigationContainer,
+  NavigationContainerRef,
+} from '@react-navigation/native';
+import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {RecoilRoot} from 'recoil';
-import Root from './navigation/Root';
+import Root, {DefaultParamList} from './navigation/Root';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
 import messaging from '@react-native-firebase/messaging';
-import {Alert} from 'react-native';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
 });
+
+export const navigationRef =
+  React.createRef<NavigationContainerRef<DefaultParamList>>();
 
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
 PushNotification.configure({
@@ -23,15 +28,20 @@ PushNotification.configure({
   onNotification: function (notification) {
     console.log('NOTIFICATION:', notification);
 
-    // process the notification
-
     // (required) Called when a remote is received or opened, or local notification is opened
     notification.finish(PushNotificationIOS.FetchResult.NoData);
+
+    if (!notification.foreground) {
+      navigationRef.current?.navigate('Notification', {
+        params: notification,
+      });
+    }
   },
 
   // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
   onAction: function (notification) {
     console.log('ACTION:', notification.action);
+
     console.log('NOTIFICATION:', notification);
 
     // process the action
@@ -102,26 +112,8 @@ PushNotification.createChannel(
 );
 
 const App = () => {
-  useEffect(() => {
-    // const onCreated = async () => {
-    //   if (!messaging()?.isDeviceRegisteredForRemoteMessages) {
-    //     await messaging().registerDeviceForRemoteMessages();
-    //   }
-    //   const phoneToken = await messaging().getToken();
-    //   console.log(Platform.OS, phoneToken);
-    // };
-    // onCreated();
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert(
-        remoteMessage.notification?.title as string,
-        remoteMessage.notification?.body,
-      );
-    });
-    return unsubscribe;
-  }, []);
-
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <RecoilRoot>
         <SafeAreaView style={{flex: 1}}>
           <Root />

@@ -8,7 +8,7 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {getMyThumbInvitations, getMyThumbTeams} from '../../../api/user';
 import TeamType from '../../../types/TeamType';
 import {useRecoilState} from 'recoil';
-import {rstTeamFlag} from '../../../recoil/flag';
+import {rstNotificationFlag, rstTeamFlag} from '../../../recoil/flag';
 import MyInfo from '../../../components/parts/header/MyInfo';
 
 import MyTeamMenu from '../../../components/parts/header/MyTeamMenu';
@@ -18,9 +18,13 @@ function Team() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const [flag, setFlag] = useRecoilState(rstTeamFlag);
+
   const [myTeams, setMyTeams] = useState<TeamType[]>([]);
   const [myInvitations, setMyInvitations] = useState<InvitationType[]>([]);
   const [myApplications, setMyApplications] = useState<InvitationType[]>([]);
+
+  const [rstNotificationState, setRstNotificationState] =
+    useRecoilState(rstNotificationFlag);
 
   const setMyTeamsToState = useCallback(async () => {
     const {data} = await getMyThumbTeams();
@@ -97,6 +101,13 @@ function Team() {
       }));
     }
   }, [flag.home.update.application, setFlag]);
+
+  useEffect(() => {
+    if (rstNotificationState === 'invitation:post') {
+      setRstNotificationState(null);
+      navigation.navigate('Team', {screen: 'InvitedTeams'});
+    }
+  }, [navigation, rstNotificationState]);
 
   return (
     <Layout scrollable={false} isItWhite={false}>

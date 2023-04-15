@@ -4,7 +4,7 @@ import TabsNav from './Tabs';
 import AuthNav from './Auth';
 import TeamNav from './Team';
 import UserNav from './User';
-import {useRecoilState, useResetRecoilState} from 'recoil';
+import {useRecoilState, useResetRecoilState, useSetRecoilState} from 'recoil';
 import {rstAuth} from '../recoil/auth';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {rstMyInfoType, rstMyInfo} from '../recoil/user';
@@ -22,6 +22,14 @@ import {getTeam} from '../api/team';
 import SplashScreen from 'react-native-splash-screen';
 import messaging from '@react-native-firebase/messaging';
 import {setPhoneToken} from '../api/user';
+import {rstTeamFlag} from '../recoil/flag';
+import Notification from '../screen/notification';
+
+export type DefaultParamList = {
+  Notification: {
+    params: {};
+  };
+};
 
 export type LoggedInParamList = {
   Tabs: {
@@ -73,6 +81,7 @@ const Root = () => {
   const [rstAuthState, setRstAuthState] = useRecoilState(rstAuth);
   const [rstMyInfoState, setRstMyInfoState] = useRecoilState(rstMyInfo);
 
+  const setRstTeamFlag = useSetRecoilState(rstTeamFlag);
   const resetRstMyInfo = useResetRecoilState(rstMyInfo);
   const resetRstAuth = useResetRecoilState(rstAuth);
 
@@ -225,6 +234,27 @@ const Root = () => {
     return () => clearTimeout(unsubscribe);
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      if (remoteMessage.data?.code === 'invitation:post') {
+        setRstTeamFlag(prev => ({
+          ...prev,
+          home: {
+            update: {
+              ...prev.home.update,
+              invitation: true,
+            },
+          },
+        }));
+      }
+      Alert.alert(
+        remoteMessage.notification?.title as string,
+        remoteMessage.notification?.body,
+      );
+    });
+    return unsubscribe;
+  }, [setRstTeamFlag]);
+
   return (
     <Nav.Navigator
       initialRouteName="Auth"
@@ -247,6 +277,7 @@ const Root = () => {
       ) : (
         <Nav.Screen name="Auth" component={AuthNav} />
       )}
+      <Nav.Screen name="Notification" component={Notification} />
     </Nav.Navigator>
   );
 };

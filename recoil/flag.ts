@@ -33,3 +33,8 @@ export const rstTweetFlag = atom<rstTweetFlagType>({
     upload: false,
   },
 });
+
+export const rstNotificationFlag = atom<null | 'invitation:post'>({
+  key: 'rstNotificationFlag',
+  default: null,
+});
