@@ -11,6 +11,8 @@ import InvitationType from '../../../../types/InvitationType';
 import {getMyApplications} from '../../../../api/user';
 import {deleteApplication} from '../../../../api/team';
 import {rstTeamFlag} from '../../../../recoil/flag';
+import {AxiosError} from 'axios';
+import {response as responseType} from '../../../../api';
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
   padding-top: 20px;
@@ -94,18 +96,34 @@ function AppliedTeams() {
         {
           text: '가입신청 취소',
           onPress: async () => {
-            await deleteApplication({id, teamId: team?.id as number});
-            setData(prev => prev?.filter(pray => pray.id !== id));
-            setFlag(prev => ({
-              home: {
-                update: {
-                  application: true,
-                  invitation: prev.home.update.invitation,
-                  myteam: prev.home.update.myteam,
+            try {
+              await deleteApplication({id, teamId: team?.id as number});
+              setData(prev => prev?.filter(pray => pray.id !== id));
+              setFlag(prev => ({
+                home: {
+                  update: {
+                    application: true,
+                    invitation: prev.home.update.invitation,
+                    myteam: prev.home.update.myteam,
+                  },
                 },
-              },
-            }));
-            Alert.alert('가입신청이 취소 되었습니다.');
+              }));
+              Alert.alert('가입신청이 취소 되었습니다.');
+            } catch (error) {
+              const {response} = error as unknown as AxiosError<responseType>;
+              if (response?.status === 403) {
+                setData(prev => prev?.filter(pray => pray.id !== id));
+                setFlag(prev => ({
+                  home: {
+                    update: {
+                      application: true,
+                      invitation: prev.home.update.invitation,
+                      myteam: prev.home.update.myteam,
+                    },
+                  },
+                }));
+              }
+            }
           },
           style: 'destructive',
         },

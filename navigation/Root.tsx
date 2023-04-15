@@ -246,6 +246,16 @@ const Root = () => {
             },
           },
         }));
+      } else if (remoteMessage.data?.code === 'application:delete') {
+        setRstTeamFlag(prev => ({
+          ...prev,
+          home: {
+            update: {
+              ...prev.home.update,
+              application: true,
+            },
+          },
+        }));
       }
       Alert.alert(
         remoteMessage.notification?.title as string,

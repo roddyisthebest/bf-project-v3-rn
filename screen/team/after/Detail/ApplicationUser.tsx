@@ -1,7 +1,7 @@
 import {FlatList, ActivityIndicator, Alert} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import InvitationType from '../../../../types/InvitationType';
-import {deleteInvitation, getApplications} from '../../../../api/team';
+import {deleteApplication, getApplications} from '../../../../api/team';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
 import {LoadingContainer} from '../../../../components/basic/View';
@@ -10,6 +10,8 @@ import {colors} from '../../../../styles/color';
 import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyComponent';
 import UserApplyItem from '../../../../components/parts/detail/UserApplyItem';
 import {setApproveApplication} from '../../../../api/team';
+import {AxiosError} from 'axios';
+import {response as responseType} from '../../../../api';
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
   padding-top: 20px;
@@ -91,9 +93,16 @@ function ApplicationUser() {
         {
           text: '수락',
           onPress: async () => {
-            await setApproveApplication({id, teamId: team?.id as number});
-            setData(prev => prev?.filter(pray => pray.id !== id));
-            Alert.alert('가입 신청을 수락하였습니다.');
+            try {
+              await setApproveApplication({id, teamId: team?.id as number});
+              setData(prev => prev?.filter(pray => pray.id !== id));
+              Alert.alert('가입 신청을 수락하였습니다.');
+            } catch (error) {
+              const {response} = error as unknown as AxiosError<responseType>;
+              if (response?.status === 404) {
+                setData(prev => prev?.filter(pray => pray.id !== id));
+              }
+            }
           },
           style: 'default',
         },
@@ -113,9 +122,16 @@ function ApplicationUser() {
         {
           text: '거절',
           onPress: async () => {
-            await deleteInvitation({id, teamId: team?.id as number});
-            setData(prev => prev?.filter(pray => pray.id !== id));
-            Alert.alert('가입 신청이 거절 되었습니다.');
+            try {
+              await deleteApplication({id, teamId: team?.id as number});
+              setData(prev => prev?.filter(pray => pray.id !== id));
+              Alert.alert('가입 신청이 거절 되었습니다.');
+            } catch (error) {
+              const {response} = error as unknown as AxiosError<responseType>;
+              if (response?.status === 403) {
+                setData(prev => prev?.filter(pray => pray.id !== id));
+              }
+            }
           },
           style: 'destructive',
         },
