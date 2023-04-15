@@ -104,9 +104,13 @@ function Team() {
 
   useEffect(() => {
     if (rstNotificationState === 'invitation:post') {
-      setRstNotificationState(null);
       navigation.navigate('Team', {screen: 'InvitedTeams'});
     }
+    if (rstNotificationState === 'application:delete') {
+      navigation.navigate('Team', {screen: 'AppliedTeams'});
+    }
+
+    setRstNotificationState(null);
   }, [navigation, rstNotificationState]);
 
   return (

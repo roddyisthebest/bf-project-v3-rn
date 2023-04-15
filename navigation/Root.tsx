@@ -256,6 +256,17 @@ const Root = () => {
             },
           },
         }));
+      } else if (remoteMessage.data?.code === 'application:approve') {
+        setRstTeamFlag(prev => ({
+          ...prev,
+          home: {
+            update: {
+              ...prev.home.update,
+              application: true,
+              myteam: true,
+            },
+          },
+        }));
       }
       Alert.alert(
         remoteMessage.notification?.title as string,

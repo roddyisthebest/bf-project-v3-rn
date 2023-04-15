@@ -20,7 +20,10 @@ function Notification() {
       prop: {
         params: {
           data: {
-            code: 'invitation:post';
+            code:
+              | 'invitation:post'
+              | 'application:delete'
+              | 'application:approve';
           };
         };
       };
@@ -34,14 +37,31 @@ function Notification() {
 
   useEffect(() => {
     const code = route.params.params.data.code;
-    if (code === 'invitation:post' && rstAuthState) {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{name: 'Team'}],
-        }),
-      );
-      setRstNotificationFlag('invitation:post');
+    if (rstAuthState) {
+      if (code === 'invitation:post') {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Team'}],
+          }),
+        );
+        setRstNotificationFlag(code);
+      } else if (code === 'application:delete') {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Team'}],
+          }),
+        );
+        setRstNotificationFlag(code);
+      } else if (code === 'application:approve') {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Team'}],
+          }),
+        );
+      }
     }
   }, [route, navigation, CommonActions, rstAuthState]);
 
