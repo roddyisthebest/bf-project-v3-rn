@@ -156,7 +156,7 @@ function InvitedTeams() {
               Alert.alert('삭제되었습니다.');
             } catch (error) {
               const {response} = error as unknown as AxiosError<responseType>;
-              if (response?.status === 404) {
+              if (response?.status === 403) {
                 setData(prev => prev?.filter(pray => pray.id !== id));
                 setFlag(prev => ({
                   home: {

@@ -9,7 +9,8 @@ import {LoadingContainer} from '../../../../components/basic/View';
 import styled from 'styled-components/native';
 import {colors} from '../../../../styles/color';
 import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyComponent';
-
+import {AxiosError} from 'axios';
+import {response as responseType} from '../../../../api';
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
   padding-top: 20px;
@@ -91,9 +92,16 @@ function InvitationUser() {
         {
           text: '삭제',
           onPress: async () => {
-            await deleteInvitation({id, teamId: team?.id as number});
-            setData(prev => prev?.filter(pray => pray.id !== id));
-            Alert.alert('삭제되었습니다.');
+            try {
+              await deleteInvitation({id, teamId: team?.id as number});
+              setData(prev => prev?.filter(pray => pray.id !== id));
+              Alert.alert('삭제되었습니다.');
+            } catch (error) {
+              const {response} = error as unknown as AxiosError<responseType>;
+              if (response?.status === 403) {
+                setData(prev => prev?.filter(pray => pray.id !== id));
+              }
+            }
           },
           style: 'destructive',
         },
