@@ -13,7 +13,8 @@ import {deleteInvitation, setApproveInvitation} from '../../../../api/team';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../../../navigation/Root';
 import {rstTeamFlag} from '../../../../recoil/flag';
-
+import {response as responseType} from '../../../../api';
+import {AxiosError} from 'axios';
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
   padding-top: 20px;
@@ -95,18 +96,34 @@ function InvitedTeams() {
       {
         text: '수락',
         onPress: async () => {
-          await setApproveInvitation({id});
-          setData(prev => prev?.filter(pray => pray.id !== id));
-          setFlag(prev => ({
-            home: {
-              update: {
-                invitation: true,
-                application: prev.home.update.application,
-                myteam: true,
+          try {
+            await setApproveInvitation({id});
+            setData(prev => prev?.filter(pray => pray.id !== id));
+            setFlag(prev => ({
+              home: {
+                update: {
+                  invitation: true,
+                  application: prev.home.update.application,
+                  myteam: true,
+                },
               },
-            },
-          }));
-          Alert.alert('팀에 성공적으로 가입되었습니다.');
+            }));
+            Alert.alert('팀에 성공적으로 가입되었습니다.');
+          } catch (error) {
+            const {response} = error as unknown as AxiosError<responseType>;
+            if (response?.status === 403) {
+              setData(prev => prev?.filter(pray => pray.id !== id));
+              setFlag(prev => ({
+                home: {
+                  update: {
+                    invitation: true,
+                    application: prev.home.update.application,
+                    myteam: prev.home.update.myteam,
+                  },
+                },
+              }));
+            }
+          }
         },
         style: 'default',
       },
@@ -124,18 +141,34 @@ function InvitedTeams() {
         {
           text: '거절',
           onPress: async () => {
-            await deleteInvitation({id, teamId: team?.id as number});
-            setData(prev => prev?.filter(pray => pray.id !== id));
-            setFlag(prev => ({
-              home: {
-                update: {
-                  invitation: true,
-                  application: prev.home.update.application,
-                  myteam: prev.home.update.myteam,
+            try {
+              await deleteInvitation({id, teamId: team?.id as number});
+              setData(prev => prev?.filter(pray => pray.id !== id));
+              setFlag(prev => ({
+                home: {
+                  update: {
+                    invitation: true,
+                    application: prev.home.update.application,
+                    myteam: prev.home.update.myteam,
+                  },
                 },
-              },
-            }));
-            Alert.alert('삭제되었습니다.');
+              }));
+              Alert.alert('삭제되었습니다.');
+            } catch (error) {
+              const {response} = error as unknown as AxiosError<responseType>;
+              if (response?.status === 404) {
+                setData(prev => prev?.filter(pray => pray.id !== id));
+                setFlag(prev => ({
+                  home: {
+                    update: {
+                      invitation: true,
+                      application: prev.home.update.application,
+                      myteam: prev.home.update.myteam,
+                    },
+                  },
+                }));
+              }
+            }
           },
           style: 'destructive',
         },

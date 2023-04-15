@@ -7,7 +7,8 @@ import InvitationType from '../../types/InvitationType';
 import {Alert} from 'react-native';
 import {setApproveInvitation} from '../../api/team';
 import {rstTeamFlag} from '../../recoil/flag';
-
+import {AxiosError} from 'axios';
+import {response as responseType} from '../../api';
 const Container = styled.TouchableOpacity<{buttonBorderColor: string}>`
   border-radius: 10px;
   border-color: ${props => props.buttonBorderColor};
@@ -37,19 +38,34 @@ function Invitation({data, active}: {data: InvitationType; active: boolean}) {
           {
             text: '수락',
             onPress: async () => {
-              await setApproveInvitation({id: data?.id});
-              setFlag(prev => ({
-                home: {
-                  update: {
-                    myteam: true,
-                    invitation: true,
-                    application: prev.home.update.application,
+              try {
+                await setApproveInvitation({id: data?.id});
+                setFlag(prev => ({
+                  home: {
+                    update: {
+                      myteam: true,
+                      invitation: true,
+                      application: prev.home.update.application,
+                    },
                   },
-                },
-              }));
-              Alert.alert(
-                `팀 ${data?.Team?.name}에 성공적으로 가입되었습니다.`,
-              );
+                }));
+                Alert.alert(
+                  `팀 ${data?.Team?.name}에 성공적으로 가입되었습니다.`,
+                );
+              } catch (error) {
+                const {response} = error as unknown as AxiosError<responseType>;
+                if (response?.status === 403) {
+                  setFlag(prev => ({
+                    home: {
+                      update: {
+                        myteam: true,
+                        invitation: true,
+                        application: prev.home.update.application,
+                      },
+                    },
+                  }));
+                }
+              }
             },
             style: 'default',
           },
