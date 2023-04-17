@@ -269,7 +269,10 @@ const Root = () => {
             },
           },
         }));
-      } else if (remoteMessage.data?.code === 'team:dropout') {
+      } else if (
+        remoteMessage.data?.code === 'team:dropout' &&
+        rstMyInfoState.team?.id === parseInt(remoteMessage.data?.teamId, 10)
+      ) {
         teamReset();
       }
       Alert.alert(
@@ -278,7 +281,7 @@ const Root = () => {
       );
     });
     return unsubscribe;
-  }, [setRstTeamFlag]);
+  }, [setRstTeamFlag, rstMyInfoState]);
 
   return (
     <Nav.Navigator
