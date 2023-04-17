@@ -216,6 +216,8 @@ const Root = () => {
               logout();
             }
           }
+        } else if (status === 404 && code === 'Not Found:Team') {
+          teamReset();
         }
         return Promise.reject(error);
       },

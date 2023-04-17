@@ -1,5 +1,5 @@
-import {Alert, FlatList, View} from 'react-native';
-import React, {useCallback} from 'react';
+import {ActivityIndicator, Alert, FlatList, View} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import {
   CommonActions,
   NavigationProp,
@@ -21,9 +21,12 @@ import NavItem from '../../../../components/parts/detail/NavItem';
 import {deleteTeam, withdraw} from '../../../../api/team';
 import EncryptedStorage from 'react-native-encrypted-storage/';
 import {rstTeamFlag} from '../../../../recoil/flag';
+import {AxiosError} from 'axios';
+import {response as responseType} from '../../../../api';
 function Detail() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
   const [userInfo, setUserInfo] = useRecoilState(rstMyInfo);
+  const [loading, setLoading] = useState<boolean>(false);
   const setFlag = useSetRecoilState(rstTeamFlag);
   const data = [
     {
@@ -101,9 +104,15 @@ function Detail() {
         {
           text: '탈퇴',
           onPress: async () => {
-            await withdraw({teamId: userInfo?.team?.id as number});
-            resetTeam();
-            Alert.alert('탈퇴되었습니다.');
+            try {
+              setLoading(true);
+              await withdraw({teamId: userInfo?.team?.id as number});
+              resetTeam();
+              Alert.alert('탈퇴되었습니다.');
+            } catch (error) {
+            } finally {
+              setLoading(false);
+            }
           },
           style: 'destructive',
         },
@@ -124,9 +133,15 @@ function Detail() {
         {
           text: '삭제',
           onPress: async () => {
-            await deleteTeam({id: userInfo?.team?.id as number});
-            resetTeam();
-            Alert.alert('삭제되었습니다.');
+            try {
+              setLoading(true);
+              await deleteTeam({id: userInfo?.team?.id as number});
+              resetTeam();
+              Alert.alert('삭제되었습니다.');
+            } catch (e) {
+            } finally {
+              setLoading(false);
+            }
           },
           style: 'destructive',
         },
@@ -157,15 +172,20 @@ function Detail() {
                 userInfo?.team?.bossId === userInfo?.user?.id
                   ? destoryTeam
                   : withdrawTeam
-              }>
-              <ButtonText
-                color={colors.prayButtonDeleteTextColor}
-                fontSize={12.5}
-                fontWeight={400}>
-                {userInfo?.team?.bossId === userInfo?.user?.id
-                  ? '팀 삭제하기'
-                  : '탈퇴하기'}
-              </ButtonText>
+              }
+              disabled={loading}>
+              {loading ? (
+                <ActivityIndicator color={colors.prayButtonDeleteTextColor} />
+              ) : (
+                <ButtonText
+                  color={colors.prayButtonDeleteTextColor}
+                  fontSize={12.5}
+                  fontWeight={400}>
+                  {userInfo?.team?.bossId === userInfo?.user?.id
+                    ? '팀 삭제하기'
+                    : '탈퇴하기'}
+                </ButtonText>
+              )}
             </SmButton>
           )}
         />
