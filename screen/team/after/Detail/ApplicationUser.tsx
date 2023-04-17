@@ -1,6 +1,6 @@
 import {FlatList, ActivityIndicator, Alert} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import InvitationType from '../../../../types/InvitationType';
+import InvitationPropType from '../../../../types/InvitationPropType';
 import {deleteApplication, getApplications} from '../../../../api/team';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
@@ -20,7 +20,7 @@ const ModifiedLoadingContainer = styled(LoadingContainer)`
 function ApplicationUser() {
   const {team} = useRecoilValue(rstMyInfo);
 
-  const [data, setData] = useState<InvitationType[]>([]);
+  const [data, setData] = useState<InvitationPropType[]>([]);
   const [lastId, setLastId] = useState<number>(-1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,7 +31,7 @@ function ApplicationUser() {
       try {
         const {
           data: {payload, code},
-        }: {data: {payload: InvitationType[]; code: string}} =
+        }: {data: {payload: InvitationPropType[]; code: string}} =
           await getApplications({
             teamId: team?.id as number,
             lastId: id,
@@ -62,7 +62,7 @@ function ApplicationUser() {
         if (id === -1) {
           const {
             data: {payload, code},
-          }: {data: {payload: InvitationType[]; code: string}} =
+          }: {data: {payload: InvitationPropType[]; code: string}} =
             await getApplications({
               teamId: team?.id as number,
               lastId: id,
@@ -83,7 +83,7 @@ function ApplicationUser() {
   );
 
   const approveApplicationFromState = useCallback(
-    (id: number) => {
+    (id: number, index: number) => {
       Alert.alert('가입 신청 수락', '정말 가입 신청을 수락할까요?', [
         {
           text: '취소',
@@ -94,7 +94,12 @@ function ApplicationUser() {
           text: '수락',
           onPress: async () => {
             try {
+              data.splice(index, 1, {...data[index], loading: true});
+              setData([...data]);
               await setApproveApplication({id, teamId: team?.id as number});
+              data.splice(index, 1, {...data[index], loading: false});
+              setData([...data]);
+
               setData(prev => prev?.filter(pray => pray.id !== id));
               Alert.alert('가입 신청을 수락하였습니다.');
             } catch (error) {
@@ -108,11 +113,11 @@ function ApplicationUser() {
         },
       ]);
     },
-    [team],
+    [team, data],
   );
 
   const deleteApplicationFromState = useCallback(
-    async (id: number) => {
+    async (id: number, index: number) => {
       Alert.alert('가입 신청 거절', '정말 가입 신청을 거절할까요?', [
         {
           text: '취소',
@@ -123,7 +128,12 @@ function ApplicationUser() {
           text: '거절',
           onPress: async () => {
             try {
+              data.splice(index, 1, {...data[index], loading: true});
+              setData([...data]);
               await deleteApplication({id, teamId: team?.id as number});
+              data.splice(index, 1, {...data[index], loading: false});
+              setData([...data]);
+
               setData(prev => prev?.filter(pray => pray.id !== id));
               Alert.alert('가입 신청이 거절 되었습니다.');
             } catch (error) {
@@ -140,11 +150,18 @@ function ApplicationUser() {
     [data, team],
   );
 
-  const renderItem = ({item}: {item: InvitationType}) => (
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: InvitationPropType;
+    index: number;
+  }) => (
     <UserApplyItem
       data={item}
       approve={approveApplicationFromState}
       refuse={deleteApplicationFromState}
+      index={index}
     />
   );
 

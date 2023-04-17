@@ -4,7 +4,8 @@ import dimension from '../../../styles/dimension';
 import {Image} from '../../basic/Image';
 import {colors} from '../../../styles/color';
 import {ButtonText, SmButton} from '../../basic/Button';
-import InvitationType from '../../../types/InvitationType';
+import InvitationPropType from '../../../types/InvitationPropType';
+import {ActivityIndicator} from 'react-native';
 const Container = styled.View<{paddingHorizontal: number}>`
   flex-direction: row;
   align-items: center;
@@ -25,10 +26,12 @@ function UserApplyItem({
   data,
   approve,
   refuse,
+  index,
 }: {
-  data: InvitationType;
-  approve: (id: number) => void;
-  refuse: (id: number) => void;
+  data: InvitationPropType;
+  approve: (id: number, index: number) => void;
+  refuse: (id: number, index: number) => void;
+  index: number;
 }) {
   return (
     <Container paddingHorizontal={dimension.paddingHorizontal}>
@@ -45,28 +48,34 @@ function UserApplyItem({
         </Text>
       </Column>
       <Column gap={7.5}>
-        <SmButton
-          bkg={colors.prayButtonEditBkgColor}
-          radius={8}
-          onPress={() => approve(data.id)}>
-          <ButtonText
-            color={colors.prayButtonEditTextColor}
-            fontSize={13}
-            fontWeight={400}>
-            수락하기
-          </ButtonText>
-        </SmButton>
-        <SmButton
-          bkg={colors.prayButtonDeleteBkgColor}
-          radius={8}
-          onPress={() => refuse(data.id)}>
-          <ButtonText
-            color={colors.prayButtonDeleteTextColor}
-            fontSize={13}
-            fontWeight={400}>
-            거절하기
-          </ButtonText>
-        </SmButton>
+        {data.loading ? (
+          <ActivityIndicator color={colors.loadingIconColor} />
+        ) : (
+          <>
+            <SmButton
+              bkg={colors.prayButtonEditBkgColor}
+              radius={8}
+              onPress={() => approve(data.id, index)}>
+              <ButtonText
+                color={colors.prayButtonEditTextColor}
+                fontSize={13}
+                fontWeight={400}>
+                수락하기
+              </ButtonText>
+            </SmButton>
+            <SmButton
+              bkg={colors.prayButtonDeleteBkgColor}
+              radius={8}
+              onPress={() => refuse(data.id, index)}>
+              <ButtonText
+                color={colors.prayButtonDeleteTextColor}
+                fontSize={13}
+                fontWeight={400}>
+                거절하기
+              </ButtonText>
+            </SmButton>
+          </>
+        )}
       </Column>
     </Container>
   );
