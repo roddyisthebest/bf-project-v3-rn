@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import UserType from '../../../types/UserType';
 import styled from 'styled-components/native';
 import dimension from '../../../styles/dimension';
 import {Image} from '../../basic/Image';
 import {colors} from '../../../styles/color';
 import {ButtonText} from '../../basic/Button';
+import {ActivityIndicator} from 'react-native';
 
 const Container = styled.TouchableOpacity<{paddingHorizontal: number}>`
   flex-direction: row;
@@ -21,12 +22,19 @@ function UserSearchItem({
   onPress,
 }: {
   data: UserType;
-  onPress: (id: number) => void;
+  onPress: (id: number) => Promise<any>;
 }) {
+  const [loading, setLoading] = useState<boolean>(false);
+
   return (
     <Container
       paddingHorizontal={dimension.paddingHorizontal}
-      onPress={() => onPress(data.id)}>
+      onPress={async () => {
+        setLoading(true);
+        await onPress(data.id);
+        setLoading(false);
+      }}
+      disabled={loading}>
       <Image
         width={30}
         height={30}
@@ -37,6 +45,7 @@ function UserSearchItem({
       <Text color="black" fontWeight={500} fontSize={20}>
         {data.name}
       </Text>
+      {loading && <ActivityIndicator color={colors.loadingIconColor} />}
     </Container>
   );
 }

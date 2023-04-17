@@ -21,8 +21,7 @@ import NavItem from '../../../../components/parts/detail/NavItem';
 import {deleteTeam, withdraw} from '../../../../api/team';
 import EncryptedStorage from 'react-native-encrypted-storage/';
 import {rstTeamFlag} from '../../../../recoil/flag';
-import {AxiosError} from 'axios';
-import {response as responseType} from '../../../../api';
+
 function Detail() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
   const [userInfo, setUserInfo] = useRecoilState(rstMyInfo);

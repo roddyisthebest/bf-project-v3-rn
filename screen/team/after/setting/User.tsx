@@ -13,8 +13,6 @@ import {getUsers} from '../../../../api/search';
 import {addInvitation} from '../../../../api/team';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
-import {AxiosError} from 'axios';
-import {response} from '../../../../api';
 
 const SearchSection = styled.View<{
   paddingVertical: number;
@@ -61,6 +59,8 @@ function User() {
     } finally {
       setData([]);
       setKeyword('');
+
+      return Promise.resolve();
     }
   };
 
