@@ -10,6 +10,7 @@ import FastImage from 'react-native-fast-image';
 import {Input, Label} from '../../../../components/basic/Input';
 import dimension from '../../../../styles/dimension';
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -68,6 +69,7 @@ function TeamCreating() {
   const [name, setName] = useState<string>('');
   const [introducing, setIntroducing] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const logout = useCallback(async () => {
     resetRstAuth();
@@ -91,6 +93,7 @@ function TeamCreating() {
   }, []);
 
   const onUpload = useCallback(async () => {
+    setLoading(true);
     const res: any = await addTeam({
       file: {
         name: file?.fileName as string,
@@ -135,20 +138,23 @@ function TeamCreating() {
       Alert.alert('팀이 생성되었습니다.');
       navigation.goBack();
     }
+    setLoading(false);
   }, [file, name, introducing, navigation, setFlag]);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () =>
-        disabled ? null : (
-          <Pressable onPress={onUpload}>
+        disabled ? null : loading ? (
+          <ActivityIndicator color="#3478F6" />
+        ) : (
+          <Pressable onPress={onUpload} disabled={loading}>
             <ButtonText color="#3478F6" fontSize={15} fontWeight={500}>
               생성
             </ButtonText>
           </Pressable>
         ),
     });
-  }, [navigation, onUpload, disabled]);
+  }, [navigation, onUpload, disabled, loading]);
 
   useEffect(() => {
     setDisabled(introducing.length < 5 || name.length < 3 || file === null);
