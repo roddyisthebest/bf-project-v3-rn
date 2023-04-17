@@ -71,8 +71,8 @@ function DetailHeader({
           source={{
             uri:
               type === 'user'
-                ? data.img
-                : `http://192.168.123.104:3000/${data.img}`,
+                ? data?.img
+                : `http://192.168.123.104:3000/${data?.img}`,
           }}
           height={65}
           borderRad={type === 'team' ? 15 : 120}
@@ -81,7 +81,7 @@ function DetailHeader({
       </ImageSection>
       <ContentSection>
         <ButtonText color="black" fontSize={26} fontWeight={600}>
-          {data.name}
+          {data?.name}
         </ButtonText>
         <ModifiedSmButton onPress={onPress}>
           <ButtonText

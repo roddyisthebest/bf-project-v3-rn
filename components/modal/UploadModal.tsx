@@ -144,6 +144,12 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
         setTimeout(() => logout(), 250);
         Alert.alert('다시 로그인 해주세요.');
       }
+    } else if ((res.status as number) === 404) {
+      (ref as React.RefObject<ActionSheetRef>).current?.hide({
+        animated: false,
+      });
+      setTimeout(() => logout(), 250);
+      Alert.alert('팀이 삭제되었습니다.');
     } else if ((res.status as number) === 200) {
       //ok
       setFlag({upload: true});
