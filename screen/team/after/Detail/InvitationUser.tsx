@@ -1,7 +1,7 @@
 import {FlatList, ActivityIndicator, Alert} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import UserInvitationItem from '../../../../components/parts/detail/UserInvitationItem';
-import InvitationType from '../../../../types/InvitationType';
+import InvitationPropType from '../../../../types/InvitationPropType';
 import {deleteInvitation, getInvitaions} from '../../../../api/team';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../../../recoil/user';
@@ -19,7 +19,7 @@ const ModifiedLoadingContainer = styled(LoadingContainer)`
 function InvitationUser() {
   const {team} = useRecoilValue(rstMyInfo);
 
-  const [data, setData] = useState<InvitationType[]>([]);
+  const [data, setData] = useState<InvitationPropType[]>([]);
   const [lastId, setLastId] = useState<number>(-1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,7 +30,7 @@ function InvitationUser() {
       try {
         const {
           data: {payload, code},
-        }: {data: {payload: InvitationType[]; code: string}} =
+        }: {data: {payload: InvitationPropType[]; code: string}} =
           await getInvitaions({
             teamId: team?.id as number,
             lastId: id,
@@ -61,7 +61,7 @@ function InvitationUser() {
         if (id === -1) {
           const {
             data: {payload, code},
-          }: {data: {payload: InvitationType[]; code: string}} =
+          }: {data: {payload: InvitationPropType[]; code: string}} =
             await getInvitaions({
               teamId: team?.id as number,
               lastId: id,
@@ -82,7 +82,7 @@ function InvitationUser() {
   );
 
   const deleteInvitationFromState = useCallback(
-    async (id: number) => {
+    async (id: number, index: number) => {
       Alert.alert('초대유저 삭제', '정말로 유저의 초대를 취소할까요?', [
         {
           text: '취소',
@@ -93,7 +93,11 @@ function InvitationUser() {
           text: '삭제',
           onPress: async () => {
             try {
+              data.splice(index, 1, {...data[index], loading: false});
+              setData([...data]);
               await deleteInvitation({id, teamId: team?.id as number});
+              data.splice(index, 1, {...data[index], loading: true});
+              setData([...data]);
               setData(prev => prev?.filter(pray => pray.id !== id));
               Alert.alert('삭제되었습니다.');
             } catch (error) {
@@ -110,8 +114,18 @@ function InvitationUser() {
     [data, team],
   );
 
-  const renderItem = ({item}: {item: InvitationType}) => (
-    <UserInvitationItem data={item} onPress={deleteInvitationFromState} />
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: InvitationPropType;
+    index: number;
+  }) => (
+    <UserInvitationItem
+      data={item}
+      onPress={deleteInvitationFromState}
+      index={index}
+    />
   );
 
   useEffect(() => {
