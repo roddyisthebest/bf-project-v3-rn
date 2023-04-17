@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import FastImage from 'react-native-fast-image';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../../styles/color';
 import dimension from '../../../styles/dimension';
 
-const Container = styled.View<{borderColor: string; height: number}>`
+const Container = styled.Pressable<{borderColor: string; height: number}>`
   width: 100%;
   border-width: 1px;
   border-color: ${props => props.borderColor};
@@ -40,10 +40,21 @@ function Preview({
   reset: () => void;
   editable: boolean;
 }) {
+  const [resizeMode, setResizeMode] = useState<'contain' | 'cover'>('cover');
+
+  const onPress = useCallback(() => {
+    if (resizeMode === 'contain') {
+      setResizeMode('cover');
+    } else {
+      setResizeMode('contain');
+    }
+  }, [resizeMode]);
+
   return (
     <Container
       borderColor={colors.bottomSheetItemBorderColor}
-      height={dimension.tweetRightSectionWidth}>
+      height={dimension.tweetRightSectionWidth}
+      onPress={onPress}>
       {editable && (
         <DeleteButton onPress={reset}>
           <Icon name="close-outline" color="black" size={18} />
@@ -51,6 +62,7 @@ function Preview({
       )}
 
       <Image
+        resizeMode={resizeMode}
         source={{uri: editable ? uri : `http://192.168.123.104:3000/${uri}`}}
       />
     </Container>
