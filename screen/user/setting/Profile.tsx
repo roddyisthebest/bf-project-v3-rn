@@ -11,7 +11,13 @@ import {colors} from '../../../styles/color';
 
 import {Input, Label} from '../../../components/basic/Input';
 import dimension from '../../../styles/dimension';
-import {KeyboardAvoidingView, Platform, Pressable, View} from 'react-native';
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  View,
+} from 'react-native';
 
 import {rstMyInfo, rstMyInfoType} from '../../../recoil/user';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
@@ -61,6 +67,9 @@ function Profile() {
   const [name, setName] = useState<string>('');
   const [uri, setUri] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
+
+  const [loading, setLoading] = useState<boolean>(false);
+
   const rand = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
@@ -72,45 +81,53 @@ function Profile() {
   }, [rand]);
 
   const onUpload = useCallback(async () => {
-    await updateInfo({
-      img: uri,
-      name,
-    });
+    try {
+      setLoading(true);
+      await updateInfo({
+        img: uri,
+        name,
+      });
 
-    setUserInfo(prev => ({
-      ...prev,
-      user: {...(prev.user as UserType), name, img: uri},
-    }));
+      setUserInfo(prev => ({
+        ...prev,
+        user: {...(prev.user as UserType), name, img: uri},
+      }));
 
-    const dataString = await EncryptedStorage.getItem(
-      EncryptedStorageKeyList.USERINFO,
-    );
-    const parsedData: rstMyInfoType = JSON.parse(dataString as string);
+      const dataString = await EncryptedStorage.getItem(
+        EncryptedStorageKeyList.USERINFO,
+      );
+      const parsedData: rstMyInfoType = JSON.parse(dataString as string);
 
-    parsedData.user = {
-      ...(user as UserType),
-      name,
-      img: uri,
-    };
-    await EncryptedStorage.setItem(
-      EncryptedStorageKeyList.USERINFO,
-      JSON.stringify(parsedData),
-    );
-    navigation.goBack();
+      parsedData.user = {
+        ...(user as UserType),
+        name,
+        img: uri,
+      };
+      await EncryptedStorage.setItem(
+        EncryptedStorageKeyList.USERINFO,
+        JSON.stringify(parsedData),
+      );
+      navigation.goBack();
+    } catch (e) {
+    } finally {
+      setLoading(false);
+    }
   }, [uri, name, navigation]);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () =>
-        disabled ? null : (
-          <Pressable onPress={onUpload}>
+        disabled ? null : loading ? (
+          <ActivityIndicator color="#3478F6" />
+        ) : (
+          <Pressable onPress={onUpload} disabled={loading}>
             <ButtonText color="#3478F6" fontSize={15} fontWeight={500}>
               변경
             </ButtonText>
           </Pressable>
         ),
     });
-  }, [navigation, disabled, onUpload]);
+  }, [navigation, disabled, onUpload, loading]);
 
   useEffect(() => {
     setDisabled(name.length < 2 || (user?.name === name && user?.img === uri));
