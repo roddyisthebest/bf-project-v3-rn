@@ -8,7 +8,7 @@ import {Button, ButtonText} from '../../components/basic/Button';
 import {GapRowView} from '../../components/basic/View';
 import Division from '../../components/basic/Division';
 import {Label, Input} from '../../components/basic/Input';
-import {KeyboardAvoidingView, Platform} from 'react-native';
+import {ActivityIndicator, KeyboardAvoidingView, Platform} from 'react-native';
 import {useSetRecoilState} from 'recoil';
 import {rstAuth} from '../../recoil/auth';
 import {
@@ -41,6 +41,16 @@ function Login() {
   const [uid, setUid] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
+
+  const [loading, setLoading] = useState<{
+    kakao: boolean;
+    apple: boolean;
+    naver: boolean;
+  }>({
+    kakao: false,
+    apple: false,
+    naver: false,
+  });
 
   useEffect(() => {
     setDisabled(uid.length === 0 && password.length === 0);
@@ -91,45 +101,16 @@ function Login() {
   );
 
   const kakaoLogin = useCallback(async () => {
-    const ress = await login();
-    console.log(ress);
-
-    const res = await getProfileWithKakao();
-
-    const {data} = await snsLogin({
-      uid: res.id,
-      img: res.thumbnailImageUrl,
-      name: res.nickname,
-      oauth: 'kakao',
-    });
-
-    setAtom({
-      refreshToken: data.payload.token.refreshToken,
-      accessToken: data.payload.token.accessToken,
-      userInfo: data.payload.userInfo,
-    });
-  }, [setAtom]);
-
-  const appleLogin = useCallback(async () => {
-    const appleAuthRequestResponse = await appleAuth.performRequest({
-      requestedOperation: appleAuth.Operation.LOGIN,
-      requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
-    });
-
-    const credentialState = await appleAuth.getCredentialStateForUser(
-      appleAuthRequestResponse.user,
-    );
-
-    if (credentialState === appleAuth.State.AUTHORIZED) {
-      // return
+    try {
+      setLoading(prev => ({...prev, kakao: true}));
+      await login();
+      const res = await getProfileWithKakao();
 
       const {data} = await snsLogin({
-        uid: appleAuthRequestResponse.user,
-        img: null,
-        name: appleAuthRequestResponse.fullName?.givenName
-          ? appleAuthRequestResponse.fullName.givenName
-          : '아무개 회원',
-        oauth: 'apple',
+        uid: res.id,
+        img: res.thumbnailImageUrl,
+        name: res.nickname,
+        oauth: 'kakao',
       });
 
       setAtom({
@@ -137,7 +118,47 @@ function Login() {
         accessToken: data.payload.token.accessToken,
         userInfo: data.payload.userInfo,
       });
+    } catch (e) {
+    } finally {
+      setLoading(prev => ({...prev, kakao: false}));
     }
+  }, [setAtom]);
+
+  const appleLogin = useCallback(async () => {
+    try {
+      setLoading(prev => ({...prev, apple: true}));
+      const appleAuthRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+      });
+
+      const credentialState = await appleAuth.getCredentialStateForUser(
+        appleAuthRequestResponse.user,
+      );
+
+      if (credentialState === appleAuth.State.AUTHORIZED) {
+        // return
+
+        const {data} = await snsLogin({
+          uid: appleAuthRequestResponse.user,
+          img: null,
+          name: appleAuthRequestResponse.fullName?.givenName
+            ? appleAuthRequestResponse.fullName.givenName
+            : '아무개 회원',
+          oauth: 'apple',
+        });
+
+        setAtom({
+          refreshToken: data.payload.token.refreshToken,
+          accessToken: data.payload.token.accessToken,
+          userInfo: data.payload.userInfo,
+        });
+      }
+    } catch (e) {
+    } finally {
+      setLoading(prev => ({...prev, apple: false}));
+    }
+
     // 에러처리
   }, [setAtom]);
 
@@ -148,33 +169,41 @@ function Login() {
       kServiceAppName: 'stubb',
       kServiceAppUrlScheme: Platform.OS === 'ios' ? 'naverLogin' : undefined,
     };
-    NaverLogin.login(config, (err, token) => {
-      if (err) {
-        return console.log(err);
-      } else {
-        getProfileWithNaver(token?.accessToken as string).then(async result => {
-          console.log(result);
-          if (result.resultcode === '024') {
-            console.log('에러');
-            return null;
-          } else {
-            const {data} = await snsLogin({
-              uid: result.response.id,
-              img: result.response.profile_image,
-              name: result.response.name,
-              oauth: 'naver',
-            });
-            console.log(data);
+    setLoading(prev => ({...prev, naver: true}));
 
-            setAtom({
-              accessToken: data.payload.token.accessToken as string,
-              refreshToken: data.payload.token.refreshToken as string,
-              userInfo: data.payload.userInfo,
-            });
-          }
-        });
-      }
-    });
+    try {
+      NaverLogin.login(config, (err, token) => {
+        if (err) {
+          return console.log(err);
+        } else {
+          getProfileWithNaver(token?.accessToken as string).then(
+            async result => {
+              console.log(result);
+              if (result.resultcode === '024') {
+                console.log('에러');
+                return null;
+              } else {
+                const {data} = await snsLogin({
+                  uid: result.response.id,
+                  img: result.response.profile_image,
+                  name: result.response.name,
+                  oauth: 'naver',
+                });
+
+                setAtom({
+                  accessToken: data.payload.token.accessToken as string,
+                  refreshToken: data.payload.token.refreshToken as string,
+                  userInfo: data.payload.userInfo,
+                });
+              }
+            },
+          );
+        }
+      });
+    } catch (e) {
+    } finally {
+      setLoading(prev => ({...prev, naver: false}));
+    }
   }, [setAtom]);
 
   const localLogin = useCallback(async () => {
@@ -204,43 +233,73 @@ function Login() {
             marginBottom={0}
             paddingHorizontal={0}
             paddingVertical={0}>
-            <Button bkg={colors.buttonColor} radius={25} onPress={kakaoLogin}>
-              <FastImage
-                source={require('../../assets/img/KakaoLogo512h.png')}
-                style={{width: 19, height: 17}}
-              />
-              <ButtonText
-                color={colors.snsButtonTextColor}
-                fontSize={15}
-                fontWeight={500}>
-                Kakao 계정으로 로그인
-              </ButtonText>
+            <Button
+              bkg={colors.buttonColor}
+              radius={25}
+              onPress={kakaoLogin}
+              disabled={loading.kakao}>
+              {loading.kakao ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <>
+                  <FastImage
+                    source={require('../../assets/img/KakaoLogo512h.png')}
+                    style={{width: 19, height: 17}}
+                  />
+                  <ButtonText
+                    color={colors.snsButtonTextColor}
+                    fontSize={15}
+                    fontWeight={500}>
+                    Kakao 계정으로 로그인
+                  </ButtonText>
+                </>
+              )}
             </Button>
 
-            <Button bkg={colors.buttonColor} radius={25} onPress={naverLogin}>
-              <FastImage
-                source={require('../../assets/img/NaverLogo512h.png')}
-                style={{width: 19, height: 17}}
-              />
-              <ButtonText
-                color={colors.snsButtonTextColor}
-                fontSize={15}
-                fontWeight={500}>
-                Naver 계정으로 로그인
-              </ButtonText>
+            <Button
+              bkg={colors.buttonColor}
+              radius={25}
+              onPress={naverLogin}
+              disabled={loading.naver}>
+              {loading.naver ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <>
+                  <FastImage
+                    source={require('../../assets/img/NaverLogo512h.png')}
+                    style={{width: 19, height: 17}}
+                  />
+                  <ButtonText
+                    color={colors.snsButtonTextColor}
+                    fontSize={15}
+                    fontWeight={500}>
+                    Naver 계정으로 로그인
+                  </ButtonText>
+                </>
+              )}
             </Button>
             {Platform.OS === 'ios' ? (
-              <Button bkg={colors.buttonColor} radius={25} onPress={appleLogin}>
-                <FastImage
-                  source={require('../../assets/img/AppleLogo512h.png')}
-                  style={{width: 16, height: 19}}
-                />
-                <ButtonText
-                  color={colors.snsButtonTextColor}
-                  fontSize={15}
-                  fontWeight={500}>
-                  Apple 계정으로 로그인
-                </ButtonText>
+              <Button
+                bkg={colors.buttonColor}
+                radius={25}
+                onPress={appleLogin}
+                disabled={loading.apple}>
+                {loading.apple ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <>
+                    <FastImage
+                      source={require('../../assets/img/AppleLogo512h.png')}
+                      style={{width: 16, height: 19}}
+                    />
+                    <ButtonText
+                      color={colors.snsButtonTextColor}
+                      fontSize={15}
+                      fontWeight={500}>
+                      Apple 계정으로 로그인
+                    </ButtonText>
+                  </>
+                )}
               </Button>
             ) : null}
           </GapRowView>
