@@ -153,7 +153,7 @@ function Profile() {
         disabled ? null : loading ? (
           <ActivityIndicator color="#3478F6" />
         ) : (
-          <Pressable onPress={onUpload}>
+          <Pressable onPress={onUpload} disabled={loading}>
             <ButtonText color="#3478F6" fontSize={15} fontWeight={500}>
               변경
             </ButtonText>
