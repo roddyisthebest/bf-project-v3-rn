@@ -9,7 +9,8 @@ import {colors} from '../../../../styles/color';
 import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyComponent';
 import {LoadingContainer} from '../../../../components/basic/View';
 import styled from 'styled-components/native';
-
+import {AxiosError} from 'axios';
+import {response as responseType} from '../../../../api';
 const ModifiedLoadingContainer = styled(LoadingContainer)`
   justify-content: flex-start;
   padding-top: 20px;
@@ -88,9 +89,16 @@ function TeamUser() {
         },
         {
           onPress: async () => {
-            await dropout({teamId: team?.id as number, userId: id});
-            setData(prev => prev.filter(user => user.id !== id));
-            Alert.alert('강퇴하였습니다.');
+            try {
+              await dropout({teamId: team?.id as number, userId: id});
+              setData(prev => prev.filter(user => user.id !== id));
+              Alert.alert('강퇴하였습니다.');
+            } catch (error) {
+              const {response} = error as unknown as AxiosError<responseType>;
+              if (response?.status === 409) {
+                setData(prev => prev.filter(user => user.id !== id));
+              }
+            }
           },
           text: '강퇴',
           style: 'destructive',

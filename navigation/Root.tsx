@@ -267,6 +267,8 @@ const Root = () => {
             },
           },
         }));
+      } else if (remoteMessage.data?.code === 'team:dropout') {
+        teamReset();
       }
       Alert.alert(
         remoteMessage.notification?.title as string,

@@ -32,9 +32,17 @@ PushNotification.configure({
     notification.finish(PushNotificationIOS.FetchResult.NoData);
 
     if (!notification.foreground) {
-      navigationRef.current?.navigate('Notification', {
-        params: notification,
-      });
+      const code = notification.data.code;
+
+      if (
+        code === 'invitation:post' ||
+        code === 'application:delete' ||
+        code === 'application:approve'
+      ) {
+        navigationRef.current?.navigate('Notification', {
+          params: notification,
+        });
+      }
     }
   },
 
