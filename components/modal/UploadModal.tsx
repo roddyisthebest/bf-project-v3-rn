@@ -3,7 +3,13 @@ import styled from 'styled-components/native';
 import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import dimension from '../../styles/dimension';
 import {colors} from '../../styles/color';
-import {Alert, Platform, Pressable, TouchableOpacity} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Platform,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import {SmButton, ButtonText} from '../basic/Button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {GapColumnView, GapRowView} from '../basic/View';
@@ -81,6 +87,7 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
   const [content, setContent] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
 
+  const [loading, setLoading] = useState<boolean>(false);
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   useEffect(() => {
@@ -115,6 +122,7 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
   }, []);
 
   const onPress = async () => {
+    setLoading(true);
     const res: any = await addTweet({
       file: file ? file : null,
       content: content.length === 0 ? null : content,
@@ -123,20 +131,17 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
 
     if ((res.status as number) === 500) {
       Alert.alert('서버 오류 입니다.');
-      return;
     } else if ((res.status as number) === 403) {
       Alert.alert('게시글을 업로드하는 서비스를 이용하지 않으셨습니다.⚠️');
-      return;
     } else if ((res.status as number) === 406) {
       Alert.alert('오늘 업로드 된 게시물이 존재합니다. ⚠️');
-      return;
     } else if ((res.status as number) === 400) {
       logout();
       Alert.alert('400 : 다시 로그인 해주세요.');
     } else if ((res.status as number) === 401) {
       const response = await getTokenByRefresh();
       if (response) {
-        return Alert.alert('토큰을 갱신했습니다. 다시한번 업로드해주세요!');
+        Alert.alert('토큰을 갱신했습니다. 다시한번 업로드해주세요!');
       } else {
         (ref as React.RefObject<ActionSheetRef>).current?.hide({
           animated: false,
@@ -155,7 +160,10 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
       setFlag({upload: true});
       navigation.navigate('Tabs', {screen: 'Home'});
       (ref as React.RefObject<ActionSheetRef>).current?.hide();
+      setFile(null);
+      setContent('');
     }
+    setLoading(false);
   };
 
   return (
@@ -169,9 +177,11 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
             게시글 업로드
           </HeaderTitleText>
           <Pressable
-            onPress={() =>
-              (ref as React.RefObject<ActionSheetRef>).current?.hide()
-            }>
+            onPress={() => {
+              (ref as React.RefObject<ActionSheetRef>).current?.hide();
+              setContent('');
+              setFile(null);
+            }}>
             <Icon name="close-outline" color="black" size={25} />
           </Pressable>
         </Header>
@@ -227,11 +237,15 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
               <SmButton
                 bkg={disabled ? colors.buttonDisabledColor : colors.buttonColor}
                 radius={20}
-                disabled={disabled}
+                disabled={disabled || loading}
                 onPress={onPress}>
-                <ButtonText color="white" fontSize={12} fontWeight={500}>
-                  올리기
-                </ButtonText>
+                {loading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <ButtonText color="white" fontSize={12} fontWeight={500}>
+                    올리기
+                  </ButtonText>
+                )}
               </SmButton>
             </ColumnSection>
 
