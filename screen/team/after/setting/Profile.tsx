@@ -13,6 +13,7 @@ import FastImage from 'react-native-fast-image';
 import {Input, Label} from '../../../../components/basic/Input';
 import dimension from '../../../../styles/dimension';
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -72,6 +73,7 @@ function Profile() {
   const [introducing, setIntroducing] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const logout = useCallback(async () => {
     resetRstAuth();
@@ -96,6 +98,7 @@ function Profile() {
   }, []);
 
   const onUpload = useCallback(async () => {
+    setLoading(true);
     const res: any = await updateTeam({
       file: editMode
         ? {
@@ -141,12 +144,15 @@ function Profile() {
       );
       navigation.goBack();
     }
+    setLoading(false);
   }, [file, name, introducing, navigation, editMode, team]);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () =>
-        disabled ? null : (
+        disabled ? null : loading ? (
+          <ActivityIndicator color="#3478F6" />
+        ) : (
           <Pressable onPress={onUpload}>
             <ButtonText color="#3478F6" fontSize={15} fontWeight={500}>
               변경
@@ -154,7 +160,7 @@ function Profile() {
           </Pressable>
         ),
     });
-  }, [navigation, onUpload, disabled]);
+  }, [navigation, onUpload, disabled, loading]);
 
   useEffect(() => {
     setDisabled(
