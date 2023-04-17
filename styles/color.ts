@@ -4,7 +4,7 @@ export const colors = {
   borderTopBottomColor: '#CDCACA',
   background: '#F4F4F4',
   buttonColor: '#000000',
-  buttonDisabledColor: '#D9D9D9',
+  buttonDisabledColor: '#D6D6D6',
   snsButtonTextColor: 'white',
   snsButtonBackground: '#000000',
   inputLineColor: '#CDCACA',

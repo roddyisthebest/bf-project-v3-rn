@@ -46,14 +46,16 @@ function Login() {
     kakao: boolean;
     apple: boolean;
     naver: boolean;
+    local: boolean;
   }>({
     kakao: false,
     apple: false,
     naver: false,
+    local: false,
   });
 
   useEffect(() => {
-    setDisabled(uid.length === 0 && password.length === 0);
+    setDisabled(uid.length === 0 || password.length === 0);
   }, [uid, password]);
 
   const setAtom = useCallback(
@@ -207,12 +209,19 @@ function Login() {
   }, [setAtom]);
 
   const localLogin = useCallback(async () => {
-    const {data} = await adminLogin({uid, password});
-    setAtom({
-      refreshToken: data.payload.token.refreshToken,
-      accessToken: data.payload.token.accessToken,
-      userInfo: data.payload.userInfo,
-    });
+    try {
+      setLoading(prev => ({...prev, local: true}));
+      const {data} = await adminLogin({uid, password});
+      setAtom({
+        refreshToken: data.payload.token.refreshToken,
+        accessToken: data.payload.token.accessToken,
+        userInfo: data.payload.userInfo,
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(prev => ({...prev, local: false}));
+    }
   }, [password, setAtom, uid]);
 
   return (
@@ -342,16 +351,20 @@ function Login() {
               />
             </GapRowView>
             <Button
-              bkg={colors.buttonColor}
-              disabled={disabled}
+              bkg={disabled ? colors.buttonDisabledColor : colors.buttonColor}
+              disabled={disabled || loading.local}
               radius={10}
               onPress={localLogin}>
-              <ButtonText
-                color={colors.snsButtonTextColor}
-                fontSize={15}
-                fontWeight={500}>
-                로그인
-              </ButtonText>
+              {loading.local ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <ButtonText
+                  color={colors.snsButtonTextColor}
+                  fontSize={15}
+                  fontWeight={500}>
+                  로그인
+                </ButtonText>
+              )}
             </Button>
           </GapRowView>
         </GapRowView>
