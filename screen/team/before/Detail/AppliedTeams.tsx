@@ -7,7 +7,7 @@ import styled from 'styled-components/native';
 import {colors} from '../../../../styles/color';
 import ListEmptyComponent from '../../../../components/parts/tabs/ListEmptyComponent';
 import TeamApplyItem from '../../../../components/parts/detail/TeamApplyItem';
-import InvitationType from '../../../../types/InvitationType';
+import InvitationPropType from '../../../../types/InvitationPropType';
 import {getMyApplications} from '../../../../api/user';
 import {deleteApplication} from '../../../../api/team';
 import {rstTeamFlag} from '../../../../recoil/flag';
@@ -22,7 +22,7 @@ function AppliedTeams() {
   const {team} = useRecoilValue(rstMyInfo);
   const setFlag = useSetRecoilState(rstTeamFlag);
 
-  const [data, setData] = useState<InvitationType[]>([]);
+  const [data, setData] = useState<InvitationPropType[]>([]);
   const [lastId, setLastId] = useState<number>(-1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -33,7 +33,7 @@ function AppliedTeams() {
       try {
         const {
           data: {payload, code},
-        }: {data: {payload: InvitationType[]; code: string}} =
+        }: {data: {payload: InvitationPropType[]; code: string}} =
           await getMyApplications({
             lastId: id,
           });
@@ -66,7 +66,7 @@ function AppliedTeams() {
         if (id === -1) {
           const {
             data: {payload, code},
-          }: {data: {payload: InvitationType[]; code: string}} =
+          }: {data: {payload: InvitationPropType[]; code: string}} =
             await getMyApplications({
               lastId: id,
             });
@@ -86,7 +86,7 @@ function AppliedTeams() {
   );
 
   const onPress = useCallback(
-    (id: number) => {
+    (id: number, index: number) => {
       Alert.alert('가입신청 취소', '정말 가입 신청을 취소하시겠습니까?', [
         {
           text: '취소',
@@ -97,7 +97,13 @@ function AppliedTeams() {
           text: '가입신청 취소',
           onPress: async () => {
             try {
+              data.splice(index, 1, {...data[index], loading: true});
+              setData([...data]);
               await deleteApplication({id, teamId: team?.id as number});
+
+              data.splice(index, 1, {...data[index], loading: false});
+              setData([...data]);
+
               setData(prev => prev?.filter(pray => pray.id !== id));
               setFlag(prev => ({
                 home: {
@@ -129,12 +135,16 @@ function AppliedTeams() {
         },
       ]);
     },
-    [team],
+    [team, data],
   );
 
-  const renderItem = ({item}: {item: InvitationType}) => (
-    <TeamApplyItem data={item} onPress={onPress} />
-  );
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: InvitationPropType;
+    index: number;
+  }) => <TeamApplyItem data={item} onPress={onPress} index={index} />;
 
   useEffect(() => {
     if (!disabled) {

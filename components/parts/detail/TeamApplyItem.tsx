@@ -4,7 +4,8 @@ import dimension from '../../../styles/dimension';
 import {Image} from '../../basic/Image';
 import {colors} from '../../../styles/color';
 import {ButtonText, SmButton} from '../../basic/Button';
-import InvitationType from '../../../types/InvitationType';
+import InvitationPropType from '../../../types/InvitationPropType';
+import {ActivityIndicator} from 'react-native';
 const Container = styled.View<{paddingHorizontal: number}>`
   flex-direction: row;
   align-items: center;
@@ -24,9 +25,11 @@ const Text = styled(ButtonText)``;
 function TeamApplyItem({
   data,
   onPress,
+  index,
 }: {
-  data: InvitationType;
-  onPress: (id: number) => void;
+  data: InvitationPropType;
+  onPress: (id: number, index: number) => void;
+  index: number;
 }) {
   return (
     <Container paddingHorizontal={dimension.paddingHorizontal}>
@@ -43,17 +46,23 @@ function TeamApplyItem({
         </Text>
       </Column>
       <Column>
-        <SmButton
-          bkg={colors.prayButtonDeleteBkgColor}
-          radius={8}
-          onPress={() => onPress(data.id)}>
-          <ButtonText
-            color={colors.prayButtonDeleteTextColor}
-            fontSize={13}
-            fontWeight={400}>
-            취소하기
-          </ButtonText>
-        </SmButton>
+        {data.loading ? (
+          <ActivityIndicator color={colors.loadingIconColor} />
+        ) : (
+          <>
+            <SmButton
+              bkg={colors.prayButtonDeleteBkgColor}
+              radius={8}
+              onPress={() => onPress(data.id, index)}>
+              <ButtonText
+                color={colors.prayButtonDeleteTextColor}
+                fontSize={13}
+                fontWeight={400}>
+                취소하기
+              </ButtonText>
+            </SmButton>
+          </>
+        )}
       </Column>
     </Container>
   );
