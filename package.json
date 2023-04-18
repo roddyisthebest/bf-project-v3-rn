@@ -31,6 +31,7 @@
     "react": "18.1.0",
     "react-native": "0.71.2",
     "react-native-actions-sheet": "^0.8.29",
+    "react-native-config": "^1.5.0",
     "react-native-date-picker": "^4.2.9",
     "react-native-device-info": "^10.6.0",
     "react-native-encrypted-storage": "^4.0.3",

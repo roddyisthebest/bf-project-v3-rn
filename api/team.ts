@@ -2,7 +2,7 @@ import {AxiosResponse} from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {EncryptedStorageKeyList} from '../navigation/Root';
 import {api, response} from './index';
-
+import Config from 'react-native-config';
 const addTeam = async ({
   file,
   name,
@@ -21,7 +21,7 @@ const addTeam = async ({
   formData.append('name', name);
   formData.append('introducing', introducing);
 
-  return await fetch('http://192.168.123.104:3000/team', {
+  return await fetch(`${Config.API_URL}/team`, {
     method: 'POST',
     headers: {
       Authorization: accessToken as string,
@@ -52,7 +52,7 @@ const updateTeam = async ({
   formData.append('name', name);
   formData.append('introducing', introducing);
 
-  return await fetch(`http://192.168.123.104:3000/team/${id}`, {
+  return await fetch(`${Config.API_URL}/team/${id}`, {
     method: 'PUT',
     headers: {
       Authorization: accessToken as string,

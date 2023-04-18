@@ -9,6 +9,7 @@ import {setApproveInvitation} from '../../api/team';
 import {rstTeamFlag} from '../../recoil/flag';
 import {AxiosError} from 'axios';
 import {response as responseType} from '../../api';
+import Config from 'react-native-config';
 const Container = styled.TouchableOpacity<{buttonBorderColor: string}>`
   border-radius: 10px;
   border-color: ${props => props.buttonBorderColor};
@@ -104,7 +105,7 @@ function Invitation({data, active}: {data: InvitationType; active: boolean}) {
 
       <Image
         source={{
-          uri: `http://192.168.123.104:3000/${data?.Team?.img}`,
+          uri: `${Config.API_URL}/${data?.Team?.img}`,
         }}
       />
     </Container>

@@ -16,9 +16,8 @@ import {
 } from '../../../navigation/Root';
 import {rstMyInfo} from '../../../recoil/user';
 import {useRecoilState} from 'recoil';
-import {getService} from '../../../api/user';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {AxiosError} from 'axios';
+import Config from 'react-native-config';
 
 const Container = styled.TouchableOpacity<{paddingHorizontal: number}>`
   flex-direction: row;
@@ -62,7 +61,7 @@ function TeamItem({data}: {data: TeamType}) {
         width={30}
         height={30}
         borderRad={5}
-        source={{uri: `http://192.168.123.104:3000/${data.img}`}}
+        source={{uri: `${Config.API_URL}/${data.img}`}}
         borderColor={colors.buttonBorderColor}
       />
       <Text color="black" fontWeight={500} fontSize={20}>

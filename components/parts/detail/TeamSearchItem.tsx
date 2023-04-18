@@ -9,9 +9,8 @@ import TeamType from '../../../types/TeamType';
 import {addApplication} from '../../../api/team';
 import {rstTeamFlag} from '../../../recoil/flag';
 import {useSetRecoilState} from 'recoil';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from '../../../navigation/Root';
-import {AxiosError} from 'axios';
+
+import Config from 'react-native-config';
 const Container = styled.View<{paddingHorizontal: number}>`
   flex-direction: row;
   align-items: center;
@@ -29,7 +28,6 @@ const Text = styled(ButtonText)``;
 
 function TeamSearchItem({data}: {data: TeamType}) {
   const setFlag = useSetRecoilState(rstTeamFlag);
-  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const applyForTeam = useCallback(async () => {
     Alert.alert('가입신청', `${data?.name} (팀)에 가입신청 하시겠습니까?`, [
@@ -65,7 +63,7 @@ function TeamSearchItem({data}: {data: TeamType}) {
           width={30}
           height={30}
           borderRad={5}
-          source={{uri: `http://192.168.123.104:3000/${data?.img}`}}
+          source={{uri: `${Config.API_URL}/${data?.img}`}}
           borderColor={colors.buttonBorderColor}
         />
         <Text color="black" fontWeight={600} fontSize={20}>

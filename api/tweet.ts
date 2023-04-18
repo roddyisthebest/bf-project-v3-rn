@@ -4,6 +4,7 @@ import {EncryptedStorageKeyList} from '../navigation/Root';
 import {rstMyInfoType} from '../recoil/user';
 import FileType from '../types/FileType';
 import {api, response} from './index';
+import Config from 'react-native-config';
 
 const addTweet = async ({
   file,
@@ -29,7 +30,7 @@ const addTweet = async ({
   if (userInfoString) {
     const userInfo: rstMyInfoType = JSON.parse(userInfoString);
     formData.append('teamId', userInfo?.team?.id);
-    return fetch(`http://192.168.123.104:3000/tweet/team/${teamId}`, {
+    return fetch(`${Config.API_URL}/tweet/team/${teamId}`, {
       method: 'POST',
       headers: {
         Authorization: accessToken as string,

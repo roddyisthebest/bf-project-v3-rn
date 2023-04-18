@@ -2,6 +2,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import {EncryptedStorageKeyList} from '../navigation/Root';
 import axios from 'axios';
 import {setTokenToAxios} from '../api';
+import Config from 'react-native-config';
 
 const getTokenByRefresh = async () => {
   try {
@@ -11,7 +12,7 @@ const getTokenByRefresh = async () => {
     if (refreshToken) {
       try {
         const {data}: {data: {payload: {accessToken: string}}} =
-          await axios.post('http://192.168.123.104:3000/token/refresh', {
+          await axios.post(`${Config.API_URL}/token/refresh`, {
             refreshToken,
           });
         await EncryptedStorage.setItem(

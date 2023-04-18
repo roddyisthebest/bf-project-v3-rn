@@ -6,7 +6,7 @@ import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import {Item} from '../../basic/List';
 import {ButtonText} from '../../basic/Button';
 import {colors} from '../../../styles/color';
-import {useRecoilState, useRecoilValue} from 'recoil';
+import {useRecoilState} from 'recoil';
 import {rstMyInfo} from '../../../recoil/user';
 import {
   CommonActions,
@@ -18,6 +18,7 @@ import {
   LoggedInParamList,
 } from '../../../navigation/Root';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import Config from 'react-native-config';
 
 const Container = styled.Pressable<{borderColor: string}>`
   width: 25px;
@@ -91,7 +92,7 @@ function MyTeamInfo() {
       <Container borderColor={colors.buttonBorderColor} onPress={onPress}>
         <Image
           source={{
-            uri: `http://192.168.123.104:3000/${myInfo.team?.img}`,
+            uri: `${Config.API_URL}/${myInfo.team?.img}`,
           }}
         />
       </Container>

@@ -71,7 +71,7 @@ function Tweet({
       gap={20}>
       <LeftSection>
         <UserImg
-          source={{uri: data.User.img}}
+          source={{uri: data?.User?.img}}
           borderColor={colors.buttonBorderColor}
         />
       </LeftSection>
@@ -90,13 +90,13 @@ function Tweet({
           marginBottom={0}
           gap={7.5}>
           <NameTitleText color="black" fontSize={25} fontWeight={600}>
-            {data.User.name}
+            {data?.User?.name}
           </NameTitleText>
           <NameSubTitleText
             color={colors.subTitleColor}
             fontSize={14}
             fontWeight={400}>
-            @{data.User.oauth} · 4 hours ago
+            @{data?.User?.oauth} · 4 hours ago
           </NameSubTitleText>
         </NameSection>
         {data.content.length === 0 ? null : (
@@ -113,7 +113,7 @@ function Tweet({
         {data.img.length !== 0 && (
           <Preview reset={() => {}} uri={data.img} editable={false} />
         )}
-        {rstUserInfo?.user?.id === data.User.id && (
+        {rstUserInfo?.user?.id === data?.User?.id && (
           <ButtonSection
             paddingHorizontal={0}
             paddingVertical={Platform.OS === 'ios' ? 5 : 0}

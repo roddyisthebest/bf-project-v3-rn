@@ -9,6 +9,7 @@ import TeamType from '../../types/TeamType';
 import UserType from '../../types/UserType';
 import {ButtonText} from '../basic/Button';
 import {Image} from '../basic/Image';
+import Config from 'react-native-config';
 
 const Container = styled.View<{borderColor: string; paddingHorizontal: number}>`
   border-bottom-width: 1px;
@@ -69,10 +70,7 @@ function DetailHeader({
         <Image
           width={65}
           source={{
-            uri:
-              type === 'user'
-                ? data?.img
-                : `http://192.168.123.104:3000/${data?.img}`,
+            uri: type === 'user' ? data?.img : `${Config.API_URL}/${data?.img}`,
           }}
           height={65}
           borderRad={type === 'team' ? 15 : 120}

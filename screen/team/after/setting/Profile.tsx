@@ -29,6 +29,7 @@ import {useRecoilValue, useResetRecoilState, useSetRecoilState} from 'recoil';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {getTokenByRefresh} from '../../../../util/Func';
 import {rstAuth} from '../../../../recoil/auth';
+import Config from 'react-native-config';
 
 const UploadButton = styled.TouchableOpacity<{borderColor: string}>`
   width: 120px;
@@ -202,9 +203,7 @@ function Profile() {
               <UploadImage
                 bkg={colors.background}
                 source={{
-                  uri: !editMode
-                    ? `http://192.168.123.104:3000/${team?.img}`
-                    : file?.uri,
+                  uri: !editMode ? `${Config.API_URL}/${team?.img}` : file?.uri,
                 }}
               />
             </UploadButton>

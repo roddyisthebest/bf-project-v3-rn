@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../../styles/color';
 import dimension from '../../../styles/dimension';
+import Config from 'react-native-config';
 
 const Container = styled.Pressable<{borderColor: string; height: number}>`
   width: 100%;
@@ -63,7 +64,7 @@ function Preview({
 
       <Image
         resizeMode={resizeMode}
-        source={{uri: editable ? uri : `http://192.168.123.104:3000/${uri}`}}
+        source={{uri: editable ? uri : `${Config.API_URL}/${uri}`}}
       />
     </Container>
   );

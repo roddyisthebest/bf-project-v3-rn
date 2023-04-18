@@ -17,6 +17,7 @@ import {rstMyInfo} from '../../recoil/user';
 import EncryptedStorage from 'react-native-encrypted-storage/';
 import {getService} from '../../api/user';
 import {AxiosError} from 'axios';
+import Config from 'react-native-config';
 const Container = styled.TouchableOpacity<{buttonBorderColor: string}>`
   border-radius: 10px;
   border-color: ${props => props.buttonBorderColor};
@@ -56,7 +57,7 @@ function TeamSet({data}: {data: TeamType}) {
     <Container buttonBorderColor={colors.buttonBorderColor} onPress={onPress}>
       <Image
         source={{
-          uri: `http://192.168.123.104:3000/${data.img}`,
+          uri: `${Config.API_URL}/${data.img}`,
         }}
       />
     </Container>

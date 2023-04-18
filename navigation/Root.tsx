@@ -16,7 +16,7 @@ import {
 import {api, setTokenToAxios} from '../api';
 import axios, {AxiosError} from 'axios';
 import {response as responseType} from '../api';
-import {Alert} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import {getTokenByRefresh} from '../util/Func';
 import {getTeam} from '../api/team';
 import SplashScreen from 'react-native-splash-screen';
@@ -24,6 +24,7 @@ import messaging from '@react-native-firebase/messaging';
 import {setPhoneToken} from '../api/user';
 import {rstTeamFlag} from '../recoil/flag';
 import Notification from '../screen/notification';
+import Config from 'react-native-config';
 
 export type DefaultParamList = {
   Notification: {
@@ -88,6 +89,8 @@ const Root = () => {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const onCreate = useCallback(async () => {
+    console.log(Platform.OS, Config.API_URL);
+
     const res = await getTokenByRefresh();
     if (!res) {
       return;
@@ -190,10 +193,9 @@ const Root = () => {
             if (refreshToken) {
               try {
                 const {data}: {data: {payload: {accessToken: string}}} =
-                  await axios.post(
-                    'http://192.168.123.104:3000/token/refresh',
-                    {refreshToken},
-                  );
+                  await axios.post(`${Config.API_URL}/token/refresh`, {
+                    refreshToken,
+                  });
 
                 await EncryptedStorage.setItem(
                   EncryptedStorageKeyList.ACCESSTOKEN,

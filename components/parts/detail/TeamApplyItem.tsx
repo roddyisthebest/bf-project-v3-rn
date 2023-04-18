@@ -6,6 +6,7 @@ import {colors} from '../../../styles/color';
 import {ButtonText, SmButton} from '../../basic/Button';
 import InvitationPropType from '../../../types/InvitationPropType';
 import {ActivityIndicator} from 'react-native';
+import Config from 'react-native-config';
 const Container = styled.View<{paddingHorizontal: number}>`
   flex-direction: row;
   align-items: center;
@@ -38,7 +39,7 @@ function TeamApplyItem({
           width={30}
           height={30}
           borderRad={5}
-          source={{uri: `http://192.168.123.104:3000/${data?.Team?.img}`}}
+          source={{uri: `${Config.API_URL}/${data?.Team?.img}`}}
           borderColor={colors.buttonBorderColor}
         />
         <Text color="black" fontWeight={600} fontSize={20}>
