@@ -11,7 +11,7 @@ import UploadButton from '../components/parts/tabs/UploadButton';
 import UploadModal from '../components/modal/UploadModal';
 import ServiceModal from '../components/modal/ServiceModal';
 import {ActionSheetRef} from 'react-native-actions-sheet';
-import {getService} from '../api/user';
+import {addService, getService} from '../api/user';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../recoil/user';
 import {AxiosError} from 'axios';
@@ -29,6 +29,12 @@ const TabsNav = () => {
     } catch (error) {
       const {response} = error as unknown as AxiosError;
       if (response?.status === 404) {
+        await addService({
+          tweet: false,
+          penalty: false,
+          pray: false,
+          teamId: team?.id as number,
+        });
         serviceRef.current?.show();
       }
     }

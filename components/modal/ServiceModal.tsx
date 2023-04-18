@@ -7,9 +7,10 @@ import DeviceInfo from 'react-native-device-info';
 import {GapRowView} from '../basic/View';
 import Header from '../container/Header';
 import Setting from '../container/Setting';
-import {addService} from '../../api/user';
+import {getService} from '../../api/user';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
+import {updateService} from '../../api/team';
 
 interface Props {}
 
@@ -32,10 +33,16 @@ const ServiceModal = forwardRef(
     const onPress = useCallback(async () => {
       try {
         setLoading(true);
-        await addService({
+
+        const {
+          data: {payload},
+        } = await getService({teamId: team?.id as number});
+
+        await updateService({
           tweet: data.tweet,
           penalty: data.penalty,
           pray: data.pray,
+          id: payload?.id,
           teamId: team?.id as number,
         });
         (ref as React.ForwardedRef<ActionSheetRef>)?.current.hide({
