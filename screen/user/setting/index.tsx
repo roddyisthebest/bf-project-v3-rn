@@ -51,14 +51,20 @@ function Setting() {
       [
         {
           onPress: async () => {
-            await withdraw();
-            resetRstAuth();
-            resetRstMyInfo();
-            await EncryptedStorage.clear();
-            Alert.alert(
-              '계정삭제',
-              '성공적으로 계정이 영구적으로 삭제되었습니다.',
-            );
+            try {
+              setLoading(true);
+              await withdraw();
+              resetRstAuth();
+              resetRstMyInfo();
+              await EncryptedStorage.clear();
+              Alert.alert(
+                '계정삭제',
+                '성공적으로 계정이 영구적으로 삭제되었습니다.',
+              );
+            } catch (e) {
+            } finally {
+              setLoading(false);
+            }
           },
           text: '예',
           style: 'cancel',
