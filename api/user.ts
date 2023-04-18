@@ -119,6 +119,9 @@ const setPhoneToken = ({
 }): Promise<AxiosResponse<response>> =>
   api.post('/user/phoneToken', {phoneToken});
 
+const withdraw = (): Promise<AxiosResponse<response>> =>
+  api.delete('/user/withdraw');
+
 export {
   snsLogin,
   adminLogin,
@@ -135,4 +138,5 @@ export {
   getMyThumbInvitations,
   updateInfo,
   setPhoneToken,
+  withdraw,
 };
