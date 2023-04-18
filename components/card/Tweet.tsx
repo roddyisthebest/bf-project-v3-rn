@@ -1,10 +1,10 @@
 import React from 'react';
 import FastImage from 'react-native-fast-image';
-import {Platform} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import styled from 'styled-components/native';
 import {colors} from '../../styles/color';
 import dimension from '../../styles/dimension';
-import {TweetType} from '../../types/TweetType';
+import TweetPropType from '../../types/TweetPropType';
 import {ButtonText, SmButton} from '../basic/Button';
 import {TextArea} from '../basic/Input';
 import {GapColumnView, GapRowView} from '../basic/View';
@@ -12,6 +12,7 @@ import Preview from '../parts/tabs/Preview';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
+
 const Container = styled(GapColumnView)<{
   borderColor: string;
 }>`
@@ -49,7 +50,15 @@ const ButtonSection = styled(GapColumnView)`
   justify-content: flex-end;
 `;
 
-function Tweet({data, deleteFuc}: {data: TweetType; deleteFuc: Function}) {
+function Tweet({
+  data,
+  deleteFuc,
+  index,
+}: {
+  data: TweetPropType;
+  deleteFuc: Function;
+  index: number;
+}) {
   const rstUserInfo = useRecoilValue(rstMyInfo);
 
   return (
@@ -114,12 +123,19 @@ function Tweet({data, deleteFuc}: {data: TweetType; deleteFuc: Function}) {
             <SmButton
               bkg={colors.negativeColor}
               radius={13}
-              onPress={() => deleteFuc(data.id)}>
-              <Icon name="trash-outline" color="white" size={13} />
+              disabled={data.loading}
+              onPress={() => deleteFuc(data.id, index)}>
+              {data.loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <>
+                  <Icon name="trash-outline" color="white" size={13} />
 
-              <ButtonText color="white" fontSize={12} fontWeight={500}>
-                삭제하기
-              </ButtonText>
+                  <ButtonText color="white" fontSize={12} fontWeight={500}>
+                    삭제하기
+                  </ButtonText>
+                </>
+              )}
             </SmButton>
           </ButtonSection>
         )}

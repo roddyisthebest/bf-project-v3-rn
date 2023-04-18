@@ -1,6 +1,6 @@
 import {View, FlatList, ActivityIndicator, Alert} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {TweetType} from '../../types/TweetType';
+import {TweetPropType} from '../../types/TweetPropType';
 import Tweet from '../../components/card/Tweet';
 import {deleteTweet, getTweets} from '../../api/tweet';
 import {useRecoilValue, useRecoilState} from 'recoil';
@@ -15,7 +15,7 @@ function Home() {
   const userInfo = useRecoilValue(rstMyInfo);
   const [flag, setFlag] = useRecoilState(rstTweetFlag);
 
-  const [data, setData] = useState<TweetType[]>([]);
+  const [data, setData] = useState<TweetPropType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [lastId, setLastId] = useState<number>(-1);
@@ -28,7 +28,7 @@ function Home() {
       if (lastId === -1) {
         const {
           data: {payload},
-        }: {data: {payload: TweetType[]}} = await getTweets(
+        }: {data: {payload: TweetPropType[]}} = await getTweets(
           lastId,
           userInfo.team?.id as number,
         );
@@ -54,7 +54,7 @@ function Home() {
       try {
         const {
           data: {payload, code},
-        }: {data: {payload: TweetType[]; code: string}} = await getTweets(
+        }: {data: {payload: TweetPropType[]; code: string}} = await getTweets(
           id,
           userInfo.team?.id as number,
         );
@@ -76,7 +76,7 @@ function Home() {
   );
 
   const showConfirmDialog = useCallback(
-    (id: number) => {
+    (id: number, index: number) => {
       return Alert.alert('게시글 삭제', '정말로 이 게시글을 삭제할까요?', [
         // The "Yes" button
         {
@@ -89,7 +89,12 @@ function Home() {
         {
           text: '삭제',
           onPress: async () => {
+            data.splice(index, 1, {...data[index], loading: true});
+            setData([...data]);
             await deleteTweet(id);
+            data.splice(index, 1, {...data[index], loading: false});
+            setData([...data]);
+
             setData(tweet => tweet.filter(e => e.id !== id));
             onRefresh();
           },
@@ -97,11 +102,11 @@ function Home() {
         },
       ]);
     },
-    [onRefresh],
+    [onRefresh, data],
   );
   const delTweet = useCallback(
-    async (id: number) => {
-      showConfirmDialog(id);
+    async (id: number, index: number) => {
+      showConfirmDialog(id, index);
     },
     [showConfirmDialog],
   );
@@ -121,8 +126,8 @@ function Home() {
     }
   }, [flag.upload, onRefresh, setFlag]);
 
-  const renderItem = ({item}: {item: TweetType}) => (
-    <Tweet data={item} deleteFuc={delTweet} />
+  const renderItem = ({item, index}: {item: TweetPropType; index: number}) => (
+    <Tweet data={item} deleteFuc={delTweet} index={index} />
   );
   return loading ? (
     <LoadingContainer>
