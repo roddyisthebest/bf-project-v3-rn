@@ -1,6 +1,6 @@
 import {View, FlatList, ActivityIndicator, Alert} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {TweetPropType} from '../../types/TweetPropType';
+import TweetPropType from '../../types/TweetPropType';
 import Tweet from '../../components/card/Tweet';
 import {deleteTweet, getTweets} from '../../api/tweet';
 import {useRecoilValue, useRecoilState} from 'recoil';

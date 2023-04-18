@@ -16,6 +16,7 @@ import NavItem from '../../../components/parts/detail/NavItem';
 function Detail() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
   const {user} = useRecoilValue(rstMyInfo);
+  const {team} = useRecoilValue(rstMyInfo);
 
   const data = [
     {
@@ -78,7 +79,7 @@ function Detail() {
         />
         <FlatList
           scrollEnabled={false}
-          data={data}
+          data={team === null ? [] : data}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
           ItemSeparatorComponent={() => (
@@ -86,7 +87,12 @@ function Detail() {
           )}
           ListFooterComponent={() => (
             <View
-              style={{height: 1, backgroundColor: colors.borderTopBottomColor}}
+              style={
+                team !== null && {
+                  height: 1,
+                  backgroundColor: colors.borderTopBottomColor,
+                }
+              }
             />
           )}
         />
