@@ -37,7 +37,8 @@ PushNotification.configure({
       if (
         code === 'invitation:post' ||
         code === 'application:delete' ||
-        code === 'application:approve'
+        code === 'application:approve' ||
+        code === 'penalty:set'
       ) {
         navigationRef.current?.navigate('Notification', {
           params: notification,
@@ -87,7 +88,7 @@ PushNotification.createChannel(
     channelName: '가입 알림',
     channelDescription: '가입 관련 알림입니다.',
     soundName: 'default',
-    importance: 2,
+    importance: 1,
     vibrate: true,
   },
   (created: boolean) => console.log(`createChannel join returned ${created}`),

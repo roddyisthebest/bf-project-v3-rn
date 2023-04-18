@@ -14,6 +14,7 @@ import {LoggedInParamList} from '../../navigation/Root';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {rstAuth} from '../../recoil/auth';
 import {rstNotificationFlag} from '../../recoil/flag';
+import {rstMyInfo} from '../../recoil/user';
 function Notification() {
   const route = useRoute<
     RouteProp<{
@@ -23,7 +24,8 @@ function Notification() {
             code:
               | 'invitation:post'
               | 'application:delete'
-              | 'application:approve';
+              | 'application:approve'
+              | 'penalty:set';
           };
         };
       };
@@ -33,6 +35,7 @@ function Notification() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const rstAuthState = useRecoilValue(rstAuth);
+  const {team} = useRecoilValue(rstMyInfo);
   const setRstNotificationFlag = useSetRecoilState(rstNotificationFlag);
 
   useEffect(() => {
@@ -63,7 +66,13 @@ function Notification() {
         );
       }
     }
-  }, [route, navigation, CommonActions, rstAuthState]);
+
+    if (rstAuthState && team !== null) {
+      if (code === 'penalty:set') {
+        navigation.navigate('Tabs', {screen: 'Penalty'});
+      }
+    }
+  }, [route, navigation, CommonActions, rstAuthState, team]);
 
   return (
     <LoadingContainer>
