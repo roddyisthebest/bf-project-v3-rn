@@ -1,4 +1,4 @@
-import {FlatList, View, Alert} from 'react-native';
+import {FlatList, View, Alert, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState, useCallback} from 'react';
 import Layout from '../../../components/layout';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -33,6 +33,7 @@ function Setting() {
   const resetRstAuth = useResetRecoilState(rstAuth);
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
+  const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState([
     {
       id: 1,
@@ -95,10 +96,15 @@ function Setting() {
           <>
             <WithdrawButton
               onPress={alert}
-              style={{paddingHorizontal: dimension.paddingHorizontal}}>
-              <WithdrawButtonText color="red" fontSize={18} fontWeight={500}>
-                회원 탈퇴
-              </WithdrawButtonText>
+              style={{paddingHorizontal: dimension.paddingHorizontal}}
+              disabled={loading}>
+              {loading ? (
+                <ActivityIndicator color={colors.loadingIconColor} />
+              ) : (
+                <WithdrawButtonText color="red" fontSize={18} fontWeight={500}>
+                  회원 탈퇴
+                </WithdrawButtonText>
+              )}
             </WithdrawButton>
             <View
               style={{height: 1, backgroundColor: colors.borderTopBottomColor}}
