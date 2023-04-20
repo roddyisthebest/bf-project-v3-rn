@@ -31,10 +31,9 @@ PushNotification.configure({
 
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: async function (notification) {
-    console.log('NOTIFICATION:', notification);
+    console.log('알림!!!!!');
 
-    // (required) Called when a remote is received or opened, or local notification is opened
-    notification.finish(PushNotificationIOS.FetchResult.NoData);
+    console.log('NOTIFICATION:', notification);
 
     if (!notification.foreground) {
       const code = notification.data.code;
@@ -42,11 +41,16 @@ PushNotification.configure({
         code === 'invitation:post' ||
         code === 'application:delete' ||
         code === 'application:approve' ||
-        code === 'penalty:set'
+        code === 'penalty:set' ||
+        code === 'tweet:warning'
       ) {
-        if (Platform.OS === 'ios') {
+        if (Platform.OS === 'ios' && notification.action) {
+          // (required) Called when a remote is received or opened, or local notification is opened
+          notification.finish(PushNotificationIOS.FetchResult.NoData);
           return navigationRef.current?.navigate('Notification', {
-            params: notification,
+            params: {
+              data: notification.data,
+            },
           });
         }
 
@@ -69,6 +73,8 @@ PushNotification.configure({
 
   // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
   onAction: function (notification) {
+    console.log('액션!!!');
+
     console.log('ACTION:', notification.action);
 
     console.log('NOTIFICATION:', notification);

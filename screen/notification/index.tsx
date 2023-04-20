@@ -34,37 +34,38 @@ function Notification() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const rstAuthState = useRecoilValue(rstAuth);
-  const {team} = useRecoilValue(rstMyInfo);
+
   const setRstNotificationFlag = useSetRecoilState(rstNotificationFlag);
   const setRstMyInfo = useSetRecoilState(rstMyInfo);
 
   useEffect(() => {
     const code = route.params.params.data.code;
+
     if (rstAuthState) {
-      setRstMyInfo(prev => ({...prev, team: null}));
-      if (code === 'invitation:post') {
+      if (code.includes('invitation') || code.includes('application')) {
+        setRstMyInfo(prev => ({...prev, team: null}));
         setRstNotificationFlag(code);
-      } else if (code === 'application:delete') {
-        setRstNotificationFlag(code);
-      } else if (code === 'application:approve') {
-      }
-    }
-
-    if (rstAuthState && team !== null) {
-      if (code === 'penalty:set') {
-        console.log(route.params.params.data.team);
+      } else {
         const teamData: TeamType = JSON.parse(route.params.params.data.team);
+        console.log(teamData, 'teamData');
         setRstMyInfo(prev => ({...prev, team: teamData}));
-
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Tabs', params: {screen: 'Penalty'}}],
-          }),
-        );
+        if (code === 'penalty:set') {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Tabs', params: {screen: 'Penalty'}}],
+            }),
+          );
+        } else if (code === 'tweet:warning') {
+          setRstNotificationFlag('tweet:warning');
+          console.log('noti', teamData);
+          setRstMyInfo(prev => ({...prev, team: teamData}));
+          console.log('이동');
+          navigation.navigate('Tabs', {screen: 'Home'});
+        }
       }
     }
-  }, [route, navigation, CommonActions, rstAuthState, team]);
+  }, [rstAuthState, navigation]);
 
   return (
     <LoadingContainer>

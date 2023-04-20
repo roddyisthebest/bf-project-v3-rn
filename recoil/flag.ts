@@ -1,4 +1,5 @@
 import {atom} from 'recoil';
+import NtCodeType from '../types/NtCodeType';
 
 export interface rstTeamFlagType {
   home: {
@@ -34,13 +35,7 @@ export const rstTweetFlag = atom<rstTweetFlagType>({
   },
 });
 
-export const rstNotificationFlag = atom<
-  | null
-  | 'invitation:post'
-  | 'application:delete'
-  | 'application:approve'
-  | 'penalty:set'
->({
+export const rstNotificationFlag = atom<null | NtCodeType>({
   key: 'rstNotificationFlag',
   default: null,
 });

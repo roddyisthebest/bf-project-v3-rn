@@ -26,6 +26,7 @@ import {rstNotificationFlag, rstTeamFlag} from '../recoil/flag';
 import Notification from '../screen/notification';
 import Config from 'react-native-config';
 import NtDataType from '../types/NtDataType';
+import TeamType from '../types/TeamType';
 
 export type DefaultParamList = {
   Notification: {
@@ -118,7 +119,7 @@ const Root = () => {
       const pushNotificationString = await EncryptedStorage.getItem(
         EncryptedStorageKeyList.PUSHNOTIFICATION,
       );
-      console.log(pushNotificationString, 'pushNotificationString');
+      console.log(pushNotificationString, 'android');
 
       if (pushNotificationString) {
         await EncryptedStorage.removeItem(
@@ -148,31 +149,36 @@ const Root = () => {
         );
       }
 
-      const parsedPushNotification: NtDataType = JSON.parse(
-        pushNotificationString as string,
-      );
-
-      setRstNotificationFlag(parsedPushNotification.code);
-
-      if (parsedPushNotification.code === 'penalty:set') {
-        userInfo.team = parsedPushNotification.team;
-        setRstMyInfoState(prev => ({
-          ...prev,
-          team: parsedPushNotification.team,
-        }));
-        await EncryptedStorage.setItem(
-          EncryptedStorageKeyList.USERINFO,
-          JSON.stringify(userInfo),
+      if (Platform.OS === 'android') {
+        const parsedPushNotification: NtDataType = JSON.parse(
+          pushNotificationString as string,
         );
 
-        return navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Tabs'}],
-          }),
-        );
+        setRstNotificationFlag(parsedPushNotification.code);
+
+        if (parsedPushNotification.code === 'penalty:set') {
+          teamSet(userInfoString, parsedPushNotification.team as TeamType);
+
+          return navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Tabs', params: {screen: 'Penalty'}}],
+            }),
+          );
+        }
+        if (parsedPushNotification.code === 'tweet:warning') {
+          teamSet(userInfoString, parsedPushNotification.team as TeamType);
+          return navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Tabs'}],
+            }),
+          );
+        }
+        console.log('ok-end');
       }
-      setRstMyInfoState(prev => ({...prev, team: null}));
+
+      // teamReset();
     }
   }, [setRstAuthState, setRstMyInfoState, navigation, setRstNotificationFlag]);
 
@@ -185,10 +191,27 @@ const Root = () => {
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{name: 'Team', params: {screen: 'Home'}}],
+        routes: [{name: 'Team'}],
       }),
     );
   }, [navigation, setRstMyInfoState]);
+
+  const teamSet = useCallback(
+    async (userInfoString: string, team: TeamType) => {
+      const userInfo: rstMyInfoType = JSON.parse(userInfoString);
+
+      userInfo.team = team;
+      setRstMyInfoState(prev => ({
+        ...prev,
+        team,
+      }));
+      await EncryptedStorage.setItem(
+        EncryptedStorageKeyList.USERINFO,
+        JSON.stringify(userInfo),
+      );
+    },
+    [],
+  );
 
   const logout = useCallback(async () => {
     await EncryptedStorage.clear();

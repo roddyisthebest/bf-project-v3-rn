@@ -5,20 +5,16 @@ import Tweet from '../../components/card/Tweet';
 import {deleteTweet, getTweets} from '../../api/tweet';
 import {useRecoilValue, useRecoilState} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
-import {rstNotificationFlag, rstTweetFlag} from '../../recoil/flag';
+import {rstTweetFlag} from '../../recoil/flag';
 import {LoadingContainer} from '../../components/basic/View';
 import {colors} from '../../styles/color';
 import ListEmptyComponent from '../../components/parts/tabs/ListEmptyComponent';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {LoggedInParamList} from '../../navigation/Root';
+
 function Home() {
   const ref = useRef<FlatList>(null);
-  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
   const userInfo = useRecoilValue(rstMyInfo);
   const [flag, setFlag] = useRecoilState(rstTweetFlag);
-  const [rstNotificationState, setRstNotificationState] =
-    useRecoilState(rstNotificationFlag);
 
   const [data, setData] = useState<TweetPropType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -131,14 +127,6 @@ function Home() {
     }
   }, [flag.upload, onRefresh, setFlag]);
 
-  useEffect(() => {
-    console.log(rstNotificationState, 'home');
-
-    if (rstNotificationState === 'penalty:set') {
-      navigation.navigate('Tabs', {screen: 'Penalty'});
-      setRstNotificationState(null);
-    }
-  }, [rstNotificationState, navigation]);
   const renderItem = ({item, index}: {item: TweetPropType; index: number}) => (
     <Tweet data={item} deleteFuc={delTweet} index={index} />
   );

@@ -48,11 +48,11 @@ const TabsNav = () => {
   }, [team, serviceRef]);
 
   useEffect(() => {
-    if (rstNotificationState === 'penalty:set') {
-      navigation.navigate('Tabs', {screen: 'Penalty'});
+    if (rstNotificationState === 'tweet:warning') {
+      uploadRef.current?.show();
       setRstNotificationState(null);
     }
-  }, [rstNotificationState, navigation]);
+  }, [rstNotificationState, navigation, uploadRef]);
 
   useEffect(() => {
     checkService();
