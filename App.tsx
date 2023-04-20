@@ -5,10 +5,15 @@ import {
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {RecoilRoot} from 'recoil';
-import Root, {DefaultParamList} from './navigation/Root';
+import Root, {
+  DefaultParamList,
+  EncryptedStorageKeyList,
+} from './navigation/Root';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
 import messaging from '@react-native-firebase/messaging';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {Platform} from 'react-native';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
@@ -25,7 +30,7 @@ PushNotification.configure({
   },
 
   // (required) Called when a remote is received or opened, or local notification is opened
-  onNotification: function (notification) {
+  onNotification: async function (notification) {
     console.log('NOTIFICATION:', notification);
 
     // (required) Called when a remote is received or opened, or local notification is opened
@@ -33,16 +38,32 @@ PushNotification.configure({
 
     if (!notification.foreground) {
       const code = notification.data.code;
-
+      console.log(code === 'invitation:post', 'code');
       if (
         code === 'invitation:post' ||
         code === 'application:delete' ||
         code === 'application:approve' ||
         code === 'penalty:set'
       ) {
-        navigationRef.current?.navigate('Notification', {
-          params: notification,
-        });
+        const obj: any = {};
+        console.log(obj, 'obj');
+
+        obj.code = code;
+        if (notification.data.team) {
+          obj.team = JSON.parse(notification.data.team);
+        }
+        console.log(obj, 'obj');
+
+        await EncryptedStorage.setItem(
+          EncryptedStorageKeyList.PUSHNOTIFICATION,
+          JSON.stringify(obj),
+        );
+
+        if (Platform.OS === 'ios') {
+          navigationRef.current?.navigate('Notification', {
+            params: notification,
+          });
+        }
       }
     }
   },

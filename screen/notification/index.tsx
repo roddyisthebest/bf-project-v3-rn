@@ -10,11 +10,16 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import {LoggedInParamList} from '../../navigation/Root';
+import {
+  EncryptedStorageKeyList,
+  LoggedInParamList,
+} from '../../navigation/Root';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {rstAuth} from '../../recoil/auth';
 import {rstNotificationFlag} from '../../recoil/flag';
 import {rstMyInfo} from '../../recoil/user';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import TeamType from '../../types/TeamType';
 function Notification() {
   const route = useRoute<
     RouteProp<{
@@ -26,6 +31,7 @@ function Notification() {
               | 'application:delete'
               | 'application:approve'
               | 'penalty:set';
+            team: string;
           };
         };
       };
@@ -37,39 +43,36 @@ function Notification() {
   const rstAuthState = useRecoilValue(rstAuth);
   const {team} = useRecoilValue(rstMyInfo);
   const setRstNotificationFlag = useSetRecoilState(rstNotificationFlag);
+  const setRstMyInfo = useSetRecoilState(rstMyInfo);
 
+  const resetPN = async () => {
+    await EncryptedStorage.removeItem(EncryptedStorageKeyList.PUSHNOTIFICATION);
+  };
   useEffect(() => {
     const code = route.params.params.data.code;
+    resetPN();
     if (rstAuthState) {
+      setRstMyInfo(prev => ({...prev, team: null}));
       if (code === 'invitation:post') {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Team'}],
-          }),
-        );
         setRstNotificationFlag(code);
       } else if (code === 'application:delete') {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Team'}],
-          }),
-        );
         setRstNotificationFlag(code);
       } else if (code === 'application:approve') {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Team'}],
-          }),
-        );
       }
     }
 
     if (rstAuthState && team !== null) {
       if (code === 'penalty:set') {
-        navigation.navigate('Tabs', {screen: 'Penalty'});
+        console.log(route.params.params.data.team);
+        const teamData: TeamType = JSON.parse(route.params.params.data.team);
+        setRstMyInfo(prev => ({...prev, team: teamData}));
+
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Tabs', params: {screen: 'Penalty'}}],
+          }),
+        );
       }
     }
   }, [route, navigation, CommonActions, rstAuthState, team]);

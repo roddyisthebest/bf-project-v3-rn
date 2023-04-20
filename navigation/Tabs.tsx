@@ -12,16 +12,23 @@ import UploadModal from '../components/modal/UploadModal';
 import ServiceModal from '../components/modal/ServiceModal';
 import {ActionSheetRef} from 'react-native-actions-sheet';
 import {addService, getService} from '../api/user';
-import {useRecoilValue} from 'recoil';
+import {useRecoilValue, useRecoilState} from 'recoil';
 import {rstMyInfo} from '../recoil/user';
 import {AxiosError} from 'axios';
+import {rstNotificationFlag} from '../recoil/flag';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {LoggedInParamList} from './Root';
 
 const Tab = createBottomTabNavigator();
 
 const TabsNav = () => {
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+
   const uploadRef = useRef<ActionSheetRef>(null);
   const serviceRef = useRef<ActionSheetRef>(null);
   const {team} = useRecoilValue(rstMyInfo);
+  const [rstNotificationState, setRstNotificationState] =
+    useRecoilState(rstNotificationFlag);
 
   const checkService = useCallback(async () => {
     try {
@@ -39,6 +46,13 @@ const TabsNav = () => {
       }
     }
   }, [team, serviceRef]);
+
+  useEffect(() => {
+    if (rstNotificationState === 'penalty:set') {
+      navigation.navigate('Tabs', {screen: 'Penalty'});
+      setRstNotificationState(null);
+    }
+  }, [rstNotificationState, navigation]);
 
   useEffect(() => {
     checkService();

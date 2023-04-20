@@ -22,9 +22,10 @@ import {getTeam} from '../api/team';
 import SplashScreen from 'react-native-splash-screen';
 import messaging from '@react-native-firebase/messaging';
 import {setPhoneToken} from '../api/user';
-import {rstTeamFlag} from '../recoil/flag';
+import {rstNotificationFlag, rstTeamFlag} from '../recoil/flag';
 import Notification from '../screen/notification';
 import Config from 'react-native-config';
+import NotificationDataType from '../types/NotificationData';
 
 export type DefaultParamList = {
   Notification: {
@@ -74,6 +75,7 @@ export enum EncryptedStorageKeyList {
   USERINFO = 'USERINFO',
   ACCESSTOKEN = 'ACCESSTOKEN',
   REFRESHTOKEN = 'REFRESHTOKEN',
+  PUSHNOTIFICATION = 'PUSHNOTIFICATION',
 }
 
 const Nav = createNativeStackNavigator();
@@ -81,6 +83,8 @@ const Nav = createNativeStackNavigator();
 const Root = () => {
   const [rstAuthState, setRstAuthState] = useRecoilState(rstAuth);
   const [rstMyInfoState, setRstMyInfoState] = useRecoilState(rstMyInfo);
+
+  const setRstNotificationFlag = useSetRecoilState(rstNotificationFlag);
 
   const setRstTeamFlag = useSetRecoilState(rstTeamFlag);
   const resetRstMyInfo = useResetRecoilState(rstMyInfo);
@@ -111,8 +115,22 @@ const Root = () => {
       const userInfo: rstMyInfoType = JSON.parse(userInfoString);
       setRstAuthState(true);
       setRstMyInfoState(userInfo);
+      const pushNotificationString = await EncryptedStorage.getItem(
+        EncryptedStorageKeyList.PUSHNOTIFICATION,
+      );
+      console.log(pushNotificationString, 'pushNotificationString');
 
-      if (userInfo.team) {
+      if (pushNotificationString) {
+        await EncryptedStorage.removeItem(
+          EncryptedStorageKeyList.PUSHNOTIFICATION,
+        );
+      }
+
+      if (
+        userInfo.team &&
+        (!pushNotificationString || pushNotificationString === null)
+      ) {
+        console.log('default kind');
         const {data} = await getTeam({id: userInfo?.team?.id as number});
         userInfo.team = data.payload;
 
@@ -122,15 +140,41 @@ const Root = () => {
         );
         setRstMyInfoState(userInfo);
 
-        navigation.dispatch(
+        return navigation.dispatch(
           CommonActions.reset({
             index: 0,
             routes: [{name: 'Tabs'}],
           }),
         );
       }
+
+      const parsedPushNotification: NotificationDataType = JSON.parse(
+        pushNotificationString as string,
+      );
+
+      setRstNotificationFlag(parsedPushNotification.code);
+
+      if (parsedPushNotification.code === 'penalty:set') {
+        userInfo.team = parsedPushNotification.team;
+        setRstMyInfoState(prev => ({
+          ...prev,
+          team: parsedPushNotification.team,
+        }));
+        await EncryptedStorage.setItem(
+          EncryptedStorageKeyList.USERINFO,
+          JSON.stringify(userInfo),
+        );
+
+        return navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Tabs'}],
+          }),
+        );
+      }
+      setRstMyInfoState(prev => ({...prev, team: null}));
     }
-  }, [setRstAuthState, setRstMyInfoState, navigation]);
+  }, [setRstAuthState, setRstMyInfoState, navigation, setRstNotificationFlag]);
 
   const teamReset = useCallback(async () => {
     await EncryptedStorage.setItem(

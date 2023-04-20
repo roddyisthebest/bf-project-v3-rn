@@ -35,7 +35,11 @@ export const rstTweetFlag = atom<rstTweetFlagType>({
 });
 
 export const rstNotificationFlag = atom<
-  null | 'invitation:post' | 'application:delete' | 'application:approve'
+  | null
+  | 'invitation:post'
+  | 'application:delete'
+  | 'application:approve'
+  | 'penalty:set'
 >({
   key: 'rstNotificationFlag',
   default: null,
