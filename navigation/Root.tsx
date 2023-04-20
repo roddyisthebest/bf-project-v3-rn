@@ -25,7 +25,7 @@ import {setPhoneToken} from '../api/user';
 import {rstNotificationFlag, rstTeamFlag} from '../recoil/flag';
 import Notification from '../screen/notification';
 import Config from 'react-native-config';
-import NotificationDataType from '../types/NotificationData';
+import NtDataType from '../types/NtDataType';
 
 export type DefaultParamList = {
   Notification: {
@@ -148,7 +148,7 @@ const Root = () => {
         );
       }
 
-      const parsedPushNotification: NotificationDataType = JSON.parse(
+      const parsedPushNotification: NtDataType = JSON.parse(
         pushNotificationString as string,
       );
 

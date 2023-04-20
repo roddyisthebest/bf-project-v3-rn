@@ -38,13 +38,18 @@ PushNotification.configure({
 
     if (!notification.foreground) {
       const code = notification.data.code;
-      console.log(code === 'invitation:post', 'code');
       if (
         code === 'invitation:post' ||
         code === 'application:delete' ||
         code === 'application:approve' ||
         code === 'penalty:set'
       ) {
+        if (Platform.OS === 'ios') {
+          return navigationRef.current?.navigate('Notification', {
+            params: notification,
+          });
+        }
+
         const obj: any = {};
         console.log(obj, 'obj');
 
@@ -58,12 +63,6 @@ PushNotification.configure({
           EncryptedStorageKeyList.PUSHNOTIFICATION,
           JSON.stringify(obj),
         );
-
-        if (Platform.OS === 'ios') {
-          navigationRef.current?.navigate('Notification', {
-            params: notification,
-          });
-        }
       }
     }
   },

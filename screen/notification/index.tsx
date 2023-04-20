@@ -10,27 +10,20 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import {
-  EncryptedStorageKeyList,
-  LoggedInParamList,
-} from '../../navigation/Root';
+import {LoggedInParamList} from '../../navigation/Root';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {rstAuth} from '../../recoil/auth';
 import {rstNotificationFlag} from '../../recoil/flag';
 import {rstMyInfo} from '../../recoil/user';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import TeamType from '../../types/TeamType';
+import NtCodeType from '../../types/NtCodeType';
 function Notification() {
   const route = useRoute<
     RouteProp<{
       prop: {
         params: {
           data: {
-            code:
-              | 'invitation:post'
-              | 'application:delete'
-              | 'application:approve'
-              | 'penalty:set';
+            code: NtCodeType;
             team: string;
           };
         };
@@ -45,12 +38,8 @@ function Notification() {
   const setRstNotificationFlag = useSetRecoilState(rstNotificationFlag);
   const setRstMyInfo = useSetRecoilState(rstMyInfo);
 
-  const resetPN = async () => {
-    await EncryptedStorage.removeItem(EncryptedStorageKeyList.PUSHNOTIFICATION);
-  };
   useEffect(() => {
     const code = route.params.params.data.code;
-    resetPN();
     if (rstAuthState) {
       setRstMyInfo(prev => ({...prev, team: null}));
       if (code === 'invitation:post') {
