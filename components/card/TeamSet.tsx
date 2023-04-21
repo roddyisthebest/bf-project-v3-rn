@@ -34,6 +34,12 @@ function TeamSet({data}: {data: TeamType}) {
   const [rstUserInfo, setRstUserInfo] = useRecoilState(rstMyInfo);
 
   const onPress = useCallback(async () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Tabs'}],
+      }),
+    );
     const obj = {
       ...rstUserInfo,
       team: data,
@@ -43,13 +49,6 @@ function TeamSet({data}: {data: TeamType}) {
     await EncryptedStorage.setItem(
       EncryptedStorageKeyList.USERINFO,
       objToString,
-    );
-
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: 'Tabs'}],
-      }),
     );
   }, [data, navigation, rstUserInfo, setRstUserInfo]);
 
