@@ -287,6 +287,9 @@ const Root = () => {
           }
         } else if (status === 404 && code === 'Not Found:Team') {
           teamReset();
+        } else if (status === 500) {
+          Alert.alert('서버오류', '관리자에게 문의바랍니다.');
+          logout();
         }
         return Promise.reject(error);
       },

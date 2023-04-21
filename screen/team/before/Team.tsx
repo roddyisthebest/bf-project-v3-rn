@@ -114,7 +114,7 @@ function Team() {
   }, [navigation, rstNotificationState]);
 
   return (
-    <Layout scrollable={false} isItWhite={false}>
+    <Layout scrollable={true} isItWhite={false}>
       <GapRowView
         gap={15}
         marginTop={0}
