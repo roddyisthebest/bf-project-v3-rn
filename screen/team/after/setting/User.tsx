@@ -2,7 +2,13 @@ import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {colors} from '../../../../styles/color';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Alert, FlatList, View} from 'react-native';
+import {
+  Alert,
+  FlatList,
+  Platform,
+  TouchableNativeFeedback,
+  View,
+} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../../../navigation/Root';
 import UserType from '../../../../types/UserType';
@@ -50,6 +56,20 @@ function User() {
 
   const [data, setData] = useState<UserType[]>([]);
   const [keyword, setKeyword] = useState<string>('');
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableNativeFeedback onPress={() => navigation.goBack()}>
+          {Platform.OS === 'ios' ? (
+            <Icon name="chevron-back-outline" color="black" size={25} />
+          ) : (
+            <Icon name="arrow-back-outline" color="black" size={25} />
+          )}
+        </TouchableNativeFeedback>
+      ),
+    });
+  }, [navigation]);
 
   const invite = async (id: number) => {
     try {
