@@ -112,7 +112,6 @@ function Profile() {
       introducing,
       id: team?.id as number,
     });
-
     if ((res.status as number) === 500) {
       Alert.alert('서버 오류 입니다. 관리자에게 문의주세요. 010-5152-9445');
       logout();
@@ -145,6 +144,8 @@ function Profile() {
       navigation.goBack();
     } else if ((res.status as number) === 413) {
       Alert.alert('사진 크기가 너무 큽니다. 다른 사진을 업로드해주세요.');
+    } else if ((res.status as number) === 403) {
+      Alert.alert('팀 정보 수정에 관한 자격이 없습니다.');
     }
     setLoading(false);
   }, [file, name, introducing, navigation, editMode, team]);
