@@ -108,11 +108,8 @@ function TeamCreating() {
       logout();
 
       Alert.alert('서버 오류 입니다. 관리자에게 문의주세요. 010-5152-9445');
-
-      return;
     } else if ((res.status as number) === 403) {
       Alert.alert('팀 최대 생성 횟수를 초과했습니다.');
-      return;
     } else if ((res.status as number) === 400) {
       logout();
       Alert.alert('400 : 다시 로그인 해주세요.');
@@ -120,7 +117,7 @@ function TeamCreating() {
       //토큰 갱신
       const response = await getTokenByRefresh();
       if (response) {
-        return Alert.alert('토큰을 갱신했습니다. 다시한번 요청해주세요!');
+        Alert.alert('토큰을 갱신했습니다. 다시한번 요청해주세요!');
       } else {
         logout();
         Alert.alert('다시 로그인 해주세요.');

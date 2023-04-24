@@ -116,7 +116,6 @@ function Profile() {
     if ((res.status as number) === 500) {
       Alert.alert('서버 오류 입니다. 관리자에게 문의주세요. 010-5152-9445');
       logout();
-      return;
     } else if ((res.status as number) === 400) {
       Alert.alert('400 : 다시 로그인 해주세요.');
       logout();
@@ -124,7 +123,7 @@ function Profile() {
       //토큰 갱신
       const response = await getTokenByRefresh();
       if (response) {
-        return Alert.alert('토큰을 갱신했습니다. 다시한번 요청해주세요!');
+        Alert.alert('토큰을 갱신했습니다. 다시한번 요청해주세요!');
       } else {
         logout();
         Alert.alert('다시 로그인 해주세요.');
