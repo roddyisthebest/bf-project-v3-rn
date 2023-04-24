@@ -144,6 +144,8 @@ function Profile() {
         JSON.stringify(parsedData),
       );
       navigation.goBack();
+    } else if ((res.status as number) === 413) {
+      Alert.alert('사진 크기가 너무 큽니다. 다른 사진을 업로드해주세요.');
     }
     setLoading(false);
   }, [file, name, introducing, navigation, editMode, team]);

@@ -162,6 +162,8 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
       (ref as React.RefObject<ActionSheetRef>).current?.hide();
       setFile(null);
       setContent('');
+    } else if ((res.status as number) === 413) {
+      Alert.alert('사진 크기가 너무 큽니다. 다른 사진을 업로드해주세요.');
     }
     setLoading(false);
   };
@@ -181,6 +183,7 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
               (ref as React.RefObject<ActionSheetRef>).current?.hide();
               setContent('');
               setFile(null);
+              setLoading(false);
             }}>
             <Icon name="close-outline" color="black" size={25} />
           </Pressable>

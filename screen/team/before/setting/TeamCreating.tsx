@@ -137,6 +137,8 @@ function TeamCreating() {
       }));
       Alert.alert('팀이 생성되었습니다.');
       navigation.goBack();
+    } else if ((res.status as number) === 413) {
+      Alert.alert('사진 크기가 너무 큽니다. 다른 사진을 업로드해주세요.');
     }
     setLoading(false);
   }, [file, name, introducing, navigation, setFlag]);
