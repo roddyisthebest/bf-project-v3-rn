@@ -95,12 +95,11 @@ const Root = () => {
 
   const onCreate = useCallback(async () => {
     console.log(Platform.OS, Config.API_URL);
-
     const res = await getTokenByRefresh();
     if (!res) {
       return;
     }
-
+    setRstAuthState(true);
     if (!messaging().isDeviceRegisteredForRemoteMessages) {
       await messaging().registerDeviceForRemoteMessages();
     }
@@ -114,7 +113,6 @@ const Root = () => {
 
     if (userInfoString) {
       const userInfo: rstMyInfoType = JSON.parse(userInfoString);
-      setRstAuthState(true);
       setRstMyInfoState(userInfo);
       const pushNotificationString = await EncryptedStorage.getItem(
         EncryptedStorageKeyList.PUSHNOTIFICATION,

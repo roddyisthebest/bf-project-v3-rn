@@ -47,6 +47,7 @@ PushNotification.configure({
         if (Platform.OS === 'ios' && notification.action) {
           // (required) Called when a remote is received or opened, or local notification is opened
           notification.finish(PushNotificationIOS.FetchResult.NoData);
+          console.log('ios', notification.data);
           return navigationRef.current?.navigate('Notification', {
             params: {
               data: notification.data,
@@ -54,19 +55,19 @@ PushNotification.configure({
           });
         }
 
-        const obj: any = {};
-        console.log(obj, 'obj');
+        if (Platform.OS === 'android') {
+          const obj: any = {};
 
-        obj.code = code;
-        if (notification.data.team) {
-          obj.team = JSON.parse(notification.data.team);
+          obj.code = code;
+          if (notification.data.team) {
+            obj.team = JSON.parse(notification.data.team);
+          }
+
+          await EncryptedStorage.setItem(
+            EncryptedStorageKeyList.PUSHNOTIFICATION,
+            JSON.stringify(obj),
+          );
         }
-        console.log(obj, 'obj');
-
-        await EncryptedStorage.setItem(
-          EncryptedStorageKeyList.PUSHNOTIFICATION,
-          JSON.stringify(obj),
-        );
       }
     }
   },

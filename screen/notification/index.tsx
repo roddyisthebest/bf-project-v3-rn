@@ -40,11 +40,10 @@ function Notification() {
 
   useEffect(() => {
     const code = route.params.params.data.code;
-
     if (rstAuthState) {
       if (code.includes('invitation') || code.includes('application')) {
-        setRstMyInfo(prev => ({...prev, team: null}));
         setRstNotificationFlag(code);
+        setRstMyInfo(prev => ({...prev, team: null}));
       } else {
         const teamData: TeamType = JSON.parse(route.params.params.data.team);
         console.log(teamData, 'teamData');
