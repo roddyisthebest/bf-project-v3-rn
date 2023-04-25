@@ -1,5 +1,5 @@
 import {ActivityIndicator, Alert, FlatList, View} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   CommonActions,
   NavigationProp,
@@ -27,7 +27,7 @@ function Detail() {
   const [userInfo, setUserInfo] = useRecoilState(rstMyInfo);
   const [loading, setLoading] = useState<boolean>(false);
   const setFlag = useSetRecoilState(rstTeamFlag);
-  const data = [
+  const [data, setData] = useState([
     {
       id: 1,
       text: '팀원 초대',
@@ -56,7 +56,7 @@ function Detail() {
         navigation.navigate('Team', {screen: 'ApplicationUser'});
       },
     },
-  ];
+  ]);
 
   const resetTeam = async () => {
     const stringData = await EncryptedStorage.getItem(
@@ -151,6 +151,12 @@ function Detail() {
   const renderItem = ({item}: {item: {text: string; onPress: () => void}}) => (
     <NavItem text={item.text} onPress={item.onPress} />
   );
+
+  useEffect(() => {
+    if (userInfo?.team?.bossId !== userInfo?.user?.id) {
+      setData(prev => prev.filter(d => d.id !== 3 && d.id !== 4));
+    }
+  }, [userInfo]);
 
   return (
     <Layout scrollable={false} isItWhite={false}>
