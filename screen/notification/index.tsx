@@ -10,13 +10,17 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import {LoggedInParamList} from '../../navigation/Root';
+import {
+  EncryptedStorageKeyList,
+  LoggedInParamList,
+} from '../../navigation/Root';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {rstAuth} from '../../recoil/auth';
 import {rstNotificationFlag} from '../../recoil/flag';
-import {rstMyInfo} from '../../recoil/user';
+import {rstMyInfo, rstMyInfoType} from '../../recoil/user';
 import TeamType from '../../types/TeamType';
 import NtCodeType from '../../types/NtCodeType';
+import EncryptedStorage from 'react-native-encrypted-storage';
 function Notification() {
   const route = useRoute<
     RouteProp<{
@@ -38,16 +42,35 @@ function Notification() {
   const setRstNotificationFlag = useSetRecoilState(rstNotificationFlag);
   const setRstMyInfo = useSetRecoilState(rstMyInfo);
 
+  const setEncryptStorage = async (team: TeamType) => {
+    const userInfoString = await EncryptedStorage.getItem(
+      EncryptedStorageKeyList.USERINFO,
+    );
+    const userInfo: rstMyInfoType = JSON.parse(userInfoString as string);
+    userInfo.team = team;
+    await EncryptedStorage.setItem(
+      EncryptedStorageKeyList.USERINFO,
+      JSON.stringify(userInfo),
+    );
+  };
   useEffect(() => {
     const code = route.params.params.data.code;
     if (rstAuthState) {
       if (code.includes('invitation') || code.includes('application')) {
         setRstNotificationFlag(code);
         setRstMyInfo(prev => ({...prev, team: null}));
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Team'}],
+          }),
+        );
       } else {
+        console.log(route.params.params.data.team);
         const teamData: TeamType = JSON.parse(route.params.params.data.team);
         console.log(teamData, 'teamData');
         setRstMyInfo(prev => ({...prev, team: teamData}));
+        setEncryptStorage(teamData);
         if (code === 'penalty:set') {
           navigation.dispatch(
             CommonActions.reset({
@@ -57,12 +80,22 @@ function Notification() {
           );
         } else if (code === 'tweet:warning') {
           setRstNotificationFlag('tweet:warning');
-          console.log('noti', teamData);
           setRstMyInfo(prev => ({...prev, team: teamData}));
-          console.log('이동');
-          navigation.navigate('Tabs', {screen: 'Home'});
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Tabs', params: {screen: 'Home'}}],
+            }),
+          );
         }
       }
+    } else {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Auth'}],
+        }),
+      );
     }
   }, [rstAuthState, navigation]);
 

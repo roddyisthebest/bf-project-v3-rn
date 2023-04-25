@@ -14,7 +14,7 @@ import MyInfo from '../../../components/parts/header/MyInfo';
 import MyTeamMenu from '../../../components/parts/header/MyTeamMenu';
 import InvitationType from '../../../types/InvitationType';
 
-import {FlatList} from 'react-native';
+import {FlatList, Platform} from 'react-native';
 function Team() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
@@ -123,6 +123,24 @@ function Team() {
     }
     if (rstNotificationState === 'application:delete') {
       navigation.navigate('Team', {screen: 'AppliedTeams'});
+    }
+
+    if (
+      Platform.OS === 'android' &&
+      rstNotificationState === 'invitation:post'
+    ) {
+      setTimeout(() => {
+        navigation.navigate('Team', {screen: 'InvitedTeams'});
+      }, 100);
+    }
+
+    if (
+      Platform.OS === 'android' &&
+      rstNotificationState === 'application:delete'
+    ) {
+      setTimeout(() => {
+        navigation.navigate('Team', {screen: 'AppliedTeams'});
+      }, 100);
     }
 
     setRstNotificationState(null);

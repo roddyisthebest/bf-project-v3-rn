@@ -100,6 +100,7 @@ const Root = () => {
       return;
     }
     setRstAuthState(true);
+
     if (!messaging().isDeviceRegisteredForRemoteMessages) {
       await messaging().registerDeviceForRemoteMessages();
     }
@@ -153,6 +154,17 @@ const Root = () => {
         );
 
         setRstNotificationFlag(parsedPushNotification.code);
+        console.log(parsedPushNotification.code, 'Root');
+        if (
+          parsedPushNotification?.code?.includes('invitation') ||
+          parsedPushNotification?.code?.includes('application')
+        ) {
+          console.log(
+            'parsedPushNotification.code',
+            parsedPushNotification.code,
+          );
+          return teamReset();
+        }
 
         if (parsedPushNotification.code === 'penalty:set') {
           teamSet(userInfoString, parsedPushNotification.team as TeamType);
@@ -175,8 +187,7 @@ const Root = () => {
         }
         console.log('ok-end');
       }
-
-      // teamReset();
+      console.log('hello');
     }
   }, [setRstAuthState, setRstMyInfoState, navigation, setRstNotificationFlag]);
 
@@ -194,22 +205,19 @@ const Root = () => {
     );
   }, [navigation, setRstMyInfoState]);
 
-  const teamSet = useCallback(
-    async (userInfoString: string, team: TeamType) => {
-      const userInfo: rstMyInfoType = JSON.parse(userInfoString);
+  const teamSet = async (userInfoString: string, team: TeamType) => {
+    const userInfo: rstMyInfoType = JSON.parse(userInfoString);
 
-      userInfo.team = team;
-      setRstMyInfoState(prev => ({
-        ...prev,
-        team,
-      }));
-      await EncryptedStorage.setItem(
-        EncryptedStorageKeyList.USERINFO,
-        JSON.stringify(userInfo),
-      );
-    },
-    [],
-  );
+    userInfo.team = team;
+    setRstMyInfoState(prev => ({
+      ...prev,
+      team,
+    }));
+    await EncryptedStorage.setItem(
+      EncryptedStorageKeyList.USERINFO,
+      JSON.stringify(userInfo),
+    );
+  };
 
   const logout = useCallback(async () => {
     await EncryptedStorage.clear();

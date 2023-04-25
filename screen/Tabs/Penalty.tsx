@@ -54,7 +54,7 @@ function PenaltyView() {
           team?.id as number,
         );
 
-        if (code === 'last data') {
+        if (code === 'OK:LAST') {
           setDisabled(true);
         }
 
