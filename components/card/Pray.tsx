@@ -17,6 +17,8 @@ import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
 import {thisSunday} from '../../util/Date';
 import {rstStore} from '../../recoil/store';
+import {AxiosError} from 'axios';
+import {response as responseType} from '../../api';
 const Container = styled(GapRowView)<{borderColor: string}>`
   border-bottom-color: ${props => props.borderColor};
   border-bottom-width: 1px;
@@ -123,9 +125,12 @@ function Pray({data}: {data: UserType}) {
       try {
         await deletePray(id, team?.id as number);
         setPrays(prev => prev?.filter(pray => pray.id !== id));
-      } catch (e) {
-        prays.splice(index, 1, {...prays[index], deleteLoading: false});
-        setPrays([...prays]);
+      } catch (error) {
+        const {response} = error as unknown as AxiosError<responseType>;
+        console.log(response?.status);
+        if (response?.status === 404) {
+          return setPrays(prev => prev.filter(pray => pray.id !== id));
+        }
       }
     },
     [prays, team],
@@ -157,16 +162,21 @@ function Pray({data}: {data: UserType}) {
       setPrays([...prays]);
       try {
         await updatePray(id, prays[index].content, team?.id as number);
-      } catch (e) {
-      } finally {
-        prays.splice(index, 1, {
-          ...prays[index],
-          editLoading: false,
-          edit: false,
-        });
-        setPrays([...prays]);
-        target.current[index].blur();
+      } catch (error) {
+        const {response} = error as unknown as AxiosError<responseType>;
+
+        if (response?.status === 404) {
+          target.current[index].blur();
+          return setPrays(prev => prev.filter(pray => pray.id !== id));
+        }
       }
+      prays.splice(index, 1, {
+        ...prays[index],
+        editLoading: false,
+        edit: false,
+      });
+      setPrays([...prays]);
+      target.current[index].blur();
     },
     [team, prays],
   );

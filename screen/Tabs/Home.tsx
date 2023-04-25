@@ -9,7 +9,8 @@ import {rstTweetFlag} from '../../recoil/flag';
 import {LoadingContainer} from '../../components/basic/View';
 import {colors} from '../../styles/color';
 import ListEmptyComponent from '../../components/parts/tabs/ListEmptyComponent';
-
+import {AxiosError} from 'axios';
+import {response as responseType} from '../../api';
 function Home() {
   const ref = useRef<FlatList>(null);
 
@@ -90,9 +91,17 @@ function Home() {
         {
           text: '삭제',
           onPress: async () => {
-            data.splice(index, 1, {...data[index], loading: true});
-            setData([...data]);
-            await deleteTweet(id);
+            try {
+              data.splice(index, 1, {...data[index], loading: true});
+              setData([...data]);
+              await deleteTweet(id);
+            } catch (error) {
+              const {response} = error as unknown as AxiosError<responseType>;
+              if (response?.status === 404) {
+                return setData(tweet => tweet.filter(e => e.id !== id));
+              }
+            }
+
             data.splice(index, 1, {...data[index], loading: false});
             setData([...data]);
 

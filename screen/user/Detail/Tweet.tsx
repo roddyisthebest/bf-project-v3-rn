@@ -1,6 +1,6 @@
 import {View, FlatList, ActivityIndicator, Alert} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {TweetType} from '../../../types/TweetType';
+import TweetPropType from '../../../types/TweetPropType';
 import Tweet from '../../../components/card/Tweet';
 import {deleteTweet} from '../../../api/tweet';
 import {getMyTweets} from '../../../api/user';
@@ -9,12 +9,14 @@ import {rstMyInfo} from '../../../recoil/user';
 import {LoadingContainer} from '../../../components/basic/View';
 import {colors} from '../../../styles/color';
 import ListEmptyComponent from '../../../components/parts/tabs/ListEmptyComponent';
+import {AxiosError} from 'axios';
+import {response as responseType} from '../../../api';
 function Home() {
   const ref = useRef<FlatList>(null);
 
   const userInfo = useRecoilValue(rstMyInfo);
 
-  const [data, setData] = useState<TweetType[]>([]);
+  const [data, setData] = useState<TweetPropType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [lastId, setLastId] = useState<number>(-1);
@@ -27,7 +29,7 @@ function Home() {
       if (lastId === -1) {
         const {
           data: {payload},
-        }: {data: {payload: TweetType[]}} = await getMyTweets({
+        }: {data: {payload: TweetPropType[]}} = await getMyTweets({
           lastId: lastId,
           teamId: userInfo.team?.id as number,
         });
@@ -53,10 +55,12 @@ function Home() {
       try {
         const {
           data: {payload, code},
-        }: {data: {payload: TweetType[]; code: string}} = await getMyTweets({
-          lastId: lastId,
-          teamId: userInfo.team?.id as number,
-        });
+        }: {data: {payload: TweetPropType[]; code: string}} = await getMyTweets(
+          {
+            lastId: lastId,
+            teamId: userInfo.team?.id as number,
+          },
+        );
 
         if (code === 'OK:LAST') {
           setDisabled(true);
@@ -76,7 +80,7 @@ function Home() {
   );
 
   const showConfirmDialog = useCallback(
-    (id: number) => {
+    (id: number, index: number) => {
       return Alert.alert('게시글 삭제', '정말로 이 게시글을 삭제할까요?', [
         // The "Yes" button
         {
@@ -89,7 +93,19 @@ function Home() {
         {
           text: '삭제',
           onPress: async () => {
-            await deleteTweet(id);
+            try {
+              data.splice(index, 1, {...data[index], loading: true});
+              setData([...data]);
+              await deleteTweet(id);
+            } catch (error) {
+              const {response} = error as unknown as AxiosError<responseType>;
+              if (response?.status === 404) {
+                return setData(tweet => tweet.filter(e => e.id !== id));
+              }
+            }
+            data.splice(index, 1, {...data[index], loading: false});
+            setData([...data]);
+
             setData(tweet => tweet.filter(e => e.id !== id));
             onRefresh();
           },
@@ -97,11 +113,11 @@ function Home() {
         },
       ]);
     },
-    [onRefresh],
+    [onRefresh, data],
   );
   const delTweet = useCallback(
-    async (id: number) => {
-      showConfirmDialog(id);
+    async (id: number, index: number) => {
+      showConfirmDialog(id, index);
     },
     [showConfirmDialog],
   );
@@ -112,8 +128,8 @@ function Home() {
     }
   }, [getData, lastId, disabled]);
 
-  const renderItem = ({item}: {item: TweetType}) => (
-    <Tweet data={item} deleteFuc={delTweet} />
+  const renderItem = ({item, index}: {item: TweetPropType; index: number}) => (
+    <Tweet data={item} deleteFuc={delTweet} index={index} />
   );
   return loading ? (
     <LoadingContainer>
