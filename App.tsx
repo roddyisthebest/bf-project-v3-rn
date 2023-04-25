@@ -2,7 +2,7 @@ import {
   NavigationContainer,
   NavigationContainerRef,
 } from '@react-navigation/native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {RecoilRoot} from 'recoil';
 import Root, {
@@ -14,6 +14,7 @@ import PushNotification from 'react-native-push-notification';
 import messaging from '@react-native-firebase/messaging';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {Platform} from 'react-native';
+import CodePush, {CodePushOptions} from 'react-native-code-push';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
@@ -147,7 +148,39 @@ PushNotification.createChannel(
     console.log(`createChannel default returned ${created}`),
 );
 
+const codePushOptions: CodePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.MANUAL,
+  // 언제 업데이트를 체크하고 반영할지를 정한다.
+  // ON_APP_RESUME은 Background에서 Foreground로 오는 것을 의미
+  // ON_APP_START은 앱이 실행되는(켜지는) 순간을 의미
+  installMode: CodePush.InstallMode.IMMEDIATE,
+  mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
+  // 업데이트를 어떻게 설치할 것인지 (IMMEDIATE는 강제설치를 의미)
+};
 const App = () => {
+  useEffect(() => {
+    CodePush.sync(
+      {
+        installMode: CodePush.InstallMode.IMMEDIATE,
+        mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
+        updateDialog: {
+          mandatoryUpdateMessage:
+            '필수 업데이트가 있어 설치 후 앱을 재시작합니다.',
+          mandatoryContinueButtonLabel: '재시작',
+          optionalIgnoreButtonLabel: '나중에',
+          optionalInstallButtonLabel: '재시작',
+          optionalUpdateMessage: '업데이트가 있습니다. 설치하시겠습니까?',
+          title: '업데이트 안내',
+        },
+      },
+      status => {
+        console.log(`Changed ${status}`);
+      },
+    ).then(status => {
+      console.log(`CodePush ${status}`);
+    });
+  }, []);
+
   return (
     <NavigationContainer ref={navigationRef}>
       <RecoilRoot>
@@ -159,4 +192,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default CodePush(codePushOptions)(App);

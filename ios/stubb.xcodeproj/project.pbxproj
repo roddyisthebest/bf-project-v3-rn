@@ -14,6 +14,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-stubb-stubbTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-stubb-stubbTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		EC1216D829F81375002DD8E8 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = EC1216D729F81374002DD8E8 /* AppCenter-Config.plist */; };
 		EC20A1A729E6608700B82022 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EC20A1A629E6608700B82022 /* GoogleService-Info.plist */; };
 		EC3CC5CA29C0911E0018465F /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3CC5C929C0911E0018465F /* SwiftBridge.swift */; };
 /* End PBXBuildFile section */
@@ -45,6 +46,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-stubb.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-stubb.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = stubb/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-stubb-stubbTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-stubb-stubbTests.release.xcconfig"; path = "Target Support Files/Pods-stubb-stubbTests/Pods-stubb-stubbTests.release.xcconfig"; sourceTree = "<group>"; };
+		EC1216D729F81374002DD8E8 /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "stubb/AppCenter-Config.plist"; sourceTree = "<group>"; };
 		EC20A1A629E6608700B82022 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../firebase/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EC3CC5C829C0911E0018465F /* stubb-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "stubb-Bridging-Header.h"; sourceTree = "<group>"; };
 		EC3CC5C929C0911E0018465F /* SwiftBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridge.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 		13B07FAE1A68108700A75B9A /* stubb */ = {
 			isa = PBXGroup;
 			children = (
+				EC1216D729F81374002DD8E8 /* AppCenter-Config.plist */,
 				EC20A1A629E6608700B82022 /* GoogleService-Info.plist */,
 				EC3CC5CB29C1597F0018465F /* stubb.entitlements */,
 				EC3CC5C929C0911E0018465F /* SwiftBridge.swift */,
@@ -256,6 +259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				EC1216D829F81375002DD8E8 /* AppCenter-Config.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				EC20A1A729E6608700B82022 /* GoogleService-Info.plist in Resources */,
 			);

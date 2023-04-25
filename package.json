@@ -1,13 +1,19 @@
 {
   "name": "stubb",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "codepush:android": "appcenter codepush release-react -a seongyeon980123-gmail.com/bf-church-v3-android -d Staging --sourcemap-output --output-dir ./build -m -t 1.0",
+    "codepush:ios": "appcenter codepush release-react -a seongyeon980123-gmail.com/bf-church-v3-ios -d Staging --sourcemap-output --output-dir ./build -m -t 1.0",
+    "bundle:android": "react-native bundle --assets-dest build/CodePush --bundle-output build/CodePush/index.android.bundle --dev false --entry-file index.js --platform android --sourcemap-output build/CodePush/index.android.bundle.map",
+    "bundle:ios": "react-native bundle --assets-dest build/CodePush --bundle-output build/CodePush/main.jsbundle --dev false --entry-file index.js --platform ios --sourcemap-output build/CodePush/main.jsbundle.map",
+    "appcenter-android-key": "appcenter codepush deployment list -a seongyeon980123-gmail.com/bf-church-v3-android -k",
+    "appcenter-ios-key": "appcenter codepush deployment list -a seongyeon980123-gmail.com/bf-church-v3-ios -k "
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.2.2",
@@ -24,6 +30,9 @@
     "@types/react-native-vector-icons": "^6.4.13",
     "@types/styled-components": "^5.1.26",
     "@types/styled-components-react-native": "^5.2.1",
+    "appcenter": "^4.4.5",
+    "appcenter-analytics": "^4.4.5",
+    "appcenter-crashes": "^4.4.5",
     "axios": "^1.3.4",
     "babel-plugin-styled-components": "^2.0.7",
     "md5": "^2.3.0",
@@ -31,6 +40,7 @@
     "react": "18.1.0",
     "react-native": "0.71.2",
     "react-native-actions-sheet": "^0.8.29",
+    "react-native-code-push": "^8.0.1",
     "react-native-config": "^1.5.0",
     "react-native-date-picker": "^4.2.9",
     "react-native-device-info": "^10.6.0",
