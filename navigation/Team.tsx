@@ -33,16 +33,26 @@ const TeamNav = () => {
     <NativeStack.Navigator initialRouteName="Detail">
       {team ? (
         <>
-          <NativeStack.Screen name="UserSetting" component={User} />
+          <NativeStack.Screen
+            name="UserSetting"
+            component={User}
+            options={{title: '팀원 초대'}}
+          />
           <NativeStack.Screen
             name="InvitationUser"
             component={InvitationUser}
+            options={{title: '초대한 유저 리스트'}}
           />
           <NativeStack.Screen
             name="ApplicationUser"
             component={ApplicationUser}
+            options={{title: '가입 신청한 유저 리스트'}}
           />
-          <NativeStack.Screen name="TeamUser" component={TeamUser} />
+          <NativeStack.Screen
+            name="TeamUser"
+            component={TeamUser}
+            options={{title: '팀원 리스트'}}
+          />
           <NativeStack.Screen
             name="Detail"
             component={Detail}
@@ -56,30 +66,47 @@ const TeamNav = () => {
                   )}
                 </TouchableNativeFeedback>
               ),
+              title: '팀 정보',
             }}
           />
-          <NativeStack.Screen name="Profile" component={Profile} />
+          <NativeStack.Screen
+            name="Profile"
+            component={Profile}
+            options={{title: '팀 프로필 변경'}}
+          />
         </>
       ) : (
         <>
           <NativeStack.Screen
             name="Home"
             component={Team}
-            options={{title: 'My Team'}}
+            options={{title: '팀'}}
           />
           <NativeStack.Screen
             name="Creating"
             component={TeamCreating}
-            options={{title: '팀 만들기'}}
+            options={{title: '팀 생성'}}
           />
           <NativeStack.Screen
             name="Searching"
             component={TeamSearching}
             options={{title: '팀 검색'}}
           />
-          <NativeStack.Screen name="MyTeams" component={MyTeams} />
-          <NativeStack.Screen name="InvitedTeams" component={InvitedTeams} />
-          <NativeStack.Screen name="AppliedTeams" component={AppliedTeams} />
+          <NativeStack.Screen
+            name="MyTeams"
+            component={MyTeams}
+            options={{title: '나의 팀'}}
+          />
+          <NativeStack.Screen
+            name="InvitedTeams"
+            component={InvitedTeams}
+            options={{title: '초대된 팀'}}
+          />
+          <NativeStack.Screen
+            name="AppliedTeams"
+            component={AppliedTeams}
+            options={{title: '가입 신청한 팀'}}
+          />
         </>
       )}
     </NativeStack.Navigator>

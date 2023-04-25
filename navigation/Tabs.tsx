@@ -110,7 +110,7 @@ const TabsNav = () => {
                 size={20}
               />
             ),
-            title: 'Home',
+            title: '홈',
           }}
         />
         <Tab.Screen
@@ -128,7 +128,7 @@ const TabsNav = () => {
                 size={20}
               />
             ),
-            title: 'Pray',
+            title: '기도제목',
           }}
         />
         <Tab.Screen
@@ -146,7 +146,7 @@ const TabsNav = () => {
                 size={20}
               />
             ),
-            title: 'Penalty',
+            title: '벌금',
           }}
         />
       </Tab.Navigator>
