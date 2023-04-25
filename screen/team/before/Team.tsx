@@ -14,6 +14,7 @@ import MyInfo from '../../../components/parts/header/MyInfo';
 import MyTeamMenu from '../../../components/parts/header/MyTeamMenu';
 import InvitationType from '../../../types/InvitationType';
 
+import {FlatList} from 'react-native';
 function Team() {
   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
 
@@ -22,6 +23,8 @@ function Team() {
   const [myTeams, setMyTeams] = useState<TeamType[]>([]);
   const [myInvitations, setMyInvitations] = useState<InvitationType[]>([]);
   const [myApplications, setMyApplications] = useState<InvitationType[]>([]);
+
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const [rstNotificationState, setRstNotificationState] =
     useRecoilState(rstNotificationFlag);
@@ -42,6 +45,18 @@ function Team() {
     const {data} = await getMyThumbInvitations({active: false});
     setMyApplications(data.payload as InvitationType[]);
     console.log('가입신청정보');
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      setMyTeamsToState();
+      setMyInvitationsToState();
+      setMyApplicationToState();
+    } catch (e) {
+    } finally {
+      setRefreshing(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -114,35 +129,43 @@ function Team() {
   }, [navigation, rstNotificationState]);
 
   return (
-    <Layout scrollable={true} isItWhite={false}>
-      <GapRowView
-        gap={15}
-        marginTop={0}
-        marginBottom={0}
-        paddingHorizontal={0}
-        paddingVertical={0}>
-        <TeamContainer
-          props={{
-            title: '나의 팀 🚀',
-            data: myTeams,
-            type: 'default',
-          }}
-        />
-        <InvitationContainer
-          props={{
-            title: '초대된 팀 📮',
-            data: myInvitations,
-            type: 'invitation',
-          }}
-        />
-        <InvitationContainer
-          props={{
-            title: '가입 신청한 팀 😘',
-            data: myApplications,
-            type: 'apply',
-          }}
-        />
-      </GapRowView>
+    <Layout scrollable={false} isItWhite={false}>
+      <FlatList
+        data={[]}
+        renderItem={null}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        ListHeaderComponent={
+          <GapRowView
+            gap={15}
+            marginTop={0}
+            marginBottom={0}
+            paddingHorizontal={0}
+            paddingVertical={0}>
+            <TeamContainer
+              props={{
+                title: '나의 팀 🚀',
+                data: myTeams,
+                type: 'default',
+              }}
+            />
+            <InvitationContainer
+              props={{
+                title: '초대된 팀 📮',
+                data: myInvitations,
+                type: 'invitation',
+              }}
+            />
+            <InvitationContainer
+              props={{
+                title: '가입 신청한 팀 😘',
+                data: myApplications,
+                type: 'apply',
+              }}
+            />
+          </GapRowView>
+        }
+      />
     </Layout>
   );
 }
