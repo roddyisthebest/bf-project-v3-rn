@@ -75,7 +75,6 @@ const TabsNav = () => {
           headerTitleStyle: {
             fontWeight: '700',
           },
-          headerTitleAlign: 'center',
           headerShadowVisible: true,
           tabBarIconStyle: {
             marginTop: 5,

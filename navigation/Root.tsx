@@ -375,6 +375,7 @@ const Root = () => {
             component={TeamNav}
             options={{
               presentation: 'card',
+              headerTitleAlign: 'center',
             }}
           />
           <Nav.Screen name="Tabs" component={TabsNav} />
