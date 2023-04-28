@@ -169,6 +169,7 @@ function Profile() {
     setDisabled(
       introducing.length < 5 ||
         name.length < 3 ||
+        name.length > 7 ||
         (team?.introducing === introducing && team?.name === name && !editMode),
     );
   }, [introducing, name, file, team, editMode]);
@@ -220,7 +221,7 @@ function Profile() {
             style={{width: '100%'}}>
             <Label color={colors.inputLabelColor}>팀 이름</Label>
             <Input
-              placeholder="팀 이름을 입력해주세요. (3글자 이상)"
+              placeholder="팀 이름을 입력해주세요. (3글자 이상 7글자 이하)"
               placeholderTextColor={colors.inputPlaceHolderColor}
               borderColor={colors.inputLineColor}
               onChangeText={text => setName(text)}

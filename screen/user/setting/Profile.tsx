@@ -130,7 +130,11 @@ function Profile() {
   }, [navigation, disabled, onUpload, loading]);
 
   useEffect(() => {
-    setDisabled(name.length < 2 || (user?.name === name && user?.img === uri));
+    setDisabled(
+      name.length < 2 ||
+        name.length > 6 ||
+        (user?.name === name && user?.img === uri),
+    );
   }, [name, user, uri]);
 
   useEffect(() => {
@@ -178,7 +182,7 @@ function Profile() {
             paddingHorizontal={dimension.paddingHorizontal}
             paddingVertical={0}
             style={{width: '100%'}}>
-            <Label color={colors.inputLabelColor}>팀 이름</Label>
+            <Label color={colors.inputLabelColor}>유저 이름</Label>
             <Input
               autoFocus
               placeholder="팀 이름을 입력해주세요. (3글자 이상)"
@@ -198,7 +202,7 @@ function Profile() {
             <Label color={colors.inputLabelColor}>가입경로</Label>
             <Input
               style={{color: colors.buttonDisabledColor}}
-              placeholder="팀 소갯말을 입력해주세요. (5글자 이상)"
+              placeholder="가입경로가 없습니다."
               placeholderTextColor={colors.inputPlaceHolderColor}
               borderColor={colors.inputLineColor}
               value={user?.oauth}
