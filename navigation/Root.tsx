@@ -79,6 +79,10 @@ export enum EncryptedStorageKeyList {
   PUSHNOTIFICATION = 'PUSHNOTIFICATION',
 }
 
+export enum AsyncStorageKeyList {
+  DEFAULT_INTRO_RC = 'DEFAULT_INTRO_RC',
+}
+
 const Nav = createNativeStackNavigator();
 
 const Root = () => {
@@ -304,14 +308,6 @@ const Root = () => {
 
   useEffect((): (() => void) => {
     onCreate();
-
-    const unsubscribe = () =>
-      setTimeout(() => {
-        SplashScreen.hide();
-      }, 2500);
-    unsubscribe();
-
-    return () => clearTimeout(unsubscribe);
   }, []);
 
   useEffect(() => {
