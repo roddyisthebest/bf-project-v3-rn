@@ -42,7 +42,21 @@ function Home() {
           lastId,
           userInfo.team?.id as number,
         );
-        setData(payload);
+
+        let payloadVariable = payload;
+
+        const reportListStr = await AsyncStorage.getItem(
+          AsyncStorageKeyList.REPORT_TWEET_LIST,
+        );
+
+        if (reportListStr !== null) {
+          const reportList: number[] = JSON.parse(reportListStr);
+          console.log(reportList);
+          payloadVariable = payloadVariable.filter(
+            p => !reportList.includes(p.id),
+          );
+        }
+        setData(payloadVariable);
         setRefreshing(false);
       } else {
         setLastId(-1);
