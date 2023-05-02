@@ -147,7 +147,6 @@ function Home() {
   const showReport = useCallback((id: number, index: number) => {
     reportRef.current?.show();
 
-    console.log({id, index, type: 'tweet'});
     let modelStr = JSON.stringify({id, index, type: 'tweet'});
     setModel(modelStr);
   }, []);
@@ -202,6 +201,7 @@ function Home() {
         setModel={setModel}
         setData={setData}
         model={model}
+        type="tweet"
       />
     </>
   );

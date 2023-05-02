@@ -36,6 +36,7 @@ interface Props {
   setModel: Dispatch<SetStateAction<string>>;
   setData: Dispatch<SetStateAction<TweetPropType[]>>;
   model: string;
+  type: 'tweet' | 'pray';
 }
 
 const ReportModal = forwardRef(
@@ -61,27 +62,28 @@ const ReportModal = forwardRef(
 
         await addReport(content, modelStr);
 
-        const reportListStr = await AsyncStorage.getItem(
-          AsyncStorageKeyList.REPORT_TWEET_LIST,
-        );
-
-        if (reportListStr === null) {
-          const newReportList: number[] = [model.id];
-
-          await AsyncStorage.setItem(
+        if (props.type === 'tweet') {
+          const reportListStr = await AsyncStorage.getItem(
             AsyncStorageKeyList.REPORT_TWEET_LIST,
-            JSON.stringify(newReportList),
           );
-        } else {
-          const reportList: number[] = JSON.parse(reportListStr);
-          reportList.push(model.id);
-          await AsyncStorage.setItem(
-            AsyncStorageKeyList.REPORT_TWEET_LIST,
-            JSON.stringify(reportList),
-          );
+          if (reportListStr === null) {
+            const newReportList: number[] = [model.id];
+
+            await AsyncStorage.setItem(
+              AsyncStorageKeyList.REPORT_TWEET_LIST,
+              JSON.stringify(newReportList),
+            );
+          } else {
+            const reportList: number[] = JSON.parse(reportListStr);
+            reportList.push(model.id);
+            await AsyncStorage.setItem(
+              AsyncStorageKeyList.REPORT_TWEET_LIST,
+              JSON.stringify(reportList),
+            );
+          }
+
+          props.setData(tweet => tweet.filter(e => e.id !== model.id));
         }
-
-        props.setData(tweet => tweet.filter(e => e.id !== model.id));
 
         Alert.alert('신고가 접수되었습니다.');
       } catch (e) {
