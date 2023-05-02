@@ -11,8 +11,14 @@ import {colors} from '../../../styles/color';
 import ListEmptyComponent from '../../../components/parts/tabs/ListEmptyComponent';
 import {AxiosError} from 'axios';
 import {response as responseType} from '../../../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AsyncStorageKeyList} from '../../../navigation/Root';
+import ReportModal from '../../../components/modal/ReportModal';
+import {ActionSheetRef} from 'react-native-actions-sheet';
+
 function Home() {
   const ref = useRef<FlatList>(null);
+  const reportRef = useRef<ActionSheetRef>(null);
 
   const userInfo = useRecoilValue(rstMyInfo);
 
@@ -21,6 +27,7 @@ function Home() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [lastId, setLastId] = useState<number>(-1);
   const [disabled, setDisabled] = useState<boolean>(false);
+  const [model, setModel] = useState<string>('');
 
   const onRefresh = useCallback(async () => {
     try {
@@ -62,13 +69,27 @@ function Home() {
           },
         );
 
+        let payloadVariable = payload;
+
+        const reportListStr = await AsyncStorage.getItem(
+          AsyncStorageKeyList.REPORT_TWEET_LIST,
+        );
+
+        if (reportListStr !== null) {
+          const reportList: number[] = JSON.parse(reportListStr);
+          console.log(reportList);
+          payloadVariable = payloadVariable.filter(
+            p => !reportList.includes(p.id),
+          );
+        }
+
         if (code === 'OK:LAST') {
           setDisabled(true);
         }
         if (id === -1) {
-          setData(payload);
+          setData(payloadVariable);
         } else {
-          setData(prev => [...prev, ...payload]);
+          setData(prev => [...prev, ...payloadVariable]);
         }
       } catch (e) {
         console.log(e);
@@ -121,6 +142,13 @@ function Home() {
     },
     [showConfirmDialog],
   );
+  const showReport = useCallback((id: number, index: number) => {
+    reportRef.current?.show();
+
+    console.log({id, index, type: 'tweet'});
+    let modelStr = JSON.stringify({id, index, type: 'tweet'});
+    setModel(modelStr);
+  }, []);
 
   useEffect(() => {
     if (!disabled) {
@@ -129,29 +157,42 @@ function Home() {
   }, [getData, lastId, disabled]);
 
   const renderItem = ({item, index}: {item: TweetPropType; index: number}) => (
-    <Tweet data={item} deleteFuc={delTweet} index={index} />
+    <Tweet
+      data={item}
+      deleteFuc={delTweet}
+      reportFuc={showReport}
+      index={index}
+    />
   );
   return loading ? (
     <LoadingContainer>
       <ActivityIndicator color={colors.loadingIconColor} size={50} />
     </LoadingContainer>
   ) : (
-    <FlatList
-      data={data}
-      renderItem={renderItem}
-      onRefresh={onRefresh}
-      refreshing={refreshing}
-      keyExtractor={(item, _) => item.id.toString()}
-      ItemSeparatorComponent={() => <View style={{height: 15}} />}
-      onEndReached={onEndReached}
-      ref={ref}
-      initialNumToRender={5}
-      maxToRenderPerBatch={5}
-      removeClippedSubviews={true}
-      ListEmptyComponent={
-        <ListEmptyComponent text="게시글이 없습니다." paddingTop={15} />
-      }
-    />
+    <>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        keyExtractor={(item, _) => item.id.toString()}
+        ItemSeparatorComponent={() => <View style={{height: 15}} />}
+        onEndReached={onEndReached}
+        ref={ref}
+        initialNumToRender={5}
+        maxToRenderPerBatch={5}
+        removeClippedSubviews={true}
+        ListEmptyComponent={
+          <ListEmptyComponent text="게시글이 없습니다." paddingTop={15} />
+        }
+      />
+      <ReportModal
+        ref={reportRef}
+        setModel={setModel}
+        setData={setData}
+        model={model}
+      />
+    </>
   );
 }
 

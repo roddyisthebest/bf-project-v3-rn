@@ -81,6 +81,7 @@ export enum EncryptedStorageKeyList {
 
 export enum AsyncStorageKeyList {
   DEFAULT_INTRO_RC = 'DEFAULT_INTRO_RC',
+  REPORT_TWEET_LIST = 'REPORT_TWEET_LIST',
 }
 
 const Nav = createNativeStackNavigator();

@@ -123,11 +123,15 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
 
   const onPress = async () => {
     setLoading(true);
+
+    console.log(file, content, myInfo?.team?.id);
     const res: any = await addTweet({
       file: file ? file : null,
       content: content.length === 0 ? null : content,
       teamId: myInfo?.team?.id as number,
     });
+
+    console.log(res.status);
 
     if ((res.status as number) === 500) {
       Alert.alert('서버 오류 입니다.');

@@ -50,13 +50,20 @@ const ButtonSection = styled(GapColumnView)`
   justify-content: flex-end;
 `;
 
+const Button = styled(SmButton)<{borderColor: string}>`
+  border-width: 1px;
+  border-color: ${props => props.borderColor};
+`;
+
 function Tweet({
   data,
   deleteFuc,
+  reportFuc,
   index,
 }: {
   data: TweetPropType;
   deleteFuc: Function;
+  reportFuc: Function;
   index: number;
 }) {
   const rstUserInfo = useRecoilValue(rstMyInfo);
@@ -119,24 +126,51 @@ function Tweet({
             paddingVertical={Platform.OS === 'ios' ? 5 : 0}
             marginTop={0}
             marginBottom={0}
-            gap={5}>
-            <SmButton
-              bkg={colors.negativeColor}
-              radius={13}
+            gap={10}>
+            <Button
+              borderColor={colors.bottomSheetItemBorderColor}
+              bkg={'white'}
+              radius={10}
+              disabled={data.loading}
+              onPress={() => reportFuc(data.id, index)}>
+              {data.loading ? (
+                <ActivityIndicator color={colors.loadingIconColor} />
+              ) : (
+                <>
+                  <Icon
+                    name="flag-outline"
+                    color={colors.reportIconColor}
+                    size={13}
+                  />
+
+                  <ButtonText color="black" fontSize={12} fontWeight={500}>
+                    신고하기
+                  </ButtonText>
+                </>
+              )}
+            </Button>
+            <Button
+              borderColor={colors.bottomSheetItemBorderColor}
+              bkg={'white'}
+              radius={10}
               disabled={data.loading}
               onPress={() => deleteFuc(data.id, index)}>
               {data.loading ? (
-                <ActivityIndicator color="white" />
+                <ActivityIndicator color={colors.loadingIconColor} />
               ) : (
                 <>
-                  <Icon name="trash-outline" color="white" size={13} />
+                  <Icon
+                    name="trash-outline"
+                    color={colors.negativeColor}
+                    size={13}
+                  />
 
-                  <ButtonText color="white" fontSize={12} fontWeight={500}>
+                  <ButtonText color="black" fontSize={12} fontWeight={500}>
                     삭제하기
                   </ButtonText>
                 </>
               )}
-            </SmButton>
+            </Button>
           </ButtonSection>
         )}
       </RightSection>
