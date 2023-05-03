@@ -92,8 +92,7 @@ const ServiceModal = forwardRef(
             paddingVertical={0}>
             <Header
               title="기능 사용 설정"
-              contents="This app provides private content.
-Please enter a 6-digit code to prove yourself."
+              contents={`팀 ${team?.name}의 사용기능을 설정하세요.`}
             />
             <Setting
               title="매일성경"
