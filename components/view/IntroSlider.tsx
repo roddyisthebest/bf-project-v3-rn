@@ -47,7 +47,7 @@ function IntroSlider({
   const slides: any = [
     {
       key: 'one',
-      title: 'Moim에서\n 같이 성경공부해요!',
+      title: '슬기로운 성경모임에서\n 같이 성경공부해요!',
       text: '',
       image: require('../../assets/img/IntroCartoon.png'),
       resizeMode: 'contain',

@@ -30,7 +30,7 @@ import messaging from '@react-native-firebase/messaging';
 import {setPhoneToken} from '../../api/user';
 const HeaderText = styled.Text`
   color: black;
-  font-size: 25px;
+  font-size: 22.5px;
   font-weight: 700;
 `;
 
@@ -235,7 +235,7 @@ function Login() {
           gap={15}
           marginTop={0}
           marginBottom={0}>
-          <HeaderText>MOIM에 로그인하기</HeaderText>
+          <HeaderText>슬기로운 성경모임에 로그인하기</HeaderText>
           <GapRowView
             gap={10}
             marginTop={10}
