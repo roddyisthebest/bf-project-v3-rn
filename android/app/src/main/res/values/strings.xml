@@ -12,6 +12,6 @@ zwIDAQAB
     <string name="kakao_app_key">352fa14e9a082a1a7d7566356bb945a9</string>
     <string name="appCenterCrashes_whenToSendCrashes" moduleConfig="true" translatable="false">DO_NOT_ASK_JAVASCRIPT</string>
     <string name="appCenterAnalytics_whenToEnableAnalytics" moduleConfig="true" translatable="false">ALWAYS_SEND</string>
-    <string moduleConfig="true" name="CodePushDeploymentKey">cqB9f6ViYa_wUSObj_Cxh7QOa0vzmSJvJ4v73</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">TqQvSIBm7LCQR1wrYsL6rAsWxn2VDRM1cifdq</string>
 
 </resources>
