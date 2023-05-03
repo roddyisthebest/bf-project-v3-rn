@@ -22,7 +22,7 @@ const UserNav = () => {
   }, [navigation]);
 
   return (
-    <NativeStack.Navigator>
+    <NativeStack.Navigator screenOptions={{headerTitleAlign: 'center'}}>
       <NativeStack.Screen
         name="Detail"
         component={Detail}
