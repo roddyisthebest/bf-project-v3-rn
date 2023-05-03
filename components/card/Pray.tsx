@@ -357,18 +357,11 @@ function Pray({
                 <PrayButton
                   bkg={colors.prayButtonDeleteBkgColor}
                   onPress={() => showReport(data.id)}>
-                  {pray.cheerLoading ? (
-                    <ActivityIndicator
-                      color={colors.prayButtonDeleteTextColor}
-                      size={10}
-                    />
-                  ) : (
-                    <MaterialIcons
-                      name="report"
-                      color={colors.prayButtonDeleteTextColor}
-                      size={14}
-                    />
-                  )}
+                  <MaterialIcons
+                    name="report"
+                    color={colors.prayButtonDeleteTextColor}
+                    size={14}
+                  />
                 </PrayButton>
                 {data.id !== user?.id && (
                   <PrayButton
