@@ -120,59 +120,57 @@ function Tweet({
         {data.img.length !== 0 && (
           <Preview reset={() => {}} uri={data.img} editable={false} />
         )}
-        {rstUserInfo?.user?.id === data?.User?.id && (
-          <ButtonSection
-            paddingHorizontal={0}
-            paddingVertical={Platform.OS === 'ios' ? 5 : 0}
-            marginTop={0}
-            marginBottom={0}
-            gap={10}>
-            <Button
-              borderColor={colors.bottomSheetItemBorderColor}
-              bkg={'white'}
-              radius={10}
-              disabled={data.loading}
-              onPress={() => reportFuc(data.id, index)}>
-              {data.loading ? (
-                <ActivityIndicator color={colors.loadingIconColor} />
-              ) : (
-                <>
-                  <Icon
-                    name="flag-outline"
-                    color={colors.reportIconColor}
-                    size={13}
-                  />
+        <ButtonSection
+          paddingHorizontal={0}
+          paddingVertical={Platform.OS === 'ios' ? 5 : 0}
+          marginTop={0}
+          marginBottom={0}
+          gap={10}>
+          <Button
+            borderColor={colors.bottomSheetItemBorderColor}
+            bkg={'white'}
+            radius={10}
+            disabled={data.loading}
+            onPress={() => reportFuc(data.id, index)}>
+            <>
+              <Icon
+                name="flag-outline"
+                color={colors.reportIconColor}
+                size={13}
+              />
 
-                  <ButtonText color="black" fontSize={12} fontWeight={500}>
-                    신고하기
-                  </ButtonText>
-                </>
-              )}
-            </Button>
-            <Button
-              borderColor={colors.bottomSheetItemBorderColor}
-              bkg={'white'}
-              radius={10}
-              disabled={data.loading}
-              onPress={() => deleteFuc(data.id, index)}>
-              {data.loading ? (
-                <ActivityIndicator color={colors.loadingIconColor} />
-              ) : (
-                <>
-                  <Icon
-                    name="trash-outline"
-                    color={colors.negativeColor}
-                    size={13}
-                  />
+              <ButtonText color="black" fontSize={12} fontWeight={500}>
+                신고하기
+              </ButtonText>
+            </>
+          </Button>
+          {rstUserInfo?.user?.id === data?.User?.id && (
+            <>
+              <Button
+                borderColor={colors.bottomSheetItemBorderColor}
+                bkg={'white'}
+                radius={10}
+                disabled={data.loading}
+                onPress={() => deleteFuc(data.id, index)}>
+                {data.loading ? (
+                  <ActivityIndicator color={colors.loadingIconColor} />
+                ) : (
+                  <>
+                    <Icon
+                      name="trash-outline"
+                      color={colors.negativeColor}
+                      size={13}
+                    />
 
-                  <ButtonText color="black" fontSize={12} fontWeight={500}>
-                    삭제하기
-                  </ButtonText>
-                </>
-              )}
-            </Button>
-          </ButtonSection>
-        )}
+                    <ButtonText color="black" fontSize={12} fontWeight={500}>
+                      삭제하기
+                    </ButtonText>
+                  </>
+                )}
+              </Button>
+            </>
+          )}
+        </ButtonSection>
       </RightSection>
     </Container>
   );

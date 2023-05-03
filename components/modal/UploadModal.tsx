@@ -122,54 +122,58 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
   }, []);
 
   const onPress = async () => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    console.log(file, content, myInfo?.team?.id);
-    const res: any = await addTweet({
-      file: file ? file : null,
-      content: content.length === 0 ? null : content,
-      teamId: myInfo?.team?.id as number,
-    });
+      const res: any = await addTweet({
+        file: file ? file : null,
+        content: content.length === 0 ? null : content,
+        teamId: myInfo?.team?.id as number,
+      });
 
-    console.log(res.status);
-
-    if ((res.status as number) === 500) {
-      Alert.alert('서버 오류 입니다.');
-    } else if ((res.status as number) === 403) {
-      Alert.alert('게시글을 업로드하는 서비스를 이용하지 않으셨습니다.⚠️');
-    } else if ((res.status as number) === 406) {
-      Alert.alert('오늘 업로드 된 게시물이 존재합니다. ⚠️');
-    } else if ((res.status as number) === 400) {
-      logout();
-      Alert.alert('400 : 다시 로그인 해주세요.');
-    } else if ((res.status as number) === 401) {
-      const response = await getTokenByRefresh();
-      if (response) {
-        Alert.alert('토큰을 갱신했습니다. 다시한번 업로드해주세요!');
-      } else {
+      if ((res.status as number) === 500) {
+        Alert.alert('서버 오류 입니다.');
+      } else if ((res.status as number) === 403) {
+        Alert.alert('게시글을 업로드하는 서비스를 이용하지 않으셨습니다.⚠️');
+      } else if ((res.status as number) === 406) {
+        Alert.alert('오늘 업로드 된 게시물이 존재합니다. ⚠️');
+      } else if ((res.status as number) === 400) {
+        logout();
+        Alert.alert('400 : 다시 로그인 해주세요.');
+      } else if ((res.status as number) === 401) {
+        const response = await getTokenByRefresh();
+        if (response) {
+          Alert.alert('토큰을 갱신했습니다. 다시한번 업로드해주세요!');
+        } else {
+          (ref as React.RefObject<ActionSheetRef>).current?.hide({
+            animated: false,
+          });
+          setTimeout(() => logout(), 250);
+          Alert.alert('다시 로그인 해주세요.');
+        }
+      } else if ((res.status as number) === 404) {
         (ref as React.RefObject<ActionSheetRef>).current?.hide({
           animated: false,
         });
         setTimeout(() => logout(), 250);
-        Alert.alert('다시 로그인 해주세요.');
+        Alert.alert('팀이 삭제되었습니다.');
+      } else if ((res.status as number) === 200) {
+        //ok
+        setFlag({upload: true});
+        navigation.navigate('Tabs', {screen: 'Home'});
+        (ref as React.RefObject<ActionSheetRef>).current?.hide();
+        setFile(null);
+        setContent('');
+      } else if ((res.status as number) === 413) {
+        Alert.alert('사진 크기가 너무 큽니다. 다른 사진을 업로드해주세요.');
       }
-    } else if ((res.status as number) === 404) {
-      (ref as React.RefObject<ActionSheetRef>).current?.hide({
-        animated: false,
-      });
-      setTimeout(() => logout(), 250);
-      Alert.alert('팀이 삭제되었습니다.');
-    } else if ((res.status as number) === 200) {
-      //ok
-      setFlag({upload: true});
-      navigation.navigate('Tabs', {screen: 'Home'});
-      (ref as React.RefObject<ActionSheetRef>).current?.hide();
-      setFile(null);
-      setContent('');
-    } else if ((res.status as number) === 413) {
-      Alert.alert('사진 크기가 너무 큽니다. 다른 사진을 업로드해주세요.');
+    } catch (e: any) {
+      if (e.column && Platform.OS === 'android') {
+        console.log(e);
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
