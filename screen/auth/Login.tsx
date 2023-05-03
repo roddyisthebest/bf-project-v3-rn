@@ -235,7 +235,7 @@ function Login() {
           gap={15}
           marginTop={0}
           marginBottom={0}>
-          <HeaderText>STUBB에 로그인하기</HeaderText>
+          <HeaderText>MOIM에 로그인하기</HeaderText>
           <GapRowView
             gap={10}
             marginTop={10}
