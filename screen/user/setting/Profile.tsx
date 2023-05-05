@@ -117,11 +117,14 @@ function Profile() {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () =>
-        disabled ? null : loading ? (
+        loading ? (
           <ActivityIndicator color="#3478F6" />
         ) : (
-          <Pressable onPress={onUpload} disabled={loading}>
-            <ButtonText color="#3478F6" fontSize={15} fontWeight={500}>
+          <Pressable onPress={onUpload} disabled={loading || disabled}>
+            <ButtonText
+              color={disabled ? '#00000028' : '#3478F6'}
+              fontSize={15}
+              fontWeight={500}>
               변경
             </ButtonText>
           </Pressable>
