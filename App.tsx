@@ -163,7 +163,7 @@ const codePushOptions: CodePushOptions = {
   // 업데이트를 어떻게 설치할 것인지 (IMMEDIATE는 강제설치를 의미)
 };
 const App = () => {
-  const [visibility, setVisibility] = useState<boolean>(true);
+  const [visibility, setVisibility] = useState<boolean>(false);
 
   const checkIntroRc = useCallback(async () => {
     try {
