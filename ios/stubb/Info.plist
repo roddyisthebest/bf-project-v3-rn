@@ -107,8 +107,8 @@
 	<key>CodePushDeploymentKey</key>
 	<string>BUG-3F3r1wr6qV7UIt13FcMwmViDUqASXtAmd</string>
 	<key>NSPhotoLibraryUsageDescription</key> 
-	<string>This app requires access to the photo library.</string> 
+	<string>This app requires access to the photo library to get a photo. It will be used as a photo to post.</string> 
 	<key>NSCameraUsageDescription</key> 
-	<string>This app requires access to the camera.</string>
+	<string>This app requires access to the camera to take a picture. It will be used as a photo to post.</string>
 </dict>
 </plist>
