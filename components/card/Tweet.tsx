@@ -51,7 +51,7 @@ const ButtonSection = styled(GapColumnView)`
   justify-content: flex-end;
 `;
 
-const ModifiedTextInput = styled(TextArea)``;
+const ModifiedTextArea = styled(TextArea)``;
 
 function Tweet({
   data,
@@ -103,7 +103,7 @@ function Tweet({
           </NameSubTitleText>
         </NameSection>
         {data.content.length === 0 ? null : (
-          <ModifiedTextInput
+          <ModifiedTextArea
             placeholder="사진 또는 글을 올려주세요."
             borderColor={colors.inputLineColor}
             multiline
