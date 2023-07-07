@@ -51,6 +51,10 @@ const ButtonSection = styled(GapColumnView)`
   justify-content: flex-end;
 `;
 
+const ModifiedButton = styled(SmButton)<{borderColor: string}>`
+  border-width: 1px;
+  border-color: ${props => props.borderColor};
+`;
 
 function Tweet({
   data,
@@ -123,7 +127,7 @@ function Tweet({
           marginTop={0}
           marginBottom={0}
           gap={10}>
-          <Button
+          <ModifiedButton
             borderColor={colors.bottomSheetItemBorderColor}
             bkg={'white'}
             radius={10}
@@ -140,10 +144,10 @@ function Tweet({
                 신고하기
               </ButtonText>
             </>
-          </Button>
+          </ModifiedButton>
           {rstUserInfo?.user?.id === data?.User?.id && (
             <>
-              <Button
+              <ModifiedButton
                 borderColor={colors.bottomSheetItemBorderColor}
                 bkg={'white'}
                 radius={10}
@@ -164,7 +168,7 @@ function Tweet({
                     </ButtonText>
                   </>
                 )}
-              </Button>
+              </ModifiedButton>
             </>
           )}
         </ButtonSection>
