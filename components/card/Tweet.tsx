@@ -12,6 +12,7 @@ import Preview from '../parts/tabs/Preview';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
+import {tweetTime} from '../../util/Date';
 
 const Container = styled(GapColumnView)<{
   borderColor: string;
@@ -96,7 +97,7 @@ function Tweet({
             color={colors.subTitleColor}
             fontSize={14}
             fontWeight={400}>
-            @{data?.User?.oauth} · 4 hours ago
+            @{data?.User?.oauth} · {tweetTime(data?.createdAt as Date)}
           </NameSubTitleText>
         </NameSection>
         {data.content.length === 0 ? null : (
