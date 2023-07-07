@@ -14,12 +14,14 @@ const Input = styled.TextInput<{borderColor: string}>`
   font-weight: 500;
 `;
 
-const TextArea = styled.TextInput<{borderColor: string}>`
+const TextArea = styled.TextInput<{borderColor: string; isDisplay: boolean}>`
   border-style: solid;
-  border-bottom-width: 1px;
+  border-bottom-width: ${props => (props.isDisplay ? '0px' : '1px')};
   border-bottom-color: ${props => props.borderColor};
-  height: 100px;
+  height: ${props => (props.isDisplay ? 'auto' : '150px')};
   color: black;
-  padding: 0px 0 10px 0;
+  padding: 5px 0 10px 0;
+  font-weight: 400;
+  line-height: 20px;
 `;
 export {Label, Input, TextArea};

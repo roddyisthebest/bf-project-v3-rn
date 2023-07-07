@@ -212,6 +212,7 @@ const UploadModal = forwardRef((_, ref: React.ForwardedRef<ActionSheetRef>) => {
             <TextArea
               placeholder="사진 또는 글을 올려주세요."
               borderColor={colors.inputLineColor}
+              isDisplay={false}
               multiline
               numberOfLines={10}
               style={{textAlignVertical: 'top'}}
