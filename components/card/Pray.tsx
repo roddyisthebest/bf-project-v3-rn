@@ -286,6 +286,7 @@ function Pray({
             borderColor={colors.inputLineColor}
             isItIos={Platform.OS === 'ios'}>
             <ModifiedTextArea
+              isDisplay={true}
               returnKeyType="done"
               scrollEnabled={editable}
               ref={el => (target.current[index] = el)}

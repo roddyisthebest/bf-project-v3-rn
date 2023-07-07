@@ -12,6 +12,7 @@ import Preview from '../parts/tabs/Preview';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
+import {tweetTime} from '../../util/Date';
 
 const Container = styled(GapColumnView)<{
   borderColor: string;
@@ -50,10 +51,8 @@ const ButtonSection = styled(GapColumnView)`
   justify-content: flex-end;
 `;
 
-const Button = styled(SmButton)<{borderColor: string}>`
-  border-width: 1px;
-  border-color: ${props => props.borderColor};
-`;
+const ModifiedTextInput = styled(TextArea)``;
+
 
 function Tweet({
   data,
@@ -103,15 +102,15 @@ function Tweet({
             color={colors.subTitleColor}
             fontSize={14}
             fontWeight={400}>
-            @{data?.User?.oauth} · 4 hours ago
+            @{data?.User?.oauth} · {tweetTime(data?.createdAt as Date)}
           </NameSubTitleText>
         </NameSection>
         {data.content.length === 0 ? null : (
-          <TextArea
+          <ModifiedTextInput
             placeholder="사진 또는 글을 올려주세요."
             borderColor={colors.inputLineColor}
             multiline
-            numberOfLines={10}
+            isDisplay={true}
             editable={false}
             style={{textAlignVertical: 'top'}}
             value={data.content}

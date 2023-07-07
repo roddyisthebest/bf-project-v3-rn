@@ -10,13 +10,13 @@ const Container = styled.Pressable<{borderColor: string; height: number}>`
   width: 100%;
   border-width: 1px;
   border-color: ${props => props.borderColor};
-  border-radius: 30px;
+  border-radius: 10px;
 `;
 
 const Image = styled(FastImage)`
   width: 100%;
   height: 100%;
-  border-radius: 30px;
+  border-radius: 10px;
 `;
 
 const DeleteButton = styled.Pressable`
