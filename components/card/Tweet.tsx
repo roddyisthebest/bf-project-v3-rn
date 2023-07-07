@@ -51,13 +51,16 @@ const ButtonSection = styled(GapColumnView)`
   justify-content: flex-end;
 `;
 
+
 function Tweet({
   data,
   deleteFuc,
+  reportFuc,
   index,
 }: {
   data: TweetPropType;
   deleteFuc: Function;
+  reportFuc: Function;
   index: number;
 }) {
   const rstUserInfo = useRecoilValue(rstMyInfo);
@@ -114,32 +117,57 @@ function Tweet({
         {data.img.length !== 0 && (
           <Preview reset={() => {}} uri={data.img} editable={false} />
         )}
-        {rstUserInfo?.user?.id === data?.User?.id && (
-          <ButtonSection
-            paddingHorizontal={0}
-            paddingVertical={Platform.OS === 'ios' ? 5 : 0}
-            marginTop={0}
-            marginBottom={0}
-            gap={5}>
-            <SmButton
-              bkg={colors.negativeColor}
-              radius={13}
-              disabled={data.loading}
-              onPress={() => deleteFuc(data.id, index)}>
-              {data.loading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <>
-                  <Icon name="trash-outline" color="white" size={13} />
+        <ButtonSection
+          paddingHorizontal={0}
+          paddingVertical={Platform.OS === 'ios' ? 5 : 0}
+          marginTop={0}
+          marginBottom={0}
+          gap={10}>
+          <Button
+            borderColor={colors.bottomSheetItemBorderColor}
+            bkg={'white'}
+            radius={10}
+            disabled={data.loading}
+            onPress={() => reportFuc(data.id, index)}>
+            <>
+              <Icon
+                name="flag-outline"
+                color={colors.reportIconColor}
+                size={13}
+              />
 
-                  <ButtonText color="white" fontSize={12} fontWeight={500}>
-                    삭제하기
-                  </ButtonText>
-                </>
-              )}
-            </SmButton>
-          </ButtonSection>
-        )}
+              <ButtonText color="black" fontSize={12} fontWeight={500}>
+                신고하기
+              </ButtonText>
+            </>
+          </Button>
+          {rstUserInfo?.user?.id === data?.User?.id && (
+            <>
+              <Button
+                borderColor={colors.bottomSheetItemBorderColor}
+                bkg={'white'}
+                radius={10}
+                disabled={data.loading}
+                onPress={() => deleteFuc(data.id, index)}>
+                {data.loading ? (
+                  <ActivityIndicator color={colors.loadingIconColor} />
+                ) : (
+                  <>
+                    <Icon
+                      name="trash-outline"
+                      color={colors.negativeColor}
+                      size={13}
+                    />
+
+                    <ButtonText color="black" fontSize={12} fontWeight={500}>
+                      삭제하기
+                    </ButtonText>
+                  </>
+                )}
+              </Button>
+            </>
+          )}
+        </ButtonSection>
       </RightSection>
     </Container>
   );

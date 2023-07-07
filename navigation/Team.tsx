@@ -30,7 +30,9 @@ const TeamNav = () => {
   }, [navigation]);
 
   return (
-    <NativeStack.Navigator initialRouteName="Detail">
+    <NativeStack.Navigator
+      initialRouteName="Detail"
+      screenOptions={{headerTitleAlign: 'center'}}>
       {team ? (
         <>
           <NativeStack.Screen

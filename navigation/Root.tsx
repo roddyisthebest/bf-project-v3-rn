@@ -79,6 +79,11 @@ export enum EncryptedStorageKeyList {
   PUSHNOTIFICATION = 'PUSHNOTIFICATION',
 }
 
+export enum AsyncStorageKeyList {
+  DEFAULT_INTRO_RC = 'DEFAULT_INTRO_RC',
+  REPORT_TWEET_LIST = 'REPORT_TWEET_LIST',
+}
+
 const Nav = createNativeStackNavigator();
 
 const Root = () => {
@@ -304,14 +309,6 @@ const Root = () => {
 
   useEffect((): (() => void) => {
     onCreate();
-
-    const unsubscribe = () =>
-      setTimeout(() => {
-        SplashScreen.hide();
-      }, 2500);
-    unsubscribe();
-
-    return () => clearTimeout(unsubscribe);
   }, []);
 
   useEffect(() => {
@@ -375,6 +372,7 @@ const Root = () => {
             component={TeamNav}
             options={{
               presentation: 'card',
+              headerTitleAlign: 'center',
             }}
           />
           <Nav.Screen name="Tabs" component={TabsNav} />

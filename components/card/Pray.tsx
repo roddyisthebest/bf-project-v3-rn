@@ -8,6 +8,7 @@ import {TextArea} from '../basic/Input';
 import {GapRowView} from '../basic/View';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Image} from '../../components/basic/Image';
 import {SmButton} from '../basic/Button';
 import UserType from '../../types/UserType';
@@ -65,7 +66,13 @@ const AddButtonColumn = styled.View`
   margin-top: 5px;
 `;
 
-function Pray({data}: {data: UserType}) {
+function Pray({
+  data,
+  showReport,
+}: {
+  data: UserType;
+  showReport: (id: number) => null;
+}) {
   const {team} = useRecoilValue(rstMyInfo);
   const {user} = useRecoilValue(rstMyInfo);
   const {weekend} = useRecoilValue(rstStore);
@@ -347,8 +354,17 @@ function Pray({data}: {data: UserType}) {
                 </PrayButton>
               </ButtonColumn>
             ) : (
-              data.id !== user?.id && (
-                <ButtonColumn>
+              <ButtonColumn>
+                <PrayButton
+                  bkg={colors.prayButtonDeleteBkgColor}
+                  onPress={() => showReport(data.id)}>
+                  <MaterialIcons
+                    name="report"
+                    color={colors.prayButtonDeleteTextColor}
+                    size={14}
+                  />
+                </PrayButton>
+                {data.id !== user?.id && (
                   <PrayButton
                     bkg={colors.prayButtonAlarmBkgColor}
                     onPress={() => sendAlertToUser(index, data.id)}
@@ -369,8 +385,8 @@ function Pray({data}: {data: UserType}) {
                       />
                     )}
                   </PrayButton>
-                </ButtonColumn>
-              )
+                )}
+              </ButtonColumn>
             )}
           </TextAreaWrapper>
         ))}

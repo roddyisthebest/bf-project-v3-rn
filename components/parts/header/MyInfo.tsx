@@ -14,7 +14,13 @@ import {rstAuth} from '../../../recoil/auth';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../../navigation/Root';
 
-const Container = styled.Pressable<{borderColor: string}>`
+const Wrapper = styled.Pressable`
+  width: 70px;
+  height: 40px;
+  justify-content: center;
+`;
+
+const Container = styled.View<{borderColor: string}>`
   width: 25px;
   height: 25px;
   border-radius: 25px;
@@ -68,13 +74,16 @@ function MyInfo() {
   };
   return (
     <>
-      <Container borderColor={colors.buttonBorderColor} onPress={onPress}>
-        <Image
-          source={{
-            uri: myInfo.user?.img,
-          }}
-        />
-      </Container>
+      <Wrapper onPress={onPress}>
+        <Container borderColor={colors.buttonBorderColor}>
+          <Image
+            source={{
+              uri: myInfo.user?.img,
+            }}
+          />
+        </Container>
+      </Wrapper>
+
       <ActionSheet ref={actionSheetRef} gestureEnabled={true}>
         <Item
           borderColor={colors.bottomSheetItemBorderColor}

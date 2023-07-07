@@ -11,6 +11,10 @@ import {colors} from '../../styles/color';
 import ListEmptyComponent from '../../components/parts/tabs/ListEmptyComponent';
 import {AxiosError} from 'axios';
 import {response as responseType} from '../../api';
+import {ActionSheetRef} from 'react-native-actions-sheet';
+import ReportModal from '../../components/modal/ReportModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AsyncStorageKeyList} from '../../navigation/Root';
 function Home() {
   const ref = useRef<FlatList>(null);
 
@@ -23,6 +27,10 @@ function Home() {
   const [lastId, setLastId] = useState<number>(-1);
   const [disabled, setDisabled] = useState<boolean>(false);
 
+  const [model, setModel] = useState<string>('');
+
+  const reportRef = useRef<ActionSheetRef>(null);
+
   const onRefresh = useCallback(async () => {
     try {
       setDisabled(false);
@@ -34,7 +42,21 @@ function Home() {
           lastId,
           userInfo.team?.id as number,
         );
-        setData(payload);
+
+        let payloadVariable = payload;
+
+        const reportListStr = await AsyncStorage.getItem(
+          AsyncStorageKeyList.REPORT_TWEET_LIST,
+        );
+
+        if (reportListStr !== null) {
+          const reportList: number[] = JSON.parse(reportListStr);
+          console.log(reportList);
+          payloadVariable = payloadVariable.filter(
+            p => !reportList.includes(p.id),
+          );
+        }
+        setData(payloadVariable);
         setRefreshing(false);
       } else {
         setLastId(-1);
@@ -64,13 +86,27 @@ function Home() {
           userInfo.team?.id as number,
         );
 
+        let payloadVariable = payload;
         if (code === 'OK:LAST') {
           setDisabled(true);
         }
+
+        const reportListStr = await AsyncStorage.getItem(
+          AsyncStorageKeyList.REPORT_TWEET_LIST,
+        );
+
+        if (reportListStr !== null) {
+          const reportList: number[] = JSON.parse(reportListStr);
+          console.log(reportList);
+          payloadVariable = payloadVariable.filter(
+            p => !reportList.includes(p.id),
+          );
+        }
+
         if (id === -1) {
-          setData(payload);
+          setData(payloadVariable);
         } else {
-          setData(prev => [...prev, ...payload]);
+          setData(prev => [...prev, ...payloadVariable]);
         }
       } catch (e) {
       } finally {
@@ -80,7 +116,7 @@ function Home() {
     [userInfo],
   );
 
-  const showConfirmDialog = useCallback(
+  const showRmConfirmDialog = useCallback(
     (id: number, index: number) => {
       return Alert.alert('게시글 삭제', '정말로 이 게시글을 삭제할까요?', [
         // The "Yes" button
@@ -117,12 +153,20 @@ function Home() {
     },
     [onRefresh, data],
   );
+
   const delTweet = useCallback(
     async (id: number, index: number) => {
-      showConfirmDialog(id, index);
+      showRmConfirmDialog(id, index);
     },
-    [showConfirmDialog],
+    [showRmConfirmDialog],
   );
+
+  const showReport = useCallback((id: number, index: number) => {
+    reportRef.current?.show();
+
+    let modelStr = JSON.stringify({id, index, type: 'tweet'});
+    setModel(modelStr);
+  }, []);
 
   useEffect(() => {
     if (!disabled) {
@@ -140,29 +184,43 @@ function Home() {
   }, [flag.upload, onRefresh, setFlag]);
 
   const renderItem = ({item, index}: {item: TweetPropType; index: number}) => (
-    <Tweet data={item} deleteFuc={delTweet} index={index} />
+    <Tweet
+      data={item}
+      deleteFuc={delTweet}
+      reportFuc={showReport}
+      index={index}
+    />
   );
   return loading ? (
     <LoadingContainer>
       <ActivityIndicator color={colors.loadingIconColor} size={50} />
     </LoadingContainer>
   ) : (
-    <FlatList
-      data={data}
-      renderItem={renderItem}
-      onRefresh={onRefresh}
-      refreshing={refreshing}
-      keyExtractor={(item, _) => item.id.toString()}
-      ItemSeparatorComponent={() => <View style={{height: 15}} />}
-      onEndReached={onEndReached}
-      ref={ref}
-      initialNumToRender={5}
-      maxToRenderPerBatch={5}
-      removeClippedSubviews={true}
-      ListEmptyComponent={
-        <ListEmptyComponent text="게시글이 없습니다." paddingTop={15} />
-      }
-    />
+    <>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        keyExtractor={(item, _) => item.id.toString()}
+        ItemSeparatorComponent={() => <View style={{height: 15}} />}
+        onEndReached={onEndReached}
+        ref={ref}
+        initialNumToRender={5}
+        maxToRenderPerBatch={5}
+        removeClippedSubviews={true}
+        ListEmptyComponent={
+          <ListEmptyComponent text="게시글이 없습니다." paddingTop={15} />
+        }
+      />
+      <ReportModal
+        ref={reportRef}
+        setModel={setModel}
+        setData={setData}
+        model={model}
+        type="tweet"
+      />
+    </>
   );
 }
 

@@ -13,6 +13,7 @@ import {useRecoilValue} from 'recoil';
 import {rstMyInfo} from '../../recoil/user';
 import {getPrays} from '../../api/pray';
 import {colors} from '../../styles/color';
+import ReportModal from '../../components/modal/ReportModal';
 function PrayView() {
   const {team} = useRecoilValue(rstMyInfo);
 
@@ -23,6 +24,7 @@ function PrayView() {
   const [lastId, setLastId] = useState<number>(-1);
   const [disabled, setDisabled] = useState<boolean>(false);
 
+  const [model, setModel] = useState<string>('');
   const getData = useCallback(async () => {
     try {
       const {
@@ -76,10 +78,19 @@ function PrayView() {
       setLastId(data[data.length - 1].id);
     }
   }, [data]);
-  const renderItem = ({item}: {item: UserType}) => <Pray data={item} />;
+
+  const showReport = useCallback((id: number) => {
+    reportRef.current?.show();
+    let modelStr = JSON.stringify({id, type: 'tweet'});
+    setModel(modelStr);
+  }, []);
+  const renderItem = ({item}: {item: UserType}) => (
+    <Pray data={item} showReport={showReport} />
+  );
 
   const ref = useRef<ActionSheetRef>(null);
   const flatListRef = useRef<KeyboardAwareFlatList>(null);
+  const reportRef = useRef<ActionSheetRef>(null);
 
   useEffect(() => {
     if (!disabled) {
@@ -126,7 +137,13 @@ function PrayView() {
           }
         />
       )}
-
+      <ReportModal
+        ref={reportRef}
+        setModel={setModel}
+        setData={() => {}}
+        model={model}
+        type="tweet"
+      />
       <DatePickerModal
         ref={ref}
         weekend={weekend}
