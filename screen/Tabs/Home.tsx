@@ -75,6 +75,9 @@ function Home() {
 
   const getData = useCallback(
     async (id: number) => {
+      if (userInfo?.team === null) {
+        return;
+      }
       try {
         const {
           data: {payload, code},
