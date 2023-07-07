@@ -99,65 +99,72 @@ function Profile() {
   }, []);
 
   const onUpload = useCallback(async () => {
-    setLoading(true);
-    const res: any = await updateTeam({
-      file: editMode
-        ? {
-            name: file?.fileName as string,
-            type: 'multipart/form-data',
-            uri: file?.uri as string,
-          }
-        : null,
-      name,
-      introducing,
-      id: team?.id as number,
-    });
-    if ((res.status as number) === 500) {
-      Alert.alert('서버 오류 입니다. 관리자에게 문의주세요. 010-5152-9445');
-      logout();
-    } else if ((res.status as number) === 400) {
-      Alert.alert('400 : 다시 로그인 해주세요.');
-      logout();
-    } else if ((res.status as number) === 401) {
-      //토큰 갱신
-      const response = await getTokenByRefresh();
-      if (response) {
-        Alert.alert('토큰을 갱신했습니다. 다시한번 요청해주세요!');
-      } else {
+    try {
+      setLoading(true);
+      const res: any = await updateTeam({
+        file: editMode
+          ? {
+              name: file?.fileName as string,
+              type: 'multipart/form-data',
+              uri: file?.uri as string,
+            }
+          : null,
+        name,
+        introducing,
+        id: team?.id as number,
+      });
+      if ((res.status as number) === 500) {
+        Alert.alert('서버 오류 입니다. 관리자에게 문의주세요. 010-5152-9445');
         logout();
-        Alert.alert('다시 로그인 해주세요.');
+      } else if ((res.status as number) === 400) {
+        Alert.alert('400 : 다시 로그인 해주세요.');
+        logout();
+      } else if ((res.status as number) === 401) {
+        //토큰 갱신
+        const response = await getTokenByRefresh();
+        if (response) {
+          Alert.alert('토큰을 갱신했습니다. 다시한번 요청해주세요!');
+        } else {
+          logout();
+          Alert.alert('다시 로그인 해주세요.');
+        }
+      } else if ((res.status as number) === 200) {
+        const {data} = await getTeam({id: team?.id as number});
+
+        setUserInfo(userInfo => ({user: userInfo.user, team: data.payload}));
+        const dataString = await EncryptedStorage.getItem(
+          EncryptedStorageKeyList.USERINFO,
+        );
+        const parsedData: rstMyInfoType = JSON.parse(dataString as string);
+
+        parsedData.team = data.payload;
+        await EncryptedStorage.setItem(
+          EncryptedStorageKeyList.USERINFO,
+          JSON.stringify(parsedData),
+        );
+        navigation.goBack();
+      } else if ((res.status as number) === 413) {
+        Alert.alert('사진 크기가 너무 큽니다. 다른 사진을 업로드해주세요.');
+      } else if ((res.status as number) === 403) {
+        Alert.alert('팀 정보 수정에 관한 자격이 없습니다.');
       }
-    } else if ((res.status as number) === 200) {
-      const {data} = await getTeam({id: team?.id as number});
-
-      setUserInfo(userInfo => ({user: userInfo.user, team: data.payload}));
-      const dataString = await EncryptedStorage.getItem(
-        EncryptedStorageKeyList.USERINFO,
-      );
-      const parsedData: rstMyInfoType = JSON.parse(dataString as string);
-
-      parsedData.team = data.payload;
-      await EncryptedStorage.setItem(
-        EncryptedStorageKeyList.USERINFO,
-        JSON.stringify(parsedData),
-      );
-      navigation.goBack();
-    } else if ((res.status as number) === 413) {
-      Alert.alert('사진 크기가 너무 큽니다. 다른 사진을 업로드해주세요.');
-    } else if ((res.status as number) === 403) {
-      Alert.alert('팀 정보 수정에 관한 자격이 없습니다.');
+    } catch (e) {
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [file, name, introducing, navigation, editMode, team]);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () =>
-        disabled ? null : loading ? (
+        loading ? (
           <ActivityIndicator color="#3478F6" />
         ) : (
-          <Pressable onPress={onUpload} disabled={loading}>
-            <ButtonText color="#3478F6" fontSize={15} fontWeight={500}>
+          <Pressable onPress={onUpload} disabled={loading || disabled}>
+            <ButtonText
+              color={disabled ? '#00000028' : '#3478F6'}
+              fontSize={15}
+              fontWeight={500}>
               변경
             </ButtonText>
           </Pressable>
@@ -169,6 +176,7 @@ function Profile() {
     setDisabled(
       introducing.length < 5 ||
         name.length < 3 ||
+        name.length > 6 ||
         (team?.introducing === introducing && team?.name === name && !editMode),
     );
   }, [introducing, name, file, team, editMode]);
@@ -220,7 +228,7 @@ function Profile() {
             style={{width: '100%'}}>
             <Label color={colors.inputLabelColor}>팀 이름</Label>
             <Input
-              placeholder="팀 이름을 입력해주세요. (3글자 이상)"
+              placeholder="팀 이름을 입력해주세요. (3글자 이상 7글자 이하)"
               placeholderTextColor={colors.inputPlaceHolderColor}
               borderColor={colors.inputLineColor}
               onChangeText={text => setName(text)}

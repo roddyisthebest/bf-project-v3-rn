@@ -20,7 +20,13 @@ import {
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Config from 'react-native-config';
 
-const Container = styled.Pressable<{borderColor: string}>`
+const Wrapper = styled.Pressable`
+  width: 70px;
+  height: 40px;
+  justify-content: center;
+  align-items: flex-end;
+`;
+const Container = styled.View<{borderColor: string}>`
   width: 25px;
   height: 25px;
   border-radius: 5px;
@@ -89,13 +95,16 @@ function MyTeamInfo() {
   };
   return (
     <>
-      <Container borderColor={colors.buttonBorderColor} onPress={onPress}>
-        <Image
-          source={{
-            uri: `${Config.API_URL}/${myInfo.team?.img}`,
-          }}
-        />
-      </Container>
+      <Wrapper onPress={onPress}>
+        <Container borderColor={colors.buttonBorderColor}>
+          <Image
+            source={{
+              uri: `${Config.API_URL}/${myInfo.team?.img}`,
+            }}
+          />
+        </Container>
+      </Wrapper>
+
       <ActionSheet ref={actionSheetRef} gestureEnabled={true}>
         <Item
           borderColor={colors.bottomSheetItemBorderColor}

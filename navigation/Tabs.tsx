@@ -75,7 +75,6 @@ const TabsNav = () => {
           headerTitleStyle: {
             fontWeight: '700',
           },
-          headerTitleAlign: 'center',
           headerShadowVisible: true,
           tabBarIconStyle: {
             marginTop: 5,
@@ -94,6 +93,7 @@ const TabsNav = () => {
           },
           headerLeft: () => <MyInfo />,
           headerRight: () => <MyTeamInfo />,
+          headerTitleAlign: 'center',
         }}>
         <Tab.Screen
           name="Home"

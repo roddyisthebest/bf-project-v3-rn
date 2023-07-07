@@ -93,57 +93,81 @@ function TeamCreating() {
   }, []);
 
   const onUpload = useCallback(async () => {
-    setLoading(true);
-    const res: any = await addTeam({
-      file: {
-        name: file?.fileName as string,
-        type: 'multipart/form-data',
-        uri: file?.uri as string,
-      },
-      name,
-      introducing,
-    });
+    try {
+      let errorMessage = '';
 
-    if ((res.status as number) === 500) {
-      logout();
-
-      Alert.alert('서버 오류 입니다. 관리자에게 문의주세요. 010-5152-9445');
-    } else if ((res.status as number) === 403) {
-      Alert.alert('팀 최대 생성 횟수를 초과했습니다.');
-    } else if ((res.status as number) === 400) {
-      logout();
-      Alert.alert('400 : 다시 로그인 해주세요.');
-    } else if ((res.status as number) === 401) {
-      //토큰 갱신
-      const response = await getTokenByRefresh();
-      if (response) {
-        Alert.alert('토큰을 갱신했습니다. 다시한번 요청해주세요!');
-      } else {
-        logout();
-        Alert.alert('다시 로그인 해주세요.');
+      if (file === null) {
+        errorMessage += '· 파일 업로드\n';
       }
-    } else if ((res.status as number) === 201) {
-      setFlag(prev => ({
-        home: {
-          update: {
-            myteam: true,
-            invitation: prev.home.update.invitation,
-            application: prev.home.update.application,
-          },
+
+      if (name.length < 3 || name.length > 6) {
+        errorMessage += '· 팀 이름 3글자 이상 6글자 이하\n';
+      }
+
+      if (introducing.length < 5) {
+        errorMessage += '· 팀 소갯말 5글자 이상';
+      }
+      if (disabled) {
+        Alert.alert('조건을 충족시켜주세요!', errorMessage);
+      }
+
+      setLoading(true);
+      const res: any = await addTeam({
+        file: {
+          name: file?.fileName as string,
+          type: 'multipart/form-data',
+          uri: file?.uri as string,
         },
-      }));
-      Alert.alert('팀이 생성되었습니다.');
-      navigation.goBack();
-    } else if ((res.status as number) === 413) {
-      Alert.alert('사진 크기가 너무 큽니다. 다른 사진을 업로드해주세요.');
+        name,
+        introducing,
+      });
+
+      if ((res.status as number) === 500) {
+        logout();
+
+        Alert.alert('서버 오류 입니다. 관리자에게 문의주세요. 010-5152-9445');
+      } else if ((res.status as number) === 403) {
+        Alert.alert('팀 최대 생성 횟수를 초과했습니다.');
+      } else if ((res.status as number) === 400) {
+        logout();
+        Alert.alert('400 : 다시 로그인 해주세요.');
+      } else if ((res.status as number) === 401) {
+        //토큰 갱신
+        const response = await getTokenByRefresh();
+        if (response) {
+          Alert.alert('토큰을 갱신했습니다. 다시한번 요청해주세요!');
+        } else {
+          logout();
+          Alert.alert('다시 로그인 해주세요.');
+        }
+      } else if ((res.status as number) === 201) {
+        setFlag(prev => ({
+          home: {
+            update: {
+              myteam: true,
+              invitation: prev.home.update.invitation,
+              application: prev.home.update.application,
+            },
+          },
+        }));
+        Alert.alert('팀이 생성되었습니다.');
+        navigation.goBack();
+      } else if ((res.status as number) === 413) {
+        Alert.alert('사진 크기가 너무 큽니다. 다른 사진을 업로드해주세요.');
+      }
+    } catch (e: any) {
+      if (e.column && Platform.OS === 'android') {
+        console.log(e);
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [file, name, introducing, navigation, setFlag]);
+  }, [file, name, introducing, navigation, setFlag, disabled]);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () =>
-        disabled ? null : loading ? (
+        loading ? (
           <ActivityIndicator color="#3478F6" />
         ) : (
           <Pressable onPress={onUpload} disabled={loading}>
@@ -156,7 +180,11 @@ function TeamCreating() {
   }, [navigation, onUpload, disabled, loading]);
 
   useEffect(() => {
-    setDisabled(introducing.length < 5 || name.length < 3 || file === null);
+    setDisabled(
+      introducing.length < 5 ||
+        (name.length < 3 && name.length > 6) ||
+        file === null,
+    );
   }, [introducing, name, file]);
 
   return (
@@ -201,7 +229,7 @@ function TeamCreating() {
             style={{width: '100%'}}>
             <Label color={colors.inputLabelColor}>팀 이름</Label>
             <Input
-              placeholder="팀 이름을 입력해주세요. (3글자 이상)"
+              placeholder="팀 이름을 입력해주세요. (3글자 이상 6글자 이하)"
               placeholderTextColor={colors.inputPlaceHolderColor}
               borderColor={colors.inputLineColor}
               onChangeText={text => setName(text)}

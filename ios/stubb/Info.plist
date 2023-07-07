@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>stubb</string>
+	<string>슬기로운 성경모임</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -42,7 +42,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>352fa14e9a082a1a7d7566356bb945a9</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -104,5 +104,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CodePushDeploymentKey</key>
+	<string>BUG-3F3r1wr6qV7UIt13FcMwmViDUqASXtAmd</string>
+	<key>NSPhotoLibraryUsageDescription</key> 
+	<string>This app requires access to the photo library to get a photo. It will be used as a photo to post.</string> 
+	<key>NSCameraUsageDescription</key> 
+	<string>This app requires access to the camera to take a picture. It will be used as a photo to post.</string>
 </dict>
 </plist>

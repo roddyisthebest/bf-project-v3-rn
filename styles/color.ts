@@ -31,4 +31,5 @@ export const colors = {
   settingButtonTextColor: '#828282',
 
   loadingIconColor: 'gray',
+  reportIconColor: '#E29500',
 };
